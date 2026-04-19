@@ -1,0 +1,7 @@
+{
+  "pythonPath": "/Users/bytedance/.local/bin/python",
+  "extraPaths": [
+    "/Users/bytedance/VisualStudioProject/smolagents/src"
+  ],
+  "typeCheckingMode": "basic"
+}
