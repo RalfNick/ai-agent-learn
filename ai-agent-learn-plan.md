@@ -18,10 +18,9 @@ ai-agent-learn/
 ├── docs/                               # 学习笔记与文章输出
 │   └── phase-{1..6}/
 ├── phase-1-fundamentals/               # Agent 原理与手写实现
-│   ├── 01-minimal-agent/
-│   ├── 02-react-agent/
-│   ├── 03-tool-calling/
-│   └── 04-memory-basics/
+│   ├── 01-minimal-agent/               # 最小 Agent + 多轮对话 + 工具调用
+│   ├── 02-smolagents-deep-dive/        # smolagents 框架深入（内部机制、工具生态、规划反思、安全沙箱）
+│   └── 03-agent-architecture/          # Agent 架构进阶（执行引擎、工具系统、Prompt 引擎、多 Agent 编排）
 ├── phase-2-rag/                        # RAG 全链路
 │   ├── 01-basic-rag/
 │   ├── 02-advanced-chunking/
@@ -76,20 +75,20 @@ ai-agent-learn/
 ### 实战项目
 | 目录 | 内容 |
 |------|------|
-| `01-minimal-agent/` | 最小可运行 Agent，支持多轮对话 + 工具调用 |
-| `02-react-agent/` | 完整 ReAct 实现，支持天气查询、网页搜索、数据计算 |
-| `03-tool-calling/` | 工具注册、发现、调用的完整系统 |
-| `04-memory-basics/` | 短期记忆 + 对话摘要记忆 |
+| `01-minimal-agent/` | 最小可运行 Agent，支持多轮对话 + 工具调用（4 脚本） |
+| `02-smolagents-deep-dive/` | smolagents 框架深入：内部机制、工具生态、规划反思、安全沙箱（5 脚本） |
+| `03-agent-architecture/` | Agent 架构进阶：执行引擎、工具系统、Prompt 引擎、多 Agent 编排（4 脚本） |
 
 ### 参考资源
 - [smolagents](https://github.com/huggingface/smolagents)：~1000 行核心代码，最适合理解 Agent 本质
 - [HuggingFace AI Agents Course](https://huggingface.co/learn/agents-course)
 - [Microsoft AI Agents for Beginners](https://microsoft.github.io/ai-agents-for-beginners/)
 - [Datawhale hello-agents](https://github.com/datawhalechina/hello-agents)（中文）
+- [Awesome LLM Apps](https://github.com/Shubhamsaboo/awesome-llm-apps)：优秀 Agent 应用设计参考（Provider-Agnostic、多 Agent 编排、Agentic RAG）
 
 ### 文章输出
-- 《从零手写一个 AI Agent：核心原理与 ReAct 实现》
-- 《AI Agent 工具调用系统设计：从原理到代码》
+- ✅《从零手写一个 AI Agent：核心原理与 ReAct 实现》
+- ✅《深入 Agent 架构设计：从源码理解框架的共性与本质》
 
 ---
 
@@ -398,7 +397,7 @@ ai-agent-learn/
 ### 开源项目
 - [smolagents](https://github.com/huggingface/smolagents) — 理解 Agent 原理
 - [LangGraph 101](https://github.com/langchain-ai/langgraph-101) — LangGraph 入门
-- [Awesome LLM Apps](https://github.com/Shubhamsaboo/awesome-llm-apps) — 应用参考
+- [Awesome LLM Apps](https://github.com/Shubhamsaboo/awesome-llm-apps) — 优秀 Agent 应用设计参考
 - [MCP for Beginners](https://github.com/microsoft/mcp-for-beginners) — MCP 入门
 
 ### 工具
@@ -418,7 +417,7 @@ ai-agent-learn/
 
 | 阶段 | 文章 |
 |------|------|
-| Phase 1 | 《从零手写 AI Agent》《工具调用系统设计》 |
+| Phase 1 | ✅《从零手写 AI Agent》✅《深入 Agent 架构设计》 |
 | Phase 2 | 《RAG 全链路实战》《混合检索 + Rerank 优化》 |
 | Phase 3 | 《LangGraph 工作流实战》《Agent 框架终极对比》 |
 | Phase 4 | 《Agent 记忆系统设计》《MCP Server 开发实战》《多智能体架构模式》 |
