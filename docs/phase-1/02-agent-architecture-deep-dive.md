@@ -38,29 +38,42 @@
 
 不管是 smolagents、langchain、langgraph 还是 CrewAI，一个 Agent 框架的核心架构都可以抽象为六层：
 
-```
-┌─────────────────────────────────────────────────────┐
-│                  多 Agent 编排层                      │
-│          Supervisor / Pipeline / Hierarchy            │
-├─────────────────────────────────────────────────────┤
-│                   Prompt 引擎层                       │
-│        模板系统 / 变量注入 / 消息历史管理               │
-├─────────────────────────────────────────────────────┤
-│                   执行引擎层                          │
-│         核心循环 / 步骤抽象 / 终止判断 / 错误恢复       │
-├─────────────────────────────────────────────────────┤
-│                   工具系统层                          │
-│        Schema 驱动 / 注册发现 / 调用执行               │
-├─────────────────────────────────────────────────────┤
-│                  状态与记忆层                          │
-│        执行状态 / 短期记忆 / 上下文管理                 │
-├─────────────────────────────────────────────────────┤
-│                  LLM 适配层                           │
-│        多模型支持 / 统一接口 / 输出解析                 │
-└─────────────────────────────────────────────────────┘
-```
+| 层级 | 名称 | 核心职责 |
+|------|------|---------|
+| 第 6 层 | 多 Agent 编排层 | Supervisor / Pipeline / Hierarchy |
+| 第 5 层 | Prompt 引擎层 | 模板系统 / 变量注入 / 消息历史管理 |
+| 第 4 层 | 执行引擎层 | 核心循环 / 步骤抽象 / 终止判断 / 错误恢复 |
+| 第 3 层 | 工具系统层 | Schema 驱动 / 注册发现 / 调用执行 |
+| 第 2 层 | 状态与记忆层 | 执行状态 / 短期记忆 / 上下文管理 |
+| 第 1 层 | LLM 适配层 | 多模型支持 / 统一接口 / 输出解析 |
 
 接下来我们逐层拆解。
+
+```mermaid
+flowchart TD
+    subgraph Orchestration["多 Agent 编排层"]
+        Sup["Supervisor / Worker"]
+        Pipe["Pipeline Sequential"]
+        Hier["Hierarchical Multi-level"]
+    end
+    subgraph SingleAgent["单 Agent 核心"]
+        Loop["执行引擎<br/>Think → Act → Observe 循环"]
+        PE["Prompt 引擎<br/>模板 + 动态注入"]
+        TS["工具系统<br/>Schema-Driven 注册与调用"]
+        Mem["状态与记忆<br/>Step 历史 / 上下文管理"]
+        Loop --- PE
+        Loop --- TS
+        Loop --- Mem
+    end
+    subgraph LLMLayer["LLM 适配层"]
+        OAI["OpenAI"]
+        Ant["Anthropic"]
+        DS["DeepSeek"]
+        Loc["Local Model"]
+    end
+    Orchestration --> SingleAgent
+    SingleAgent --> LLMLayer
+```
 
 ---
 
@@ -113,6 +126,36 @@ MemoryStep（基类）
 ```
 
 这个设计的好处是：每一步都是一条不可变记录，可以回放、序列化、用于调试。`ActionStep` 里同时包含了 `model_output`（LLM 原始输出）、`tool_calls`（解析后的工具调用）和 `observations`（工具返回结果），一个对象就是一次完整的"思考-行动-观察"。
+
+```mermaid
+classDiagram
+    class MemoryStep {
+        +step_number: int
+    }
+    class SystemPromptStep {
+        +system_prompt: str
+    }
+    class TaskStep {
+        +task: str
+    }
+    class ActionStep {
+        +model_output: str
+        +tool_calls: list
+        +observations: str
+    }
+    class PlanningStep {
+        +plan: str
+        +facts: str
+    }
+    class FinalAnswerStep {
+        +output: Any
+    }
+    MemoryStep <|-- SystemPromptStep
+    MemoryStep <|-- TaskStep
+    MemoryStep <|-- ActionStep
+    MemoryStep <|-- PlanningStep
+    MemoryStep <|-- FinalAnswerStep
+```
 
 **两种 Agent 子类**
 
@@ -199,6 +242,15 @@ langgraph 把 Agent 循环建模为一个**状态图**（StateGraph）：
 - 节点（Node）= 处理函数（LLM 调用、工具执行）
 - 边（Edge）= 状态转移（条件路由）
 - 状态（State）= 消息历史 + 自定义数据
+
+```mermaid
+flowchart LR
+    Start([开始]) --> Agent["agent 节点<br/>LLM 思考 + 决策"]
+    Agent --> Route{should_continue}
+    Route -->|有工具调用| Tools["tools 节点<br/>并行执行工具"]
+    Route -->|无工具调用| End([输出最终答案])
+    Tools --> Agent
+```
 
 这和 smolagents 的 while 循环本质上是同一件事，只是表达方式不同。状态图的好处是：更容易可视化、更容易添加分支逻辑、更容易做持久化和恢复。
 
@@ -392,8 +444,8 @@ LLM 输出:
 
 **路径二：代码生成调用（CodeAgent）**
 
-```
-LLM 输出:
+LLM 输出：
+
 ```python
 weather = web_search(query="北京天气")
 if "晴" in weather:
@@ -415,6 +467,23 @@ final_answer(f"天气: {weather}, 推荐: {activity}")
 | 安全性 | 高（结构化输入） | 需要沙箱 |
 | 模型要求 | 支持 Function Calling | 能写 Python 即可 |
 | 步骤效率 | 低（一步一调用） | 高（一步多调用） |
+
+```mermaid
+flowchart TD
+    LLM["LLM 输出"] --> TC["ToolCallingAgent<br/>JSON Schema 路径"]
+    LLM --> CA["CodeAgent<br/>代码生成路径"]
+
+    TC --> ParseJSON["解析结构化 JSON<br/>name + arguments"]
+    ParseJSON --> ExecTool["调用对应工具函数"]
+    ExecTool --> Obs1["观察结果写入 ActionStep"]
+
+    CA --> ParseCode["提取 Python 代码块"]
+    ParseCode --> Sandbox["沙箱执行<br/>工具作为函数注入环境"]
+    Sandbox --> Obs2["执行结果写入 ActionStep"]
+
+    Obs1 --> Next["下一步 LLM 决策"]
+    Obs2 --> Next
+```
 
 smolagents 的论文数据显示，CodeAgent 在基准测试上比 ToolCallingAgent 平均高 30%，主要因为步骤效率更高。
 
@@ -504,30 +573,16 @@ class ToolRegistry:
 
 smolagents 的 System Prompt 是一个 Jinja2 模板（存储在 YAML 文件中），运行时通过 `populate_template()` 注入变量。我们来看 CodeAgent 的 System Prompt 结构：
 
-```
-┌─────────────────────────────────────────────────┐
-│  角色定义                                        │
-│  "你是一个专家助手，能够使用工具解决任务..."         │
-├─────────────────────────────────────────────────┤
-│  工具描述（动态注入）                              │
-│  <<tool_descriptions>>                          │
-│  运行时替换为实际注册的工具列表                     │
-├─────────────────────────────────────────────────┤
-│  输出格式约束                                     │
-│  "你的输出必须包含 Thought 和 Code 两部分..."      │
-│  "代码必须在 ```py 和 ``` 之间..."                │
-├─────────────────────────────────────────────────┤
-│  行为规则                                        │
-│  "每一步只调用一次工具..."                         │
-│  "当你有足够信息时，调用 final_answer..."           │
-├─────────────────────────────────────────────────┤
-│  安全边界                                        │
-│  "不要执行危险操作..."                             │
-│  "不要访问未授权的资源..."                         │
-├─────────────────────────────────────────────────┤
-│  自定义指令（可选注入）                            │
-│  <<additional_instructions>>                    │
-└─────────────────────────────────────────────────┘
+```mermaid
+flowchart TD
+    R["角色定义<br/>你是一个专家助手，能够使用工具解决任务..."]
+    T["工具描述（动态注入）<br/>运行时替换为实际注册的工具列表"]
+    F["输出格式约束<br/>输出必须包含 Thought 和 Code 两部分<br/>代码必须在 py 代码块中"]
+    B["行为规则<br/>每一步只调用一次工具<br/>有足够信息时调用 final_answer"]
+    S["安全边界<br/>不要执行危险操作<br/>不要访问未授权的资源"]
+    I["自定义指令（可选注入）<br/>additional_instructions 占位符"]
+
+    R --> T --> F --> B --> S --> I
 ```
 
 关键设计：System Prompt 是**模板**，不是硬编码的字符串。工具描述、自定义指令、甚至输出格式都是运行时注入的变量。这意味着同一个 Agent 类可以通过不同的 Prompt 模板表现出完全不同的行为。
@@ -669,36 +724,33 @@ class PromptEngine:
 
 多 Agent 编排有几种经典模式：
 
-```
-模式 1: Supervisor/Worker（中心调度）
-                ┌──────────┐
-                │Supervisor│
-                └────┬─────┘
-           ┌─────────┼─────────┐
-           ▼         ▼         ▼
-      ┌────────┐┌────────┐┌────────┐
-      │Worker A││Worker B││Worker C│
-      └────────┘└────────┘└────────┘
+```mermaid
+flowchart TD
+    subgraph P1["模式 1: Supervisor/Worker 中心调度"]
+        S1["Supervisor<br/>LLM 决策路由"]
+        W1A["Worker A<br/>专项工具集"]
+        W1B["Worker B<br/>专项工具集"]
+        W1C["Worker C<br/>专项工具集"]
+        S1 --> W1A
+        S1 --> W1B
+        S1 --> W1C
+        W1A -.->|结果| S1
+        W1B -.->|结果| S1
+        W1C -.->|结果| S1
+    end
 
-模式 2: Sequential Pipeline（流水线）
-      ┌────────┐   ┌────────┐   ┌────────┐
-      │ Agent A│──▶│ Agent B│──▶│ Agent C│
-      └────────┘   └────────┘   └────────┘
+    subgraph P2["模式 2: Sequential Pipeline 流水线"]
+        A2["Agent A<br/>数据采集"] --> B2["Agent B<br/>数据分析"] --> C2["Agent C<br/>报告生成"]
+    end
 
-模式 3: Hierarchical（层级）
-                ┌──────────┐
-                │ Manager  │
-                └────┬─────┘
-           ┌─────────┴─────────┐
-           ▼                   ▼
-      ┌──────────┐        ┌──────────┐
-      │Team Lead │        │Team Lead │
-      └────┬─────┘        └────┬─────┘
-        ┌──┴──┐             ┌──┴──┐
-        ▼     ▼             ▼     ▼
-      ┌───┐ ┌───┐        ┌───┐ ┌───┐
-      │W1 │ │W2 │        │W3 │ │W4 │
-      └───┘ └───┘        └───┘ └───┘
+    subgraph P3["模式 3: Hierarchical 层级"]
+        M3["Manager"] --> TLA["Team Lead A"]
+        M3 --> TLB["Team Lead B"]
+        TLA --> W1["Worker 1"]
+        TLA --> W2["Worker 2"]
+        TLB --> W3["Worker 3"]
+        TLB --> W4["Worker 4"]
+    end
 ```
 
 **awesome-llm-apps 的 Travel Planner** 是一个很好的真实案例：它用 6 个 Agent 协作完成旅行规划——航班搜索、酒店搜索、活动推荐、餐厅推荐、行程规划、预算计算。每个 Agent 有自己的工具集，由一个 Supervisor Agent 统一调度。
@@ -881,6 +933,17 @@ Buffer    BufferWindow    SummaryBuffer    Summary    VectorStore
 （全保留）  （最近K轮）    （摘要+最近）    （纯摘要）   （检索式）
 ```
 
+```mermaid
+flowchart LR
+    A["ConversationBufferMemory<br/>全量保留所有消息"] --> B["ConversationBufferWindowMemory<br/>只保留最近 K 轮"]
+    B --> C["ConversationSummaryBufferMemory<br/>摘要 + 最近 K 轮"]
+    C --> D["ConversationSummaryMemory<br/>LLM 压缩为纯摘要"]
+    D --> E["VectorStoreRetrieverMemory<br/>按相关性检索历史"]
+
+    style A fill:#ffcccc
+    style E fill:#ccffcc
+```
+
 ### 6.4 上下文工程的核心挑战
 
 不管用哪个框架，Agent 的上下文管理都面临三个核心挑战：
@@ -922,35 +985,39 @@ LLM 的上下文窗口是有限的（4K ~ 200K tokens）。一个复杂任务可
 
 综合前面的分析，一个通用 Agent 框架的完整架构：
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                        用户接口层                            │
-│              CLI / Web UI / API / SDK                        │
-├─────────────────────────────────────────────────────────────┤
-│                     多 Agent 编排层                          │
-│  ┌─────────────┐ ┌──────────────┐ ┌───────────────────┐    │
-│  │ Supervisor  │ │   Pipeline   │ │   Hierarchical    │    │
-│  │  /Worker    │ │  Sequential  │ │   Multi-level     │    │
-│  └─────────────┘ └──────────────┘ └───────────────────┘    │
-├─────────────────────────────────────────────────────────────┤
-│                      单 Agent 核心                           │
-│  ┌──────────────────────────────────────────────────────┐   │
-│  │                   执行引擎                            │   │
-│  │  while not done:                                     │   │
-│  │    thought = llm.think(prompt + history)              │   │
-│  │    result  = tools.execute(thought.action)            │   │
-│  │    history.append(thought, result)                    │   │
-│  └──────────────────────────────────────────────────────┘   │
-│  ┌──────────────┐ ┌──────────────┐ ┌──────────────────┐    │
-│  │  Prompt 引擎  │ │   工具系统    │ │   状态与记忆     │    │
-│  │  模板 + 注入  │ │ Schema-Driven│ │  Step 历史       │    │
-│  └──────────────┘ └──────────────┘ └──────────────────┘    │
-├─────────────────────────────────────────────────────────────┤
-│                      LLM 适配层                             │
-│  ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐      │
-│  │  OpenAI  │ │ Anthropic│ │ DeepSeek │ │  Local   │      │
-│  └──────────┘ └──────────┘ └──────────┘ └──────────┘      │
-└─────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TD
+    subgraph UI["用户接口层"]
+        U1["CLI"] 
+        U2["Web UI"]
+        U3["API"]
+        U4["SDK"]
+    end
+
+    subgraph Orch["多 Agent 编排层"]
+        O1["Supervisor / Worker"]
+        O2["Pipeline Sequential"]
+        O3["Hierarchical Multi-level"]
+    end
+
+    subgraph Core["单 Agent 核心"]
+        EE["执行引擎<br/>Think → Act → Observe 循环"]
+        PE["Prompt 引擎<br/>模板 + 注入"]
+        TS["工具系统<br/>Schema-Driven"]
+        MS["状态与记忆<br/>Step 历史"]
+        EE --- PE
+        EE --- TS
+        EE --- MS
+    end
+
+    subgraph LLM["LLM 适配层"]
+        M1["OpenAI"]
+        M2["Anthropic"]
+        M3["DeepSeek"]
+        M4["Local"]
+    end
+
+    UI --> Orch --> Core --> LLM
 ```
 
 ### 7.2 各层职责
@@ -963,6 +1030,38 @@ LLM 的上下文窗口是有限的（4K ~ 200K tokens）。一个复杂任务可
 | Prompt 引擎 | 动态组装 LLM 输入 | Jinja2 模板 | ChatPromptTemplate |
 | 执行引擎 | 核心循环 + 终止 + 错误恢复 | MultiStepAgent._run_stream() | StateGraph 节点/边 |
 | 多 Agent 编排 | 多 Agent 协作调度 | ManagedAgent | StateGraph 条件路由 |
+
+```mermaid
+flowchart TD
+    User(["用户请求"]) --> Orch
+
+    subgraph Orch["多 Agent 编排层"]
+        Supervisor["Supervisor Agent<br/>任务分解 + 路由"]
+        Supervisor --> AgentA["Worker Agent A"]
+        Supervisor --> AgentB["Worker Agent B"]
+        AgentA --> Supervisor
+        AgentB --> Supervisor
+    end
+
+    subgraph AgentCore["单 Agent 执行核心（每个 Agent 内部）"]
+        direction LR
+        EE["执行引擎<br/>ReAct 循环"] <--> PE["Prompt 引擎<br/>消息组装"]
+        EE <--> ToolSys["工具系统<br/>注册 + 调用"]
+        EE <--> MemSys["记忆系统<br/>Step 历史"]
+    end
+
+    subgraph LLMAdapt["LLM 适配层"]
+        direction LR
+        M1["Claude"] 
+        M2["GPT-4o"]
+        M3["DeepSeek"]
+        M4["Local"]
+    end
+
+    Orch --> AgentCore
+    AgentCore --> LLMAdapt
+    Supervisor --> User
+```
 
 ### 7.3 Provider-Agnostic 设计
 
