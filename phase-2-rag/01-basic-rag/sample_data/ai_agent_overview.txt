@@ -1,0 +1,46 @@
+# AI Agent 技术概览
+
+## 什么是 AI Agent
+
+AI Agent 是一种能够自主感知环境、做出决策并执行行动的智能系统。
+与传统的 LLM 对话不同，Agent 具备以下核心能力：
+
+1. 工具调用：Agent 可以调用外部工具（搜索引擎、计算器、API）来获取信息或执行操作。
+2. 规划能力：Agent 能够将复杂任务分解为多个子步骤，并按顺序执行。
+3. 记忆系统：Agent 可以记住之前的对话和操作结果，用于后续决策。
+4. 自我反思：Agent 能够评估自己的输出质量，并在必要时调整策略。
+
+## ReAct 框架
+
+ReAct（Reasoning + Acting）是最经典的 Agent 框架之一。
+它让 LLM 交替进行"思考"和"行动"：
+
+- Thought：LLM 分析当前状态，决定下一步
+- Action：调用工具执行操作
+- Observation：观察工具返回的结果
+
+这个循环持续进行，直到 Agent 认为任务完成。
+
+## RAG（检索增强生成）
+
+RAG 是让 LLM 基于外部知识回答问题的技术。核心流程：
+
+1. 将文档切分成小块（Chunking）
+2. 将每个块转换为向量（Embedding）
+3. 用户提问时，找到最相关的块（Retrieval）
+4. 将相关块作为上下文，让 LLM 生成回答（Generation）
+
+RAG 解决了 LLM 的两大痛点：知识过时和幻觉问题。
+
+## 多 Agent 系统
+
+多个 Agent 协作完成复杂任务：
+- Manager Agent：接收任务，分配给合适的 Worker
+- Worker Agent：专注于特定领域（搜索、分析、编码等）
+- 通信机制：Agent 之间通过消息传递协作
+
+## 未来趋势
+
+- MCP（Model Context Protocol）：统一的工具调用标准
+- Agent 安全：防止 Prompt 注入和恶意工具调用
+- 长期记忆：让 Agent 具备跨会话的持久记忆

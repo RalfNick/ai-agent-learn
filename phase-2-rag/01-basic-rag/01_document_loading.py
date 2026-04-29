@@ -223,6 +223,13 @@ RAG 解决了 LLM 的两大痛点：知识过时和幻觉问题。
     sample_path.write_text(sample_text, encoding="utf-8")
     return str(sample_path)
 
+def create_sample_pdf_documents() -> str:
+    """创建示例文档用于演示"""
+    sample_dir = Path("sample_data")
+    sample_dir.mkdir(exist_ok=True)
+    pdf_path = sample_dir / "检索增强(RAG)的LLM生成技术.pdf"
+    return str(pdf_path)
+
 
 if __name__ == "__main__":
     console.print(Panel("📄 文档加载与预处理", style="bold blue"))
@@ -251,5 +258,12 @@ if __name__ == "__main__":
     cleaned = clean_text(dirty)
     console.print(f"  清洗前: {repr(dirty)}")
     console.print(f"  清洗后: {repr(cleaned)}")
+
+    # 创建并加载示例文档
+    pdf_path = create_sample_pdf_documents()
+    pdf_docs = load_document(pdf_path)
+    console.print(f"\n[green]✓ 加载了 {len(pdf_docs)} 个文档[/green]\n")
+    for doc in pdf_docs:
+        console.print(doc.content[:200] + "...")
 
     console.print("\n[dim]下一步 → 02_text_chunking.py 学习文本分块策略[/dim]")

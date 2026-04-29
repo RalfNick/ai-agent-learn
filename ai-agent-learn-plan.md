@@ -133,6 +133,7 @@ ai-agent-learn/
 - [RAG 完整指南](https://nerdleveltech.com/guides/rag-systems)
 - [LangChain RAG 教程](https://github.com/blackinkkkxi/RAG_langchain)（中文）
 - [Langchain-Chatchat](https://github.com/chatchat-space/Langchain-Chatchat)（中文）
+- [记忆与检索](https://hello-agents.datawhale.cc/#/./chapter8/%E7%AC%AC%E5%85%AB%E7%AB%A0%20%E8%AE%B0%E5%BF%86%E4%B8%8E%E6%A3%80%E7%B4%A2?id=_831-rag%e7%9a%84%e5%9f%ba%e7%a1%80%e7%9f%a5%e8%af%86)
 - [RAGAS 评估框架](https://docs.ragas.io/)
 
 ### 文章输出
