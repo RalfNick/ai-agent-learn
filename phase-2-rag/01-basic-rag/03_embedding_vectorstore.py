@@ -29,10 +29,8 @@
     python 03_embedding_vectorstore.py
 """
 
-import os
-from pathlib import Path
-
 import chromadb
+from chromadb.utils import embedding_functions
 from rich.console import Console
 from rich.panel import Panel
 from rich.table import Table
@@ -63,7 +61,7 @@ def demo_embedding_basics():
 
     embeddings = model.encode(sentences)
 
-    console.print(f"模型: all-MiniLM-L6-v2")
+    console.print("模型: all-MiniLM-L6-v2")
     console.print(f"向量维度: {embeddings.shape[1]}")
     console.print(f"句子数量: {embeddings.shape[0]}\n")
 
@@ -98,10 +96,15 @@ def demo_chromadb():
     """
     console.print(Panel("2️⃣  ChromaDB 向量数据库", style="bold cyan"))
 
+    ef = embedding_functions.SentenceTransformerEmbeddingFunction(
+        model_name="all-MiniLM-L6-v2"
+    )
+
     client = chromadb.Client()
 
     collection = client.create_collection(
         name="rag_demo",
+        embedding_function=ef,
         metadata={"hnsw:space": "cosine"},
     )
 
@@ -155,9 +158,6 @@ def demo_custom_embedding():
     """
     console.print(Panel("3️⃣  自定义 Embedding 函数", style="bold cyan"))
 
-    from chromadb.utils import embedding_functions
-
-    # 使用 sentence-transformers 的模型
     ef = embedding_functions.SentenceTransformerEmbeddingFunction(
         model_name="all-MiniLM-L6-v2"
     )
@@ -175,7 +175,7 @@ def demo_custom_embedding():
 
     results = collection.query(query_texts=["测试"], n_results=1)
     console.print(f"查询 '测试' → 最相关: {results['documents'][0][0]}")
-    console.print(f"[dim]提示：中文场景建议使用专门的中文 Embedding 模型[/dim]\n")
+    console.print("[dim]提示：中文场景建议使用专门的中文 Embedding 模型[/dim]\n")
 
 
 # ============================================================
@@ -189,10 +189,17 @@ def demo_persistent_storage():
     """
     console.print(Panel("4️⃣  持久化存储", style="bold cyan"))
 
+    ef = embedding_functions.SentenceTransformerEmbeddingFunction(
+        model_name="all-MiniLM-L6-v2"
+    )
+
     db_path = "./chroma_db"
     client = chromadb.PersistentClient(path=db_path)
 
-    collection = client.get_or_create_collection("persistent_demo")
+    collection = client.get_or_create_collection(
+        "persistent_demo",
+        embedding_function=ef,
+    )
     collection.add(
         documents=["持久化测试文档"],
         ids=["persist_1"],

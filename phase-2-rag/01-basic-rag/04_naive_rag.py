@@ -30,10 +30,10 @@
     python 04_naive_rag.py
 """
 
-import os
 from pathlib import Path
 
 import chromadb
+from chromadb.utils import embedding_functions
 from dotenv import load_dotenv
 from rich.console import Console
 from rich.markdown import Markdown
@@ -76,13 +76,13 @@ def build_index(collection_name: str = "naive_rag") -> chromadb.Collection:
     # 存入向量库
     client = chromadb.Client()
 
-    try:
-        client.delete_collection(collection_name)
-    except ValueError:
-        pass
+    ef = embedding_functions.SentenceTransformerEmbeddingFunction(
+        model_name="all-MiniLM-L6-v2"
+    )
 
     collection = client.create_collection(
         name=collection_name,
+        embedding_function=ef,
         metadata={"hnsw:space": "cosine"},
     )
 
@@ -206,7 +206,6 @@ def show_limitations():
         ("排序质量", "向量相似度不等于相关性，需要重排序"),
     ]
 
-    table = console.status("")
     for problem, desc in limitations:
         console.print(f"  • [bold]{problem}[/bold]: {desc}")
 

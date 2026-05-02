@@ -38,6 +38,11 @@ TypeScript projects: use `npm install` or `pnpm install` within each sub-project
 
 No root-level build system — navigate to the specific sub-project before running commands.
 
+## Model Usage
+
+- Planning and architecture: use Opus 4.7 (`claude-opus-4-7`)
+- Task execution and coding: use Sonnet 4.6 (`claude-sonnet-4-6`)
+
 ## Conventions
 
 - Python code follows standard patterns (type hints, docstrings where non-obvious)

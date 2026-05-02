@@ -1,6 +1,6 @@
 # RAG 系统评估深入解析
 
-## 为什么需要系统化评估？
+## 一、为什么需要系统化评估？
 
 "看起来回答得不错"不是评估标准。RAG 系统有多个可调参数（分块大小、检索策略、top_k、重排序阈值等），每次调整都可能在某些查询上改善效果，在另一些查询上退步。没有量化评估，你无法判断系统是在进步还是退步。
 
@@ -17,7 +17,7 @@
 有评估 → 你知道整体分数从 0.78 降到了 0.72
 ```
 
-## RAGAS 四大核心指标
+## 二、RAGAS 四大核心指标
 
 RAGAS（Retrieval Augmented Generation Assessment）定义了四个正交维度来评估 RAG 系统：
 
@@ -125,7 +125,7 @@ RAGAS（Retrieval Augmented Generation Assessment）定义了四个正交维度�
   Context Recall = 3/4 = 0.75
 ```
 
-## 评估数据集构建
+## 三、评估数据集构建
 
 ### 数据集结构
 
@@ -150,6 +150,7 @@ eval_sample = {
 ### 自动生成评估集
 
 ```python
+# 简化示例：实际使用时需替换 llm() 为具体的 API 调用（如 litellm.completion）
 def generate_eval_from_docs(documents: list[str]) -> list[dict]:
     """从文档自动生成评估数据集"""
     for doc in documents:
@@ -160,7 +161,7 @@ def generate_eval_from_docs(documents: list[str]) -> list[dict]:
         yield {"question": question, "ground_truth": ground_truth, "source_doc": doc}
 ```
 
-## 评估驱动的 RAG 优化
+## 四、评估驱动的 RAG 优化
 
 ### A/B 测试不同配置
 
@@ -207,7 +208,7 @@ def generate_eval_from_docs(documents: list[str]) -> list[dict]:
 最佳实践：200-500 字，带 50-100 字重叠
 ```
 
-## 超越 RAGAS：端到端评估
+## 五、超越 RAGAS：端到端评估
 
 ### 延迟评估
 
@@ -241,7 +242,7 @@ LLM 成本 ∝ (系统 Prompt + 检索上下文 + 用户问题) × token 单价
 - 多跳推理问题（需要综合多个文档）
 - 对抗性查询（试图让系统输出错误信息）
 
-## 练习代码
+## 六、练习代码
 
 本目录包含三个递进式实现：
 
