@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 380">
+  <defs><pattern id="g" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1e293b" stroke-width="0.5"/></pattern></defs>
+  <style>text{font-family:PingFang SC,Hiragino Sans GB,Microsoft YaHei,sans-serif}</style>
+  <rect width="1100" height="380" fill="#0f172a"/><rect width="1100" height="380" fill="url(#g)"/>
+  <text x="30" y="28" fill="white" font-size="15" font-weight="700">文档分块策略对比</text>
+
+  <rect x="30" y="55" width="240" height="300" rx="8" fill="#0f172a" stroke="#22d3ee" stroke-width="1.5"/>
+  <rect x="30" y="55" width="240" height="36" rx="8" fill="rgba(34,211,238,0.15)"/><rect x="30" y="75" width="240" height="16" fill="rgba(34,211,238,0.15)"/>
+  <text x="150" y="78" fill="#22d3ee" font-size="11" font-weight="700" text-anchor="middle">固定大小分块</text>
+  <rect x="50" y="105" width="200" height="28" rx="3" fill="#1e293b"/><text x="150" y="123" fill="#94a3b8" font-size="8" text-anchor="middle">chunk_1 [0:500]</text>
+  <rect x="50" y="140" width="200" height="28" rx="3" fill="#1e293b"/><text x="150" y="158" fill="#94a3b8" font-size="8" text-anchor="middle">chunk_2 [500:1000]</text>
+  <rect x="50" y="175" width="200" height="28" rx="3" fill="#1e293b"/><text x="150" y="193" fill="#94a3b8" font-size="8" text-anchor="middle">chunk_3 [1000:1500]</text>
+  <text x="150" y="240" fill="#64748b" font-size="9" text-anchor="middle">按字符数硬切</text><text x="150" y="258" fill="#64748b" font-size="9" text-anchor="middle">简单粗暴</text>
+  <rect x="80" y="275" width="140" height="24" rx="3" fill="rgba(34,211,238,0.1)" stroke="#22d3ee" stroke-width="0.5"/><text x="150" y="291" fill="#22d3ee" font-size="8" text-anchor="middle">适合快速原型开发</text>
+
+  <rect x="290" y="55" width="240" height="300" rx="8" fill="#0f172a" stroke="#34d399" stroke-width="1.5"/>
+  <rect x="290" y="55" width="240" height="36" rx="8" fill="rgba(52,211,153,0.15)"/><rect x="290" y="75" width="240" height="16" fill="rgba(52,211,153,0.15)"/>
+  <text x="410" y="78" fill="#34d399" font-size="11" font-weight="700" text-anchor="middle">递归字符分块</text>
+  <rect x="310" y="105" width="200" height="28" rx="3" fill="#1e293b"/><text x="410" y="123" fill="#94a3b8" font-size="8" text-anchor="middle">段落 - 句子 - 字符</text>
+  <rect x="310" y="142" width="200" height="28" rx="3" fill="#1e293b"/><text x="410" y="160" fill="#94a3b8" font-size="8" text-anchor="middle">优先段落边界切分</text>
+  <rect x="310" y="179" width="200" height="28" rx="3" fill="#1e293b"/><text x="410" y="197" fill="#94a3b8" font-size="8" text-anchor="middle">保持语义完整性</text>
+  <text x="410" y="240" fill="#64748b" font-size="9" text-anchor="middle">逐级尝试切分</text><text x="410" y="258" fill="#64748b" font-size="9" text-anchor="middle">平衡效率和精度</text>
+  <rect x="340" y="275" width="140" height="24" rx="3" fill="rgba(52,211,153,0.1)" stroke="#34d399" stroke-width="0.5"/><text x="410" y="291" fill="#34d399" font-size="8" text-anchor="middle">推荐通用方案</text>
+
+  <rect x="550" y="55" width="240" height="300" rx="8" fill="#0f172a" stroke="#a78bfa" stroke-width="1.5"/>
+  <rect x="550" y="55" width="240" height="36" rx="8" fill="rgba(168,85,247,0.15)"/><rect x="550" y="75" width="240" height="16" fill="rgba(168,85,247,0.15)"/>
+  <text x="670" y="78" fill="#a78bfa" font-size="11" font-weight="700" text-anchor="middle">结构感知分块</text>
+  <rect x="570" y="105" width="200" height="28" rx="3" fill="#1e293b"/><text x="670" y="123" fill="#94a3b8" font-size="8" text-anchor="middle">## 标题 1 + 内容</text>
+  <rect x="570" y="142" width="200" height="28" rx="3" fill="#1e293b"/><text x="670" y="160" fill="#94a3b8" font-size="8" text-anchor="middle">### 标题 1.1 + 内容</text>
+  <rect x="570" y="179" width="200" height="28" rx="3" fill="#1e293b"/><text x="670" y="197" fill="#94a3b8" font-size="8" text-anchor="middle">## 标题 2 + 内容</text>
+  <text x="670" y="240" fill="#64748b" font-size="9" text-anchor="middle">按标题层级切分</text><text x="670" y="258" fill="#64748b" font-size="9" text-anchor="middle">保留文档结构</text>
+  <rect x="600" y="275" width="140" height="24" rx="3" fill="rgba(168,85,247,0.1)" stroke="#a78bfa" stroke-width="0.5"/><text x="670" y="291" fill="#a78bfa" font-size="8" text-anchor="middle">技术文档 / Markdown</text>
+
+  <rect x="810" y="55" width="260" height="300" rx="8" fill="#0f172a" stroke="#fbbf24" stroke-width="1.5"/>
+  <rect x="810" y="55" width="260" height="36" rx="8" fill="rgba(251,191,36,0.15)"/><rect x="810" y="75" width="260" height="16" fill="rgba(251,191,36,0.15)"/>
+  <text x="940" y="78" fill="#fbbf24" font-size="11" font-weight="700" text-anchor="middle">语义分块</text>
+  <rect x="830" y="105" width="220" height="28" rx="3" fill="#1e293b"/><text x="940" y="123" fill="#94a3b8" font-size="8" text-anchor="middle">句子A [embedding: 0.82]</text>
+  <rect x="830" y="142" width="220" height="28" rx="3" fill="#1e293b"/><text x="940" y="160" fill="#94a3b8" font-size="8" text-anchor="middle">句子B [embedding: 0.80]</text>
+  <rect x="830" y="179" width="220" height="28" rx="3" fill="#1e293b"/><text x="940" y="197" fill="#94a3b8" font-size="8" text-anchor="middle">句子C [embedding: 0.31] - 切分点</text>
+  <text x="940" y="240" fill="#64748b" font-size="9" text-anchor="middle">Embedding 判断语义断点</text><text x="940" y="258" fill="#64748b" font-size="9" text-anchor="middle">质量最高, 成本也高</text>
+  <rect x="880" y="275" width="170" height="24" rx="3" fill="rgba(251,191,36,0.1)" stroke="#fbbf24" stroke-width="0.5"/><text x="965" y="291" fill="#fbbf24" font-size="8" text-anchor="middle">高质量 RAG 生产环境</text>
+
+  <rect x="30" y="365" width="1040" height="12" rx="3" fill="#1e293b"/>
+  <text x="150" y="375" fill="#22d3ee" font-size="7" text-anchor="middle">简单</text>
+  <text x="410" y="375" fill="#34d399" font-size="7" text-anchor="middle">实用</text>
+  <text x="670" y="375" fill="#a78bfa" font-size="7" text-anchor="middle">精准</text>
+  <text x="940" y="375" fill="#fbbf24" font-size="7" text-anchor="middle">智能</text>
+</svg>

@@ -38,26 +38,7 @@ RAG 的核心思想用一句话就能说清：
 
 整个过程分两个阶段：
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│              离线阶段（Indexing，只做一次）                     │
-│                                                             │
-│  原始文档 ──▶ 文本提取 ──▶ 切块 ──▶ Embedding ──▶ 向量数据库  │
-│  (PDF/网页)   (清洗)     (分段)   (文本→向量)    (存储+索引)   │
-└─────────────────────────────────────────────────────────────┘
-
-┌─────────────────────────────────────────────────────────────┐
-│              在线阶段（Querying，每次提问都走）                  │
-│                                                             │
-│  用户问题 ──▶ Embedding ──▶ 相似度检索 ──▶ Top-K 文档块       │
-│                                                │            │
-│                                                ▼            │
-│                              Prompt = 问题 + 检索到的文档块    │
-│                                                │            │
-│                                                ▼            │
-│                                          LLM 生成回答        │
-└─────────────────────────────────────────────────────────────┘
-```
+![RAG Core Flow](output-images/rag-core-flow.png)
 
 ### 2.1 离线阶段：建索引
 
@@ -194,6 +175,8 @@ Modular RAG 打破了 Naive RAG 的固定流水线，把每个环节抽象为可
 | Modular RAG | 模块化、可编排 | 自助餐，按需组合 |
 | Agentic RAG | Agent 自主编排 | 有自主判断力的研究助理 |
 
+![RAG Evolution](output-images/rag-evolution.png)
+
 ---
 
 ## 4. 核心组件详解
@@ -212,6 +195,8 @@ RAG 的质量上限由数据质量决定。文档处理包括两步：加载和�
 | 递归字符 | 先按段落切，再按句子切 | 通用文档（推荐） |
 | 结构感知 | 按标题层级切，保留文档结构 | 技术文档、Markdown |
 | 语义分块 | 用 Embedding 判断语义断裂点 | 高质量 RAG |
+
+![Chunking Strategies](output-images/chunking-strategies.png)
 
 经验值：chunk_size 200-500 字符，overlap 10-20%。
 
@@ -266,6 +251,8 @@ Embedding 是 RAG 的核心魔法，值得多花点篇幅理解。
 
   不需要遍历全国所有咖啡店，几步就到了。
 ```
+
+![HNSW Search](output-images/hnsw-search.png)
 
 **IVF（Inverted File Index）**：先把向量空间划分成若干个区域（聚类），查询时只在最近的几个区域内搜索。类似于"先确定在哪个书架，再在书架上找书"。
 
@@ -336,11 +323,7 @@ RRF 融合示例：
 
 **两阶段检索架构**：生产环境的标准做法。
 
-```
-10000 篇文档 → 粗检索（BM25 + 向量，毫秒级）→ 20 个候选
-                                                    ↓
-                        精排（Cross-Encoder，百毫秒级）→ Top 3
-```
+![Two-Stage Retrieval](output-images/two-stage-retrieval.png)
 
 - **粗检索（Bi-Encoder）**：查询和文档分别编码为向量，文档向量可以预计算并缓存，速度极快
 - **精排（Cross-Encoder）**：把查询和文档拼接后一起输入模型，直接输出相关性分数。能捕获查询-文档间的细粒度交互，精度远高于 Bi-Encoder，但每个查询-文档对都要重新计算，所以只能对少量候选使用
@@ -478,32 +461,32 @@ Agentic RAG 是当前最活跃的研究方向。核心趋势包括：
 
 ### 第一层：必须理解的概念
 
-- [ ] **Embedding 是什么**：文本 → 向量，语义相近 → 向量距离近
-- [ ] **余弦相似度**：两个向量方向越接近，相似度越高（范围 -1 到 1）
-- [ ] **向量数据库的作用**：存储向量 + 快速找到最相似的 K 个
-- [ ] **RAG 两阶段流程**：离线建索引（切块→向量化→存储）+ 在线查索引（问题向量化→检索→生成）
-- [ ] **精确率 vs 召回率**：找得准 vs 找得全，两者需要平衡
+- **Embedding 是什么**：文本 → 向量，语义相近 → 向量距离近
+- **余弦相似度**：两个向量方向越接近，相似度越高（范围 -1 到 1）
+- **向量数据库的作用**：存储向量 + 快速找到最相似的 K 个
+- **RAG 两阶段流程**：离线建索引（切块→向量化→存储）+ 在线查索引（问题向量化→检索→生成）
+- **精确率 vs 召回率**：找得准 vs 找得全，两者需要平衡
 
 ### 第二层：必须会用的工具
 
-- [ ] **一个 Embedding 模型**：推荐 `sentence-transformers` 的 `all-MiniLM-L6-v2`（英文）或 `bge-small-zh-v1.5`（中文）
-- [ ] **一个向量数据库**：推荐 ChromaDB，零配置，`pip install chromadb` 即可
-- [ ] **一个 LLM API**：OpenAI、DeepSeek、Anthropic 任选一个
-- [ ] **文本分块工具**：推荐 LangChain 的 `RecursiveCharacterTextSplitter`
+- **一个 Embedding 模型**：推荐 `sentence-transformers` 的 `all-MiniLM-L6-v2`（英文）或 `bge-small-zh-v1.5`（中文）
+- **一个向量数据库**：推荐 ChromaDB，零配置，`pip install chromadb` 即可
+- **一个 LLM API**：OpenAI、DeepSeek、Anthropic 任选一个
+- **文本分块工具**：推荐 LangChain 的 `RecursiveCharacterTextSplitter`
 
 ### 第三层：必须动手做的实验
 
-- [ ] **实现一个 Naive RAG**：加载文档 → 分块 → 存入 ChromaDB → 检索 → 拼 Prompt → LLM 回答
-- [ ] **对比不同 chunk_size 的效果**：200 vs 500 vs 1000，观察检索质量变化
-- [ ] **对比 BM25 和向量检索**：同一个问题，两种方式各找到了什么？有什么互补？
-- [ ] **观察幻觉现象**：故意问一个文档里没有的问题，看 LLM 是否会编造
+- **实现一个 Naive RAG**：加载文档 → 分块 → 存入 ChromaDB → 检索 → 拼 Prompt → LLM 回答
+- **对比不同 chunk_size 的效果**：200 vs 500 vs 1000，观察检索质量变化
+- **对比 BM25 和向量检索**：同一个问题，两种方式各找到了什么？有什么互补？
+- **观察幻觉现象**：故意问一个文档里没有的问题，看 LLM 是否会编造
 
 ### 第四层：进阶提升
 
-- [ ] 实现混合检索（BM25 + 向量 + RRF 融合）
-- [ ] 加入 Cross-Encoder 重排序
-- [ ] 尝试查询改写（HyDE、多查询扩展）
-- [ ] 用 RAGAS 评估你的 RAG 系统
+- 实现混合检索（BM25 + 向量 + RRF 融合）
+- 加入 Cross-Encoder 重排序
+- 尝试查询改写（HyDE、多查询扩展）
+- 用 RAGAS 评估你的 RAG 系统
 
 > 以上所有实验在配套代码 [phase-2-rag/](../../phase-2-rag/) 中都有完整实现，可以直接运行。
 
@@ -513,17 +496,7 @@ Agentic RAG 是当前最活跃的研究方向。核心趋势包括：
 
 ### 9.1 推荐学习路径
 
-```
-理解概念（本文）
-    ↓
-动手实践（02 文章 + 配套代码）
-    ↓
-深入组件（Embedding、向量数据库、评估）
-    ↓
-框架实战（Phase 3：LangChain、LangGraph、CrewAI）
-    ↓
-生产部署（Phase 5：FastAPI + Docker + 可观测性）
-```
+![Learning Path](output-images/learning-path.png)
 
 ### 9.2 推荐资源
 
@@ -562,5 +535,7 @@ RAG 全景
 ├── 评估体系：Faithfulness / Relevancy / Context Quality
 └── 未来方向：多模态、Graph RAG、Agentic RAG
 ```
+
+![RAG Overview](output-images/rag-overview.png)
 
 理解了全景，接下来就是动手。下一篇 [从零构建 RAG 管道](./02-rag-pipeline-deep-dive.md) 会带你用 Python 实现上面提到的每一个组件。

@@ -1,0 +1,9 @@
+flowchart LR
+    N["Naive RAG<br/>2020-2022<br/><br/>检索-拼接-生成<br/>能跑但粗糙"] -->|"逐个优化"| A["Advanced RAG<br/>2022-2023<br/><br/>检索前/中/后优化<br/>HyDE·混合检索·重排序"]
+    A -->|"模块化"| M["Modular RAG<br/>2023-2024<br/><br/>可替换组件<br/>搜索·记忆·路由·验证"]
+    M -->|"Agent化"| AG["Agentic RAG<br/>2024-<br/><br/>Agent自主编排<br/>自适应·多轮迭代·工具集成"]
+
+    style N fill:#f9f0ff,stroke:#9b59b6
+    style A fill:#e8f4fd,stroke:#3498db
+    style M fill:#e8f8f0,stroke:#2ecc71
+    style AG fill:#fff3e0,stroke:#f39c12

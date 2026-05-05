@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 580">
+  <defs><pattern id="g" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1e293b" stroke-width="0.5"/></pattern></defs>
+  <style>text{font-family:PingFang SC,Hiragino Sans GB,Microsoft YaHei,sans-serif}</style>
+  <rect width="1100" height="580" fill="#0f172a"/><rect width="1100" height="580" fill="url(#g)"/>
+  <text x="30" y="28" fill="white" font-size="15" font-weight="700">RAG 技术全景</text>
+
+  <ellipse cx="550" cy="310" rx="60" ry="35" fill="#0f172a" stroke="#22d3ee" stroke-width="2.5"/>
+  <text x="550" y="306" fill="white" font-size="13" font-weight="700" text-anchor="middle">RAG</text><text x="550" y="322" fill="#22d3ee" font-size="8" text-anchor="middle">检索增强生成</text>
+
+  <path d="M 490 290 Q 380 240 320 180" fill="none" stroke="#fb7185" stroke-width="1.5"/>
+  <rect x="220" y="140" width="180" height="80" rx="8" fill="#0f172a" stroke="#fb7185" stroke-width="1.5"/>
+  <text x="310" y="165" fill="#fb7185" font-size="11" font-weight="700" text-anchor="middle">为什么需要</text>
+  <text x="310" y="183" fill="#94a3b8" font-size="8" text-anchor="middle">知识截止日期</text><text x="310" y="198" fill="#94a3b8" font-size="8" text-anchor="middle">私有数据不支持</text><text x="310" y="213" fill="#94a3b8" font-size="8" text-anchor="middle">幻觉 (Hallucination)</text>
+
+  <path d="M 550 275 Q 550 200 550 150" fill="none" stroke="#22d3ee" stroke-width="1.5"/>
+  <rect x="400" y="50" width="300" height="90" rx="8" fill="#0f172a" stroke="#22d3ee" stroke-width="1.5"/>
+  <text x="550" y="76" fill="#22d3ee" font-size="11" font-weight="700" text-anchor="middle">核心流程</text>
+  <text x="550" y="95" fill="#94a3b8" font-size="9" text-anchor="middle">离线建索引: 加载 -> 切块 -> Embedding -> 存储</text>
+  <text x="550" y="112" fill="#94a3b8" font-size="9" text-anchor="middle">在线查索引: 问题 -> 向量 -> 检索 -> Prompt -> 生成</text>
+  <text x="550" y="129" fill="#64748b" font-size="8" text-anchor="middle">找得准 (检索质量) / 答得好 (生成质量)</text>
+
+  <path d="M 610 290 Q 720 240 780 180" fill="none" stroke="#a78bfa" stroke-width="1.5"/>
+  <rect x="700" y="140" width="190" height="80" rx="8" fill="#0f172a" stroke="#a78bfa" stroke-width="1.5"/>
+  <text x="795" y="165" fill="#a78bfa" font-size="11" font-weight="700" text-anchor="middle">演进路径</text>
+  <text x="795" y="183" fill="#94a3b8" font-size="8" text-anchor="middle">Naive - Advanced</text><text x="795" y="198" fill="#94a3b8" font-size="8" text-anchor="middle">- Modular - Agentic</text>
+  <text x="795" y="213" fill="#64748b" font-size="8" text-anchor="middle">简单检索 - 自主智能体</text>
+
+  <path d="M 610 330 Q 700 340 780 340" fill="none" stroke="#34d399" stroke-width="1.5"/>
+  <rect x="790" y="285" width="280" height="110" rx="8" fill="#0f172a" stroke="#34d399" stroke-width="1.5"/>
+  <text x="930" y="308" fill="#34d399" font-size="11" font-weight="700" text-anchor="middle">核心组件</text>
+  <text x="930" y="326" fill="#94a3b8" font-size="8" text-anchor="middle">文档处理: 加载 / 清洗 / 分块</text>
+  <text x="930" y="342" fill="#94a3b8" font-size="8" text-anchor="middle">Embedding 模型: 文本 - 向量</text>
+  <text x="930" y="358" fill="#94a3b8" font-size="8" text-anchor="middle">向量数据库: HNSW / IVF / PQ</text>
+  <text x="930" y="374" fill="#94a3b8" font-size="8" text-anchor="middle">检索策略: 稀疏+稠密+重排序</text>
+  <text x="930" y="390" fill="#94a3b8" font-size="8" text-anchor="middle">生成策略: Prompt 工程</text>
+
+  <path d="M 610 370 Q 700 410 780 450" fill="none" stroke="#fbbf24" stroke-width="1.5"/>
+  <rect x="790" y="410" width="230" height="80" rx="8" fill="#0f172a" stroke="#fbbf24" stroke-width="1.5"/>
+  <text x="905" y="435" fill="#fbbf24" font-size="11" font-weight="700" text-anchor="middle">评估体系</text>
+  <text x="905" y="453" fill="#94a3b8" font-size="8" text-anchor="middle">Faithfulness 忠实度</text>
+  <text x="905" y="468" fill="#94a3b8" font-size="8" text-anchor="middle">Answer Relevancy 答案相关性</text>
+  <text x="905" y="483" fill="#94a3b8" font-size="8" text-anchor="middle">Context Relevancy 上下文相关性</text>
+
+  <path d="M 550 345 Q 550 440 550 480" fill="none" stroke="#f97316" stroke-width="1.5"/>
+  <rect x="400" y="480" width="300" height="80" rx="8" fill="#0f172a" stroke="#f97316" stroke-width="1.5"/>
+  <text x="550" y="505" fill="#f97316" font-size="11" font-weight="700" text-anchor="middle">未来方向</text>
+  <text x="550" y="523" fill="#94a3b8" font-size="9" text-anchor="middle">多模态 RAG / Graph RAG</text>
+  <text x="550" y="540" fill="#94a3b8" font-size="9" text-anchor="middle">长上下文互补 / Fine-tuning 融合 / Agentic RAG</text>
+
+  <path d="M 490 370 Q 380 410 280 450" fill="none" stroke="#06b6d4" stroke-width="1.5"/>
+  <rect x="130" y="410" width="230" height="80" rx="8" fill="#0f172a" stroke="#06b6d4" stroke-width="1.5"/>
+  <text x="245" y="435" fill="#06b6d4" font-size="11" font-weight="700" text-anchor="middle">工具生态</text>
+  <text x="245" y="453" fill="#94a3b8" font-size="8" text-anchor="middle">框架: LangChain / LlamaIndex</text>
+  <text x="245" y="468" fill="#94a3b8" font-size="8" text-anchor="middle">向量库: ChromaDB / Milvus</text>
+  <text x="245" y="483" fill="#94a3b8" font-size="8" text-anchor="middle">评估: RAGAS / TruLens</text>
+
+  <path d="M 490 330 Q 380 340 280 340" fill="none" stroke="#60a5fa" stroke-width="1.5"/>
+  <rect x="60" y="290" width="200" height="100" rx="8" fill="#0f172a" stroke="#60a5fa" stroke-width="1.5"/>
+  <text x="160" y="315" fill="#60a5fa" font-size="11" font-weight="700" text-anchor="middle">入门必备</text>
+  <text x="160" y="333" fill="#94a3b8" font-size="8" text-anchor="middle">理解 Embedding 概念</text>
+  <text x="160" y="349" fill="#94a3b8" font-size="8" text-anchor="middle">掌握余弦相似度</text>
+  <text x="160" y="365" fill="#94a3b8" font-size="8" text-anchor="middle">会用 ChromaDB</text>
+  <text x="160" y="381" fill="#94a3b8" font-size="8" text-anchor="middle">动手写 Naive RAG</text>
+</svg>

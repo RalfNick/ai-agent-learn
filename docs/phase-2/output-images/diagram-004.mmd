@@ -1,0 +1,15 @@
+flowchart TD
+    subgraph layer0["第0层：全国"]
+        L0["入口节点 → 北京市"]
+    end
+    subgraph layer1["第1层：城市"]
+        L1["朝阳区 → 海淀区 → 东城区"]
+    end
+    subgraph layer2["第2层：区域"]
+        L2["三里屯 → 国贸 → 望京"]
+    end
+    subgraph layer3["第3层：街道"]
+        L3["☕ 咖啡店A<br/>☕ 咖啡店B<br/>☕ 目标咖啡店"]
+    end
+
+    layer0 -->|"向下搜索"| layer1 -->|"向下搜索"| layer2 -->|"向下搜索"| layer3

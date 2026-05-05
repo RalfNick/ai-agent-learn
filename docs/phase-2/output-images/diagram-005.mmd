@@ -1,0 +1,5 @@
+flowchart LR
+    A["📚 10000+ 文档"] --> B["🔍 粗检索 Stage 1<br/>Bi-Encoder<br/>(BM25 + 向量检索)"]
+    B -->|"毫秒级"| C["📋 20 个候选"]
+    C --> D["🎯 精排 Stage 2<br/>Cross-Encoder<br/>(查询+文档联合编码)"]
+    D -->|"百毫秒级"| E["✅ Top 3"]

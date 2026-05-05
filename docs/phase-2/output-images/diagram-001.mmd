@@ -1,0 +1,14 @@
+flowchart TB
+    subgraph offline["离线阶段（Indexing，只做一次）"]
+        direction LR
+        A1["📄 原始文档<br/>(PDF/网页)"] --> A2["🔧 文本提取<br/>(清洗)"] --> A3["✂️ 切块<br/>(分段)"] --> A4["🧮 Embedding<br/>(文本→向量)"] --> A5["🗄️ 向量数据库<br/>(存储+索引)"]
+    end
+
+    subgraph online["在线阶段（Querying，每次提问都走）"]
+        direction LR
+        B1["❓ 用户问题"] --> B2["🧮 Embedding<br/>(问题→向量)"] --> B3["🔍 相似度检索<br/>(ANN搜索)"] --> B4["📋 Top-K 文档块"]
+        B4 --> B5["📝 Prompt组装<br/>问题 + 文档块"]
+        B5 --> B6["🤖 LLM 生成回答"]
+    end
+
+    offline -.->|"索引就绪"| online

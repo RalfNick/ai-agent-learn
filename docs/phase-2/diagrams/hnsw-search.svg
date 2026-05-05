@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 320">
+  <defs><pattern id="g" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1e293b" stroke-width="0.5"/></pattern></defs>
+  <style>text{font-family:PingFang SC,Hiragino Sans GB,Microsoft YaHei,sans-serif}</style>
+  <rect width="1200" height="320" fill="#0f172a"/><rect width="1200" height="320" fill="url(#g)"/>
+  <text x="30" y="28" fill="white" font-size="15" font-weight="700">HNSW 多层近似搜索</text>
+
+  <rect x="30" y="50" width="1140" height="50" rx="4" fill="rgba(34,211,238,0.08)"/>
+  <text x="50" y="80" fill="#22d3ee" font-size="10" font-weight="600">第 0 层 (全国)</text>
+  <rect x="220" y="58" width="100" height="32" rx="4" fill="#0f172a" stroke="#22d3ee" stroke-width="1.5"/><text x="270" y="78" fill="white" font-size="9" font-weight="600" text-anchor="middle">北京市</text>
+  <path d="M 320 74 L 380 74" fill="none" stroke="#64748b" stroke-width="0.8" stroke-dasharray="3,2"/><text x="350" y="70" fill="#64748b" font-size="7" text-anchor="middle">入口</text>
+
+  <rect x="30" y="115" width="1140" height="50" rx="4" fill="rgba(52,211,153,0.08)"/>
+  <text x="50" y="145" fill="#34d399" font-size="10" font-weight="600">第 1 层 (城市)</text>
+  <rect x="220" y="123" width="90" height="32" rx="4" fill="#0f172a" stroke="#34d399" stroke-width="1.5"/><text x="265" y="143" fill="white" font-size="9" font-weight="600" text-anchor="middle">朝阳区</text>
+  <rect x="350" y="123" width="90" height="32" rx="4" fill="#0f172a" stroke="#334155" stroke-width="1"/><text x="395" y="143" fill="#64748b" font-size="9" font-weight="500" text-anchor="middle">海淀区</text>
+  <rect x="480" y="123" width="90" height="32" rx="4" fill="#0f172a" stroke="#334155" stroke-width="1"/><text x="525" y="143" fill="#64748b" font-size="9" font-weight="500" text-anchor="middle">东城区</text>
+
+  <rect x="30" y="180" width="1140" height="50" rx="4" fill="rgba(251,191,36,0.08)"/>
+  <text x="50" y="210" fill="#fbbf24" font-size="10" font-weight="600">第 2 层 (区域)</text>
+  <rect x="240" y="188" width="90" height="32" rx="4" fill="#0f172a" stroke="#fbbf24" stroke-width="1.5"/><text x="285" y="208" fill="white" font-size="9" font-weight="600" text-anchor="middle">三里屯</text>
+  <rect x="370" y="188" width="80" height="32" rx="4" fill="#0f172a" stroke="#334155" stroke-width="1"/><text x="410" y="208" fill="#64748b" font-size="9" font-weight="500" text-anchor="middle">国贸</text>
+  <rect x="490" y="188" width="80" height="32" rx="4" fill="#0f172a" stroke="#334155" stroke-width="1"/><text x="530" y="208" fill="#64748b" font-size="9" font-weight="500" text-anchor="middle">望京</text>
+
+  <rect x="30" y="245" width="1140" height="55" rx="4" fill="rgba(96,165,250,0.08)"/>
+  <text x="50" y="275" fill="#60a5fa" font-size="10" font-weight="600">第 3 层 (街道) - 目标层</text>
+  <rect x="300" y="253" width="80" height="40" rx="4" fill="#0f172a" stroke="#334155" stroke-width="1"/><text x="340" y="270" fill="#94a3b8" font-size="8" text-anchor="middle">咖啡店 A</text><text x="340" y="284" fill="#64748b" font-size="7" text-anchor="middle">0.12km</text>
+  <rect x="410" y="253" width="80" height="40" rx="4" fill="#0f172a" stroke="#334155" stroke-width="1"/><text x="450" y="270" fill="#94a3b8" font-size="8" text-anchor="middle">咖啡店 B</text><text x="450" y="284" fill="#64748b" font-size="7" text-anchor="middle">0.35km</text>
+  <rect x="520" y="253" width="90" height="40" rx="6" fill="#0f172a" stroke="#60a5fa" stroke-width="2"/><text x="565" y="270" fill="white" font-size="9" font-weight="600" text-anchor="middle">目标咖啡店</text><text x="565" y="287" fill="#60a5fa" font-size="8" text-anchor="middle">最近邻结果</text>
+
+  <text x="680" y="70" fill="#64748b" font-size="8">每层只有少量节点</text>
+  <text x="680" y="88" fill="#64748b" font-size="8">从顶层入口, 逐层向下搜索</text>
+  <text x="680" y="108" fill="#64748b" font-size="8">每步只评估少数候选节点</text>
+  <text x="680" y="128" fill="#64748b" font-size="8">复杂度: O(log N) vs 暴力 O(N)</text>
+  <text x="680" y="148" fill="#94a3b8" font-size="8">类似六度分隔理论</text>
+  <text x="680" y="168" fill="#64748b" font-size="8">几步即可到达最近邻</text>
+</svg>
