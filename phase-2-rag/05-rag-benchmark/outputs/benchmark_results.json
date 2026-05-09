@@ -1,0 +1,3960 @@
+{
+  "metadata": {
+    "source_count": 42,
+    "chunk_count": 527,
+    "question_count": 30,
+    "embedding_model": "paraphrase-multilingual-MiniLM-L12-v2",
+    "rerank_model": "cross-encoder/mmarco-mMiniLMv2-L12-H384-v1",
+    "rerank_mode": "cross_encoder",
+    "llm_model": "deepseek/deepseek-chat",
+    "configs": [
+      {
+        "name": "naive_vector",
+        "use_hybrid": false,
+        "use_rerank": false,
+        "use_query_transform": false,
+        "top_k": 3,
+        "first_stage_k": 12
+      },
+      {
+        "name": "hybrid",
+        "use_hybrid": true,
+        "use_rerank": false,
+        "use_query_transform": false,
+        "top_k": 3,
+        "first_stage_k": 12
+      },
+      {
+        "name": "hybrid_rerank",
+        "use_hybrid": true,
+        "use_rerank": true,
+        "use_query_transform": false,
+        "top_k": 3,
+        "first_stage_k": 12
+      },
+      {
+        "name": "query_transform_rerank",
+        "use_hybrid": true,
+        "use_rerank": true,
+        "use_query_transform": true,
+        "top_k": 3,
+        "first_stage_k": 12
+      }
+    ]
+  },
+  "summaries": [
+    {
+      "name": "naive_vector",
+      "precision_at_3": 0.55,
+      "recall_at_3": 0.4455555555555556,
+      "mrr": 0.7277777777777777,
+      "ndcg_at_3": 0.4949262185258945,
+      "faithfulness": 0.8633333333333333,
+      "avg_latency_ms": 3770.3732264325176,
+      "total_cost_usd": 0.02870751,
+      "llm_calls": 60
+    },
+    {
+      "name": "hybrid",
+      "precision_at_3": 0.55,
+      "recall_at_3": 0.4483333333333333,
+      "mrr": 0.7722222222222223,
+      "ndcg_at_3": 0.5126169276584693,
+      "faithfulness": 0.81,
+      "avg_latency_ms": 3713.916540199716,
+      "total_cost_usd": 0.029791730000000013,
+      "llm_calls": 60
+    },
+    {
+      "name": "hybrid_rerank",
+      "precision_at_3": 0.5777777777777777,
+      "recall_at_3": 0.4527777777777777,
+      "mrr": 0.7555555555555556,
+      "ndcg_at_3": 0.5241633819955954,
+      "faithfulness": 0.9166666666666666,
+      "avg_latency_ms": 3945.0251931339153,
+      "total_cost_usd": 0.03001971,
+      "llm_calls": 60
+    },
+    {
+      "name": "query_transform_rerank",
+      "precision_at_3": 0.538888888888889,
+      "recall_at_3": 0.4111111111111111,
+      "mrr": 0.7277777777777777,
+      "ndcg_at_3": 0.485056821493699,
+      "faithfulness": 0.9299999999999999,
+      "avg_latency_ms": 4934.080677701179,
+      "total_cost_usd": 0.03166304,
+      "llm_calls": 90
+    }
+  ],
+  "results": [
+    {
+      "config_name": "naive_vector",
+      "question": "ReAct Agent 和普通 LLM 对话的核心区别是什么？",
+      "generated_queries": [
+        "ReAct Agent 和普通 LLM 对话的核心区别是什么？"
+      ],
+      "retrieved_chunk_ids": [
+        "rag_loading::7",
+        "p1_react_article::4",
+        "p1_react_article::0"
+      ],
+      "retrieved_source_ids": [
+        "rag_loading",
+        "p1_react_article"
+      ],
+      "answer": "根据参考资料，ReAct Agent 和普通 LLM 对话的核心区别在于：**LLM 只能生成文本，而 Agent 能思考、调用工具、观察结果并从结果中学习**。\n\n具体来说，ReAct Agent 通过多步推理和真实的观察结果来“校准”推理，每一步都基于实际数据一步步推导，而不是像普通 LLM 那样一次性凭空想象答案（来源 2，source_id=p1_react_article）。此外，Agent 具备记忆、多步决策和访问实时数据的能力，而普通 LLM 是无状态的、一次性回答且受限于训练数据（来源 3，source_id=p1_react_article）。",
+      "faithfulness": 1.0,
+      "faithfulness_reason": "待评估回答中的关键声明（LLM只能生成文本、Agent能思考/调用工具/观察结果/学习、多步推理、基于实际数据推导、Agent有记忆/多步决策/访问实时数据、普通LLM无状态/一次性回答/受限于训练数据）均能被参考资料[2]和[3]明确支持，无编造或泛化。",
+      "precision_at_3": 0.5,
+      "recall_at_3": 0.5,
+      "mrr": 0.5,
+      "ndcg_at_3": 0.38685280723454163,
+      "latency_ms": 4293.540917002247,
+      "llm_usage": {
+        "prompt_tokens": 2663,
+        "completion_tokens": 234,
+        "total_tokens": 2897,
+        "cost_usd": 0.00097641,
+        "calls": 2
+      }
+    },
+    {
+      "config_name": "naive_vector",
+      "question": "一个 Agent 框架通常可以拆成哪几层架构？",
+      "generated_queries": [
+        "一个 Agent 框架通常可以拆成哪几层架构？"
+      ],
+      "retrieved_chunk_ids": [
+        "p3_multi_agent_article::0",
+        "p1_arch_article::0",
+        "p1_arch_article::37"
+      ],
+      "retrieved_source_ids": [
+        "p3_multi_agent_article",
+        "p1_arch_article"
+      ],
+      "answer": "根据参考资料，一个 Agent 框架通常可以拆解为以下六层架构（来源 3）：\n\n1. **执行引擎**：while 循环 + 步骤抽象 + 终止判断 + 错误恢复\n2. **工具系统**：Schema-Driven + 装饰器/类继承注册 + Code/JSON 两种调用路径\n3. **Prompt 引擎**：模板系统 + 动态变量注入 + 消息历史管理\n4. **多 Agent 编排**：Supervisor/Worker + Pipeline + Agent 作为 Tool\n5. **状态与记忆**：执行状态（单次任务）+ 持久记忆（跨任务）\n6. **LLM 适配**：Provider-Agnostic 设计\n\n这些是 Agent 框架的通用架构模式，不同框架（如 smolagents 和 langchain）用不同的方式实现了相同的本质。",
+      "faithfulness": 1.0,
+      "faithfulness_reason": "回答中的六层架构及其描述完全来自参考资料[来源3]，所有关键声明均有明确支持，无泛化或编造。",
+      "precision_at_3": 0.5,
+      "recall_at_3": 0.3333333333333333,
+      "mrr": 0.5,
+      "ndcg_at_3": 0.2960819109658652,
+      "latency_ms": 3763.202000001911,
+      "llm_usage": {
+        "prompt_tokens": 3220,
+        "completion_tokens": 220,
+        "total_tokens": 3440,
+        "cost_usd": 0.0011114,
+        "calls": 2
+      }
+    },
+    {
+      "config_name": "naive_vector",
+      "question": "工具系统为什么要使用 schema 驱动注册与调用？",
+      "generated_queries": [
+        "工具系统为什么要使用 schema 驱动注册与调用？"
+      ],
+      "retrieved_chunk_ids": [
+        "arch_tool_system::0",
+        "p1_arch_article::37",
+        "p1_arch_article::13"
+      ],
+      "retrieved_source_ids": [
+        "arch_tool_system",
+        "p1_arch_article"
+      ],
+      "answer": "根据参考资料，工具系统使用 schema 驱动注册与调用的原因如下：\n\n**核心原因：LLM 需要通过结构化的 schema 来理解工具，而不是通过\"看代码\"。**\n\n具体来说（来源 3）：\n- Schema（名称、描述、参数类型）会被注入到 System Prompt 中，成为 LLM 的\"工具说明书\"\n- 这种设计让 LLM 能够通过阅读结构化的元数据来理解工具的能力和调用方式\n\n**共性体现**（来源 1、3）：\n- smolagents 和 langchain 都采用 Schema-Driven 设计\n- 工具基类（Tool/BaseTool）都包含 `name`、`description`、`parameters/args_schema` 等核心字段\n- 差异仅在于参数定义方式：smolagents 用原生 dict，langchain 用 Pydantic 模型\n\n**架构定位**（来源 2）：\n- 工具系统是 Agent 框架六层架构中的第二层\n- Schema-Driven 是工具系统的核心设计模式，配合装饰器/类继承注册、Code/JSON 两种调用路径共同构成完整的工具系统",
+      "faithfulness": 1.0,
+      "faithfulness_reason": "待评估回答中的所有关键声明（LLM通过schema理解工具、schema注入System Prompt、smolagents与langchain的共性、工具系统架构定位）均能被参考资料直接支持，无泛化或编造。",
+      "precision_at_3": 1.0,
+      "recall_at_3": 0.6666666666666666,
+      "mrr": 1.0,
+      "ndcg_at_3": 0.7653606369886217,
+      "latency_ms": 5032.800666987896,
+      "llm_usage": {
+        "prompt_tokens": 2803,
+        "completion_tokens": 300,
+        "total_tokens": 3103,
+        "cost_usd": 0.0010868100000000001,
+        "calls": 2
+      }
+    },
+    {
+      "config_name": "naive_vector",
+      "question": "Prompt 引擎在 Agent 中主要解决什么问题？",
+      "generated_queries": [
+        "Prompt 引擎在 Agent 中主要解决什么问题？"
+      ],
+      "retrieved_chunk_ids": [
+        "p1_arch_article::19",
+        "p1_react_article::2",
+        "p3_langgraph_article::10"
+      ],
+      "retrieved_source_ids": [
+        "p1_arch_article",
+        "p1_react_article",
+        "p3_langgraph_article"
+      ],
+      "answer": "根据参考资料，Prompt 工程在 Agent 中主要解决以下问题：\n\n1. **定义行为模式与输出格式**：System Prompt 作为 Agent 的\"操作系统\"，定义了 Agent 的角色、行为规则、输出格式约束和安全边界（来源 1，第4节）。\n\n2. **实现动态配置与灵活性**：System Prompt 是**模板**（Jinja2 或 Python 变量格式），不是硬编码字符串。工具描述、自定义指令、输出格式等都是在运行时注入的变量，使同一个 Agent 类可以通过不同 Prompt 模板表现出完全不同的行为（来源 1，第4.1节）。",
+      "faithfulness": 1.0,
+      "faithfulness_reason": "待评估回答中的两个关键声明（定义行为模式与输出格式、实现动态配置与灵活性）均能被参考资料[来源1]的第4节和第4.1节明确支持，没有编造或泛化内容。",
+      "precision_at_3": 0.3333333333333333,
+      "recall_at_3": 0.5,
+      "mrr": 1.0,
+      "ndcg_at_3": 0.6131471927654584,
+      "latency_ms": 3763.9890830032527,
+      "llm_usage": {
+        "prompt_tokens": 2456,
+        "completion_tokens": 192,
+        "total_tokens": 2648,
+        "cost_usd": 0.00087432,
+        "calls": 2
+      }
+    },
+    {
+      "config_name": "naive_vector",
+      "question": "Supervisor/Worker 多 Agent 模式适合解决什么问题？",
+      "generated_queries": [
+        "Supervisor/Worker 多 Agent 模式适合解决什么问题？"
+      ],
+      "retrieved_chunk_ids": [
+        "p1_react_article::19",
+        "p1_arch_article::27",
+        "p1_arch_article::35"
+      ],
+      "retrieved_source_ids": [
+        "p1_react_article",
+        "p1_arch_article"
+      ],
+      "answer": "根据参考资料，Supervisor/Worker 多 Agent 模式适合解决**足够复杂的任务**，即“一个 Agent 搞不定”的情况（来源 1）。通过 Manager（Supervisor）接收用户任务并决定分发给不同的 Worker Agent（如搜索 Agent、分析 Agent），可以实现任务分解与协作（来源 1）。此外，这种模式也适用于**任务类型不确定，需要智能判断**的场景，例如通用客服 Agent（来源 2）。",
+      "faithfulness": 1.0,
+      "faithfulness_reason": "回答中的关键声明（适合解决复杂任务、一个Agent搞不定、Manager分发任务、任务类型不确定需智能判断）均能被参考资料直接支持，无泛化或编造。",
+      "precision_at_3": 0.5,
+      "recall_at_3": 0.25,
+      "mrr": 0.5,
+      "ndcg_at_3": 0.2960819109658652,
+      "latency_ms": 3070.725041994592,
+      "llm_usage": {
+        "prompt_tokens": 2513,
+        "completion_tokens": 146,
+        "total_tokens": 2659,
+        "cost_usd": 0.00083911,
+        "calls": 2
+      }
+    },
+    {
+      "config_name": "naive_vector",
+      "question": "RAG 主要解决 LLM 的哪几个根本限制？",
+      "generated_queries": [
+        "RAG 主要解决 LLM 的哪几个根本限制？"
+      ],
+      "retrieved_chunk_ids": [
+        "rag_loading::7",
+        "p2_rag_overview::3",
+        "rag_reranking::2"
+      ],
+      "retrieved_source_ids": [
+        "rag_loading",
+        "p2_rag_overview",
+        "rag_reranking"
+      ],
+      "answer": "根据参考资料，RAG 解决了 LLM 的两大痛点：知识过时和幻觉问题（来源 1）。",
+      "faithfulness": 0.7,
+      "faithfulness_reason": "回答中关于RAG解决知识过时和幻觉问题的声明与来源1中‘RAG通过外部检索缓解知识过期、缺少私有数据和幻觉问题’一致，但回答未提及‘缺少私有数据’这一关键点，存在轻微遗漏，且来源2和3未直接支持该声明。",
+      "precision_at_3": 0.3333333333333333,
+      "recall_at_3": 0.3333333333333333,
+      "mrr": 0.5,
+      "ndcg_at_3": 0.2960819109658652,
+      "latency_ms": 2198.2763330015587,
+      "llm_usage": {
+        "prompt_tokens": 2720,
+        "completion_tokens": 101,
+        "total_tokens": 2821,
+        "cost_usd": 0.0008455000000000001,
+        "calls": 2
+      }
+    },
+    {
+      "config_name": "naive_vector",
+      "question": "RAG 的离线索引阶段包含哪些步骤？",
+      "generated_queries": [
+        "RAG 的离线索引阶段包含哪些步骤？"
+      ],
+      "retrieved_chunk_ids": [
+        "p2_rag_overview::3",
+        "rag_naive::0",
+        "p2_rag_overview::0"
+      ],
+      "retrieved_source_ids": [
+        "p2_rag_overview",
+        "rag_naive"
+      ],
+      "answer": "根据参考资料，RAG 的离线索引阶段包含以下步骤：\n\n文档 → 加载 → 分块 → Embedding → 存入向量数据库 [来源 2]",
+      "faithfulness": 1.0,
+      "faithfulness_reason": "待评估回答中的关键声明（文档加载、分块、Embedding、存入向量数据库）均能被参考资料[来源2]明确支持，且未出现编造或泛化内容。",
+      "precision_at_3": 0.5,
+      "recall_at_3": 0.2,
+      "mrr": 1.0,
+      "ndcg_at_3": 0.46927872602275644,
+      "latency_ms": 2411.6862079972634,
+      "llm_usage": {
+        "prompt_tokens": 2942,
+        "completion_tokens": 88,
+        "total_tokens": 3030,
+        "cost_usd": 0.0008911400000000001,
+        "calls": 2
+      }
+    },
+    {
+      "config_name": "naive_vector",
+      "question": "RAG 的在线查询阶段包含哪些步骤？",
+      "generated_queries": [
+        "RAG 的在线查询阶段包含哪些步骤？"
+      ],
+      "retrieved_chunk_ids": [
+        "p2_rag_overview::14",
+        "p2_rag_overview::5",
+        "p2_rag_overview::15"
+      ],
+      "retrieved_source_ids": [
+        "p2_rag_overview"
+      ],
+      "answer": "根据参考资料，RAG 的在线查询阶段包含以下步骤：问题向量化 → 检索 → 生成（来源 3）。",
+      "faithfulness": 0.4,
+      "faithfulness_reason": "回答中缺少了'构造带上下文的prompt'和'调用LLM生成带依据的回答'中的'带依据'这一关键细节，且仅引用了一个来源，未能完整覆盖人工参考答案中的全部步骤，属于有明显未被支持的声明。",
+      "precision_at_3": 1.0,
+      "recall_at_3": 0.25,
+      "mrr": 1.0,
+      "ndcg_at_3": 0.46927872602275644,
+      "latency_ms": 2550.5313750036294,
+      "llm_usage": {
+        "prompt_tokens": 3221,
+        "completion_tokens": 93,
+        "total_tokens": 3314,
+        "cost_usd": 0.00097197,
+        "calls": 2
+      }
+    },
+    {
+      "config_name": "naive_vector",
+      "question": "为什么 chunk_size 和 chunk_overlap 会影响 RAG 效果？",
+      "generated_queries": [
+        "为什么 chunk_size 和 chunk_overlap 会影响 RAG 效果？"
+      ],
+      "retrieved_chunk_ids": [
+        "p2_rag_pipeline::2",
+        "rag_chunking::0",
+        "rag_chunking::2"
+      ],
+      "retrieved_source_ids": [
+        "p2_rag_pipeline",
+        "rag_chunking"
+      ],
+      "answer": "根据参考资料，chunk_size 和 chunk_overlap 直接影响检索质量，原因如下：\n\n1. **chunk_size（块大小）**：存在权衡关系。块太大时检索不精确，块太小时会丢失上下文（来源 1、2）。\n2. **chunk_overlap（重叠大小）**：作用是防止一句关键信息正好被切成两半，在块边界处留出\"缓冲区\"（来源 1）。\n\n参考资料明确指出：\"这俩参数直接影响检索质量，没有银弹，只有经验值\"（来源 1）。",
+      "faithfulness": 1.0,
+      "faithfulness_reason": "回答中的关键声明（chunk_size的权衡、chunk_overlap的缓冲区作用）均能被参考资料直接支持，且未出现泛化或编造。",
+      "precision_at_3": 1.0,
+      "recall_at_3": 0.6666666666666666,
+      "mrr": 1.0,
+      "ndcg_at_3": 0.7653606369886217,
+      "latency_ms": 3491.8687080062227,
+      "llm_usage": {
+        "prompt_tokens": 2895,
+        "completion_tokens": 163,
+        "total_tokens": 3058,
+        "cost_usd": 0.0009609500000000001,
+        "calls": 2
+      }
+    },
+    {
+      "config_name": "naive_vector",
+      "question": "文档加载和清洗为什么是 RAG 的上限因素？",
+      "generated_queries": [
+        "文档加载和清洗为什么是 RAG 的上限因素？"
+      ],
+      "retrieved_chunk_ids": [
+        "rag_reranking::2",
+        "rag_loading::0",
+        "p2_rag_pipeline::2"
+      ],
+      "retrieved_source_ids": [
+        "rag_reranking",
+        "rag_loading",
+        "p2_rag_pipeline"
+      ],
+      "answer": "基于提供的参考资料，我可以回答以下问题：\n\n**问题：文档加载和清洗为什么是 RAG 的上限因素？**\n\n参考资料中未直接说明文档加载和清洗是 RAG 的“上限因素”。但根据[来源 2]（source_id=rag_loading），文档加载是 RAG 管道的**第一步**（“你在这里”），负责将非结构化数据转化为可处理的文本。如果这一步质量不高（如文本提取不完整、元数据缺失、清洗不彻底），后续的分块、向量化、检索等环节都会受到影响。\n\n此外，[来源 3]（source_id=p2_rag_pipeline）提到分块参数（chunk_size、chunk_overlap）直接影响检索质量，而分块的前提是文档加载和清洗。因此，可以推断：**文档加载和清洗是基础环节，其质量决定了后续所有步骤的上限**，但参考资料未明确使用“上限因素”这一表述。\n\n**结论**：参考资料不足以直接支持“文档加载和清洗是 RAG 的上限因素”这一说法，建议补充更明确的来源。",
+      "faithfulness": 0.0,
+      "faithfulness_reason": "参考资料未提及文档加载和清洗是RAG的上限因素，回答内容与参考资料无关，属于编造。",
+      "precision_at_3": 0.6666666666666666,
+      "recall_at_3": 1.0,
+      "mrr": 0.5,
+      "ndcg_at_3": 0.6934264036172708,
+      "latency_ms": 4436.129292007536,
+      "llm_usage": {
+        "prompt_tokens": 3006,
+        "completion_tokens": 266,
+        "total_tokens": 3272,
+        "cost_usd": 0.00110422,
+        "calls": 2
+      }
+    },
+    {
+      "config_name": "naive_vector",
+      "question": "Chroma 向量库在基础 RAG 中承担什么职责？",
+      "generated_queries": [
+        "Chroma 向量库在基础 RAG 中承担什么职责？"
+      ],
+      "retrieved_chunk_ids": [
+        "ragas_from_scratch::4",
+        "pdf_learning_assistant::12",
+        "p1_arch_article::33"
+      ],
+      "retrieved_source_ids": [
+        "ragas_from_scratch",
+        "pdf_learning_assistant",
+        "p1_arch_article"
+      ],
+      "answer": "基于提供的参考资料，我无法直接回答“Chroma 向量库在基础 RAG 中承担什么职责”这个问题。\n\n参考资料中仅提到：\n- 在 RAG 离线索引阶段，向量化后的数据会存入向量数据库（如 ChromaDB）[来源 2]。\n- 在在线查询阶段，会在向量数据库中进行相似度检索[来源 2]。\n\n但参考资料**没有详细说明 Chroma 向量库在基础 RAG 中的具体职责**（例如存储、检索、索引管理等细节）。因此，无法给出更具体的回答。",
+      "faithfulness": 0.7,
+      "faithfulness_reason": "回答正确指出参考资料未详细说明Chroma职责，但忽略了来源2已明确提及ChromaDB用于存储向量和相似度检索，属于轻微遗漏。",
+      "precision_at_3": 0.0,
+      "recall_at_3": 0.0,
+      "mrr": 0.0,
+      "ndcg_at_3": 0.0,
+      "latency_ms": 3450.3525420004735,
+      "llm_usage": {
+        "prompt_tokens": 3003,
+        "completion_tokens": 164,
+        "total_tokens": 3167,
+        "cost_usd": 0.0009912100000000002,
+        "calls": 2
+      }
+    },
+    {
+      "config_name": "naive_vector",
+      "question": "Naive RAG 的主要局限性有哪些？",
+      "generated_queries": [
+        "Naive RAG 的主要局限性有哪些？"
+      ],
+      "retrieved_chunk_ids": [
+        "p2_rag_overview::3",
+        "rag_naive::0",
+        "rag_naive::8"
+      ],
+      "retrieved_source_ids": [
+        "p2_rag_overview",
+        "rag_naive"
+      ],
+      "answer": "根据参考资料，Naive RAG 的主要局限性包括：\n\n1. **检索精度低**：找回来的文档不全是相关的，噪声多（来源 1）。\n2. **召回不足**：该找到的关键信息没找到（来源 1）。\n3. **幻觉依旧**：LLM 可能忽略检索到的内容，继续编造（来源 1）。\n4. **复杂问题无力**：需要多步推理的问题，一次检索不够（来源 1）。\n5. **检索质量**：语义搜索可能遗漏关键文档，尤其是查询和文档用词不同时（来源 3）。\n6. **上下文窗口**：检索到的文档可能超出 LLM 上下文限制（来源 3）。\n7. **信息整合**：答案可能需要综合多个文档，但 Naive RAG 只是简单拼接（来源 3）。\n8. **查询理解**：用户的问题可能模糊或多义，直接检索效果差（来源 3）。\n9. **排序质量**：向量相似度不等于相关性，需要重排序（来源 3）。",
+      "faithfulness": 1.0,
+      "faithfulness_reason": "回答中的所有关键声明均直接来源于参考资料，未发现编造或泛化内容。",
+      "precision_at_3": 0.5,
+      "recall_at_3": 0.3333333333333333,
+      "mrr": 0.5,
+      "ndcg_at_3": 0.2960819109658652,
+      "latency_ms": 4196.226875006687,
+      "llm_usage": {
+        "prompt_tokens": 2809,
+        "completion_tokens": 249,
+        "total_tokens": 3058,
+        "cost_usd": 0.0010323300000000001,
+        "calls": 2
+      }
+    },
+    {
+      "config_name": "naive_vector",
+      "question": "BM25 和向量检索分别擅长什么？",
+      "generated_queries": [
+        "BM25 和向量检索分别擅长什么？"
+      ],
+      "retrieved_chunk_ids": [
+        "ragas_from_scratch::3",
+        "p2_rag_overview::16",
+        "memory_system::27"
+      ],
+      "retrieved_source_ids": [
+        "ragas_from_scratch",
+        "p2_rag_overview",
+        "memory_system"
+      ],
+      "answer": "根据参考资料，BM25 和向量检索的擅长领域如下：\n\n- **BM25**：擅长精确的关键词匹配，基于词频-逆文档频率来计算相关性（来源 1，score=0.7326）。\n- **向量检索**：擅长捕获文本的深层语义关系，通过将文本编码为高维向量，使用余弦相似度衡量语义相关性（来源 1，score=0.7326）。\n\n两者互补，混合使用效果最好（来源 1，score=0.7326）。",
+      "faithfulness": 1.0,
+      "faithfulness_reason": "所有关键声明（BM25擅长关键词匹配、向量检索擅长语义关系、两者互补）均能被参考资料直接支持。",
+      "precision_at_3": 0.0,
+      "recall_at_3": 0.0,
+      "mrr": 0.0,
+      "ndcg_at_3": 0.0,
+      "latency_ms": 3075.404957999126,
+      "llm_usage": {
+        "prompt_tokens": 2677,
+        "completion_tokens": 146,
+        "total_tokens": 2823,
+        "cost_usd": 0.00088339,
+        "calls": 2
+      }
+    },
+    {
+      "config_name": "naive_vector",
+      "question": "混合检索为什么通常比单一检索更稳？",
+      "generated_queries": [
+        "混合检索为什么通常比单一检索更稳？"
+      ],
+      "retrieved_chunk_ids": [
+        "rag_hybrid_pipeline::7",
+        "p2_rag_overview::4",
+        "unified_retrieval::10"
+      ],
+      "retrieved_source_ids": [
+        "rag_hybrid_pipeline",
+        "p2_rag_overview",
+        "unified_retrieval"
+      ],
+      "answer": "根据参考资料，混合检索（BM25 + 向量检索）通常比单一检索更稳定，因为两者互补：\n\n- **BM25（关键词匹配）** 擅长精确匹配关键词，但无法理解语义。\n- **向量检索（语义匹配）** 擅长理解语义相似性，但可能忽略精确关键词。\n\n两者结合后，通过 RRF（倒数排名融合）等算法融合排序，可以取长补短，从而在更多场景下获得更稳定、更全面的检索结果（来源 1，来源 2）。",
+      "faithfulness": 1.0,
+      "faithfulness_reason": "回答中的关键声明（混合检索结合BM25与向量检索、两者互补、通过RRF融合排序、取长补短）均能被参考资料[1]和[2]明确支持，无编造或泛化。",
+      "precision_at_3": 0.3333333333333333,
+      "recall_at_3": 0.3333333333333333,
+      "mrr": 1.0,
+      "ndcg_at_3": 0.46927872602275644,
+      "latency_ms": 3788.142125005834,
+      "llm_usage": {
+        "prompt_tokens": 2688,
+        "completion_tokens": 172,
+        "total_tokens": 2860,
+        "cost_usd": 0.00091496,
+        "calls": 2
+      }
+    },
+    {
+      "config_name": "naive_vector",
+      "question": "RRF 排序融合的作用是什么？",
+      "generated_queries": [
+        "RRF 排序融合的作用是什么？"
+      ],
+      "retrieved_chunk_ids": [
+        "p2_rag_pipeline::6",
+        "rag_full_pipeline::3",
+        "p2_hybrid_article::9"
+      ],
+      "retrieved_source_ids": [
+        "p2_rag_pipeline",
+        "rag_full_pipeline",
+        "p2_hybrid_article"
+      ],
+      "answer": "根据参考资料，RRF（Reciprocal Rank Fusion）的作用是：通过倒数排名加权将多个检索器的结果合并，不需要对分数做归一化（来源 2）。它不看分数看排名，公式为 `RRF_score(文档) = Σ 1 / (k + 排名)`，k 一般取 60，本质是让在两个检索器里都排前面的文档获得更高权重，从而兼顾精确匹配和模糊匹配（来源 1、来源 3）。",
+      "faithfulness": 1.0,
+      "faithfulness_reason": "待评估回答中的所有关键声明（RRF通过倒数排名加权融合多个检索器结果、不需要分数归一化、使用排名而非分数、公式为RRF_score=Σ1/(k+排名)、k取60、本质是让在两个检索器中都排前面的文档获得更高权重、兼顾精确匹配和模糊匹配）均能被参考资料直接支持。",
+      "precision_at_3": 0.6666666666666666,
+      "recall_at_3": 0.5,
+      "mrr": 0.5,
+      "ndcg_at_3": 0.5307212739772434,
+      "latency_ms": 3458.0989160022,
+      "llm_usage": {
+        "prompt_tokens": 2975,
+        "completion_tokens": 188,
+        "total_tokens": 3163,
+        "cost_usd": 0.00101005,
+        "calls": 2
+      }
+    },
+    {
+      "config_name": "naive_vector",
+      "question": "Cross-Encoder 重排序为什么更准但更慢？",
+      "generated_queries": [
+        "Cross-Encoder 重排序为什么更准但更慢？"
+      ],
+      "retrieved_chunk_ids": [
+        "p2_rag_pipeline::7",
+        "rag_ragas_intro::4",
+        "p2_hybrid_article::4"
+      ],
+      "retrieved_source_ids": [
+        "p2_rag_pipeline",
+        "rag_ragas_intro",
+        "p2_hybrid_article"
+      ],
+      "answer": "基于提供的参考资料，我可以回答关于查询改写技术和 Cross-Encoder 重排序的问题。\n\n### 查询改写技术\n\n参考资料中提到了三种查询改写技术：\n\n1. **HyDE（Hypothetical Document Embeddings）**：先让 LLM 生成一个假设性答案，用这个答案的向量去检索。因为 LLM 生成的\"答案\"在表述风格上更接近文档，比用户的口语化问题更容易命中相关文档。[来源 1][来源 3]\n\n2. **Multi-Query（多查询扩展）**：将一个原始问题改写成多个不同角度的查询，分别检索后合并去重，扩大检索覆盖面。[来源 1][来源 3]\n\n3. **Step-back Prompting**：先问一个更抽象的问题获取背景知识，再回答具体问题。[来源 1][来源 3]\n\n### Cross-Encoder 重排序\n\n- Cross-Encoder 同时接收查询和文档作为输入，通过深度交互编码输出精确的相关性分数，精度高但速度慢。[来源 2]\n- 计算成本是 O(n)（n = 候选数），只能用于少量候选的精排，不能直接对全量文档使用。[来源 3]\n- 常用模型包括：`cross-encoder/ms-marco-MiniLM-L-6-v2`（英文通用）、`BAAI/bge-reranker-base`（中文优化）、`BAAI/bge-reranker-v2-m3`（多语言）。[来源 3]\n\n### 参考资料不足说明\n\n参考资料中未提供关于 RAG 系统其他组件（如文档分块策略、检索器选择、生成模型调优等）的详细信息，也未提供具体的代码实现细节或性能对比数据。如需这些信息，请提供更多参考资料。",
+      "faithfulness": 1.0,
+      "faithfulness_reason": "回答中的所有关键声明（查询改写三种技术、Cross-Encoder的交互编码、O(n)计算成本、常用模型）均能在提供的参考资料中找到明确支持，无编造或泛化。",
+      "precision_at_3": 0.3333333333333333,
+      "recall_at_3": 0.25,
+      "mrr": 0.3333333333333333,
+      "ndcg_at_3": 0.23463936301137822,
+      "latency_ms": 7086.340374997235,
+      "llm_usage": {
+        "prompt_tokens": 3263,
+        "completion_tokens": 428,
+        "total_tokens": 3691,
+        "cost_usd": 0.0013518100000000002,
+        "calls": 2
+      }
+    },
+    {
+      "config_name": "naive_vector",
+      "question": "两阶段检索管道通常如何组织？",
+      "generated_queries": [
+        "两阶段检索管道通常如何组织？"
+      ],
+      "retrieved_chunk_ids": [
+        "p1_arch_article::2",
+        "rag_rerank_pipeline::0",
+        "rag_full_pipeline::0"
+      ],
+      "retrieved_source_ids": [
+        "p1_arch_article",
+        "rag_rerank_pipeline",
+        "rag_full_pipeline"
+      ],
+      "answer": "根据参考资料，两阶段检索管道的组织方式如下：\n\n1. **第一阶段：混合粗检索**  \n   使用 BM25 + 密集向量检索 + RRF（倒数排名融合）进行粗筛，从大量文档中选出约20个候选。这一阶段速度快、召回率高。[来源 2]\n\n2. **第二阶段：Cross-Encoder 重排序**  \n   对每个 (query, doc) 对计算精确相关性分数，进行精排，选出 Top-K 最相关文档。这一阶段精度高但速度慢。[来源 2]\n\n3. **最终送入 LLM 生成回答**  \n   将重排序后的 Top-K 文档作为上下文，送入 LLM 生成最终回答。[来源 2][来源 3]\n\n完整的 RAG 管道还包括查询改写（如 HyDE、Multi-Query）作为前置步骤，以扩大检索覆盖面。[来源 3]",
+      "faithfulness": 1.0,
+      "faithfulness_reason": "所有关键声明（第一阶段混合粗检索、第二阶段Cross-Encoder重排序、最终送入LLM生成）均能被参考资料[2]和[3]明确支持，无编造或泛化。",
+      "precision_at_3": 0.6666666666666666,
+      "recall_at_3": 0.6666666666666666,
+      "mrr": 0.5,
+      "ndcg_at_3": 0.5307212739772434,
+      "latency_ms": 4710.297083001933,
+      "llm_usage": {
+        "prompt_tokens": 2661,
+        "completion_tokens": 241,
+        "total_tokens": 2902,
+        "cost_usd": 0.00098357,
+        "calls": 2
+      }
+    },
+    {
+      "config_name": "naive_vector",
+      "question": "HyDE 查询改写的基本思想是什么？",
+      "generated_queries": [
+        "HyDE 查询改写的基本思想是什么？"
+      ],
+      "retrieved_chunk_ids": [
+        "rag_query_transform::2",
+        "rag_query_transform::0",
+        "unified_retrieval::10"
+      ],
+      "retrieved_source_ids": [
+        "rag_query_transform",
+        "unified_retrieval"
+      ],
+      "answer": "根据参考资料，HyDE（假设文档嵌入）查询改写的基本思想是：**先让 LLM 生成假设性答案文档，再用这个假设文档去检索真实文档**（来源 1、来源 2）。其核心目的是通过先生成一个与真实文档表述方式更接近的假设答案，来缩小用户查询与文档之间的“语义鸿沟”，从而提高检索效果（来源 2、来源 3）。",
+      "faithfulness": 1.0,
+      "faithfulness_reason": "待评估回答中的关键声明（HyDE先让LLM生成假设性答案文档，再用该文档检索真实文档，以及核心目的是缩小语义鸿沟）均能被参考资料[1][2][3]明确支持，无泛化或编造。",
+      "precision_at_3": 0.5,
+      "recall_at_3": 0.3333333333333333,
+      "mrr": 1.0,
+      "ndcg_at_3": 0.46927872602275644,
+      "latency_ms": 2968.9272500108927,
+      "llm_usage": {
+        "prompt_tokens": 2600,
+        "completion_tokens": 154,
+        "total_tokens": 2754,
+        "cost_usd": 0.0008714,
+        "calls": 2
+      }
+    },
+    {
+      "config_name": "naive_vector",
+      "question": "Multi-Query 扩展如何提升召回率？",
+      "generated_queries": [
+        "Multi-Query 扩展如何提升召回率？"
+      ],
+      "retrieved_chunk_ids": [
+        "rag_query_transform::2",
+        "rag_query_transform::6",
+        "rag_eval_pipeline::3"
+      ],
+      "retrieved_source_ids": [
+        "rag_query_transform",
+        "rag_eval_pipeline"
+      ],
+      "answer": "根据参考资料，Multi-Query（多查询扩展）通过将用户问题改写为多个不同角度的查询，然后合并检索结果，从而提高召回率（来源 1、来源 2）。具体来说，它会对每个扩展后的查询分别进行检索，然后将所有结果合并去重，最终得到更全面的候选文档集合（来源 2）。",
+      "faithfulness": 1.0,
+      "faithfulness_reason": "所有关键声明（改写为多个不同角度的查询、合并检索结果、提高召回率、合并去重）均能被参考资料直接支持。",
+      "precision_at_3": 0.5,
+      "recall_at_3": 0.3333333333333333,
+      "mrr": 1.0,
+      "ndcg_at_3": 0.46927872602275644,
+      "latency_ms": 2722.423749990412,
+      "llm_usage": {
+        "prompt_tokens": 2353,
+        "completion_tokens": 115,
+        "total_tokens": 2468,
+        "cost_usd": 0.00076181,
+        "calls": 2
+      }
+    },
+    {
+      "config_name": "naive_vector",
+      "question": "RAGAS 的四个核心指标是什么？",
+      "generated_queries": [
+        "RAGAS 的四个核心指标是什么？"
+      ],
+      "retrieved_chunk_ids": [
+        "ragas_from_scratch::0",
+        "ragas_from_scratch::4",
+        "rag_full_pipeline::3"
+      ],
+      "retrieved_source_ids": [
+        "ragas_from_scratch",
+        "rag_full_pipeline"
+      ],
+      "answer": "根据参考资料，RAGAS 的四个核心指标是：\n\n1. **Faithfulness（忠实度）**：回答是否忠于检索上下文（来源 1）\n2. **Answer Relevancy（答案相关性）**：回答是否切题（来源 1）\n3. **Context Precision（上下文精确度）**：检索结果中相关文档的比例（来源 1）\n4. **Context Recall（上下文召回率）**：是否检索到所有需要的信息（来源 1）\n\n这些指标分为两类：生成质量（忠实度、答案相关性）和检索质量（上下文精确度、上下文召回率）（来源 1）。",
+      "faithfulness": 1.0,
+      "faithfulness_reason": "待评估回答中的所有关键声明（四个核心指标的名称、定义、分类）均能在参考资料[来源1]中找到明确支持，无任何编造或泛化。",
+      "precision_at_3": 0.5,
+      "recall_at_3": 0.25,
+      "mrr": 1.0,
+      "ndcg_at_3": 0.46927872602275644,
+      "latency_ms": 3419.4419169944013,
+      "llm_usage": {
+        "prompt_tokens": 2607,
+        "completion_tokens": 180,
+        "total_tokens": 2787,
+        "cost_usd": 0.00090189,
+        "calls": 2
+      }
+    },
+    {
+      "config_name": "naive_vector",
+      "question": "Faithfulness 低通常意味着什么，应该怎么优化？",
+      "generated_queries": [
+        "Faithfulness 低通常意味着什么，应该怎么优化？"
+      ],
+      "retrieved_chunk_ids": [
+        "p2_hybrid_article::7",
+        "rag_ragas_intro::12",
+        "ragas_from_scratch::5"
+      ],
+      "retrieved_source_ids": [
+        "p2_hybrid_article",
+        "rag_ragas_intro",
+        "ragas_from_scratch"
+      ],
+      "answer": "根据参考资料，Faithfulness（忠实度）低通常意味着**回答可能包含幻觉**，即LLM在编造信息，RAG的核心价值（减少幻觉）没有实现。\n\n优化方法：**需要改进检索或Prompt**（来源2）。\n\n具体来说，参考资料指出：\n- 如果Faithfulness < 0.7，说明回答可能包含幻觉（来源2）\n- 这是RAG最重要的指标（来源1）",
+      "faithfulness": 0.7,
+      "faithfulness_reason": "回答中'Faithfulness低意味着回答可能包含幻觉'和'需要改进检索或Prompt'有参考资料支持，但'这是RAG最重要的指标'属于轻微泛化，参考资料中未明确提及此说法。",
+      "precision_at_3": 0.6666666666666666,
+      "recall_at_3": 0.6666666666666666,
+      "mrr": 1.0,
+      "ndcg_at_3": 0.7039180890341347,
+      "latency_ms": 2858.690334003768,
+      "llm_usage": {
+        "prompt_tokens": 2647,
+        "completion_tokens": 147,
+        "total_tokens": 2794,
+        "cost_usd": 0.0008763900000000001,
+        "calls": 2
+      }
+    },
+    {
+      "config_name": "naive_vector",
+      "question": "Context Precision 和 Context Recall 分别衡量什么？",
+      "generated_queries": [
+        "Context Precision 和 Context Recall 分别衡量什么？"
+      ],
+      "retrieved_chunk_ids": [
+        "rag_ragas_intro::1",
+        "rag_ragas_intro::8",
+        "p2_hybrid_article::8"
+      ],
+      "retrieved_source_ids": [
+        "rag_ragas_intro",
+        "p2_hybrid_article"
+      ],
+      "answer": "根据参考资料，Context Precision（上下文精确度）衡量的是“检索到的文档中，有多少是真正有用的”，即相关文档数除以检索文档总数（来源 3）。Context Recall（上下文召回率）衡量的是“回答问题所需的所有信息是否都被检索到了”，即 ground truth 中被覆盖的信息点数除以总信息点数（来源 3）。",
+      "faithfulness": 1.0,
+      "faithfulness_reason": "回答中的两个关键声明（Context Precision衡量检索到的文档中真正有用的比例，Context Recall衡量所需信息是否被检索覆盖）均能被参考资料[来源3]明确支持。",
+      "precision_at_3": 1.0,
+      "recall_at_3": 0.5,
+      "mrr": 1.0,
+      "ndcg_at_3": 0.7653606369886217,
+      "latency_ms": 2954.337040995597,
+      "llm_usage": {
+        "prompt_tokens": 2444,
+        "completion_tokens": 122,
+        "total_tokens": 2566,
+        "cost_usd": 0.00079408,
+        "calls": 2
+      }
+    },
+    {
+      "config_name": "naive_vector",
+      "question": "为什么要用 Precision@K、Recall@K、MRR 和 NDCG 评估检索？",
+      "generated_queries": [
+        "为什么要用 Precision@K、Recall@K、MRR 和 NDCG 评估检索？"
+      ],
+      "retrieved_chunk_ids": [
+        "rag_eval_pipeline::8",
+        "rag_ragas_intro::7",
+        "p2_hybrid_article::8"
+      ],
+      "retrieved_source_ids": [
+        "rag_eval_pipeline",
+        "rag_ragas_intro",
+        "p2_hybrid_article"
+      ],
+      "answer": "根据提供的参考资料，可以回答“为什么要用 Precision@K、Recall@K、MRR 和 NDCG 评估检索？”这个问题。\n\n这些指标是经典的 IR（信息检索）评估指标，用于量化检索系统的性能。具体作用如下：\n\n1.  **Precision@K**：衡量前 K 个检索结果中，相关文档所占的比例，反映检索结果的**精确度**（噪声多少）[来源 1]。\n2.  **Recall@K**：衡量前 K 个检索结果覆盖了多少个相关文档，反映检索结果的**全面性**（是否遗漏）[来源 1]。\n3.  **MRR (Mean Reciprocal Rank)**：衡量第一个相关文档在检索结果中的排名位置，关注**最快找到第一个正确答案**的能力 [来源 1]。\n4.  **NDCG@K**：衡量排序质量，不仅考虑相关性，还考虑相关文档在排序中的位置（越靠前越好）[来源 1]。\n\n这些指标从不同维度（精确度、召回率、首位命中、排序质量）评估检索效果，帮助判断检索系统是否有效。",
+      "faithfulness": 1.0,
+      "faithfulness_reason": "回答中关于Precision@K、Recall@K、MRR和NDCG的定义与作用均直接来源于参考资料[来源1]中的代码注释，没有编造或泛化，所有关键声明都被支持。",
+      "precision_at_3": 0.6666666666666666,
+      "recall_at_3": 0.6666666666666666,
+      "mrr": 1.0,
+      "ndcg_at_3": 0.7039180890341347,
+      "latency_ms": 5248.887999987346,
+      "llm_usage": {
+        "prompt_tokens": 2632,
+        "completion_tokens": 293,
+        "total_tokens": 2925,
+        "cost_usd": 0.00103294,
+        "calls": 2
+      }
+    },
+    {
+      "config_name": "naive_vector",
+      "question": "参数扫描在 RAG 优化中有什么价值？",
+      "generated_queries": [
+        "参数扫描在 RAG 优化中有什么价值？"
+      ],
+      "retrieved_chunk_ids": [
+        "p2_rag_overview::13",
+        "rag_optimization_lab::0",
+        "p2_hybrid_article::13"
+      ],
+      "retrieved_source_ids": [
+        "p2_rag_overview",
+        "rag_optimization_lab",
+        "p2_hybrid_article"
+      ],
+      "answer": "根据参考资料，参数扫描在 RAG 优化中的价值是：**自动寻找最优配置**。\n\n具体来说，参考资料 [来源 2] 中明确将“实现参数扫描（parameter sweep）自动寻找最优配置”列为 RAG 参数调优实验室的学习目标之一，并指出其目的是“用评估指标驱动优化决策”。",
+      "faithfulness": 0.7,
+      "faithfulness_reason": "回答正确概括了参数扫描的核心价值（自动寻找最优配置），但遗漏了参考资料中提到的具体可调参数（如retriever_type、first_stage_k、final_k、rerank等）以及质量、延迟、成本等多维度影响，存在轻微泛化。",
+      "precision_at_3": 0.6666666666666666,
+      "recall_at_3": 1.0,
+      "mrr": 0.5,
+      "ndcg_at_3": 0.6934264036172708,
+      "latency_ms": 2939.9810419999994,
+      "llm_usage": {
+        "prompt_tokens": 2654,
+        "completion_tokens": 142,
+        "total_tokens": 2796,
+        "cost_usd": 0.0008727800000000001,
+        "calls": 2
+      }
+    },
+    {
+      "config_name": "naive_vector",
+      "question": "Agent 记忆系统可以分成哪些类型？",
+      "generated_queries": [
+        "Agent 记忆系统可以分成哪些类型？"
+      ],
+      "retrieved_chunk_ids": [
+        "arch_memory::4",
+        "p1_arch_article::30",
+        "arch_mini_agent::2"
+      ],
+      "retrieved_source_ids": [
+        "arch_memory",
+        "p1_arch_article",
+        "arch_mini_agent"
+      ],
+      "answer": "根据参考资料，Agent 记忆系统可以分为两个层次：\n\n1. **执行状态（单次任务）**：生命周期为单次任务，内容包含当前任务的步骤历史、中间结果。框架实现包括 smolagents 的 `AgentMemory` 和 langgraph 的 `AgentState`（来源 2）。\n\n2. **持久记忆（跨任务）**：生命周期为跨任务，内容包含用户偏好、历史对话摘要、知识库。框架实现包括 langchain 的 `Memory` 抽象；smolagents 暂无内置（来源 2）。\n\n参考资料指出，大多数 Agent 框架重点解决的是**执行状态**，而持久记忆通常需要结合向量数据库（RAG）来实现（来源 2）。",
+      "faithfulness": 1.0,
+      "faithfulness_reason": "回答中的关键声明（两个记忆层次、生命周期、内容、框架实现）均直接来源于参考资料，无编造或泛化。",
+      "precision_at_3": 0.0,
+      "recall_at_3": 0.0,
+      "mrr": 0.0,
+      "ndcg_at_3": 0.0,
+      "latency_ms": 3818.3013750094688,
+      "llm_usage": {
+        "prompt_tokens": 2420,
+        "completion_tokens": 192,
+        "total_tokens": 2612,
+        "cost_usd": 0.0008646000000000001,
+        "calls": 2
+      }
+    },
+    {
+      "config_name": "naive_vector",
+      "question": "记忆生命周期管理通常包含哪些机制？",
+      "generated_queries": [
+        "记忆生命周期管理通常包含哪些机制？"
+      ],
+      "retrieved_chunk_ids": [
+        "memory_lifecycle::0",
+        "p1_arch_article::30",
+        "memory_lifecycle::8"
+      ],
+      "retrieved_source_ids": [
+        "memory_lifecycle",
+        "p1_arch_article"
+      ],
+      "answer": "根据参考资料，记忆生命周期管理通常包含以下机制：\n\n1. **整合（Consolidation）**：将重要的短期记忆提升为长期记忆。具体路径包括：\n   - 工作记忆 → 情景记忆（当重要性 > 0.7 时）\n   - 情景记忆 → 语义记忆（当访问次数 > 5 时）[来源 1]\n\n2. **遗忘（Forgetting）**：清理低价值记忆以保持系统高效，包含三种策略：\n   - 基于重要性\n   - 基于时间\n   - 基于容量 [来源 1]\n\n3. **评分（Scoring）**：多因素综合评分，决定记忆的检索优先级，其中包含时间衰减评分（指数衰减模型，模拟艾宾浩斯遗忘曲线）[来源 1]\n\n4. **完整生命周期流程**：编码 → 存储 → 检索 → 整合 → 遗忘 [来源 1]",
+      "faithfulness": 1.0,
+      "faithfulness_reason": "待评估回答中的所有关键声明（整合、遗忘、评分、完整生命周期流程及其具体细节）均能在参考资料[来源1]中找到直接支持，没有编造或泛化内容。",
+      "precision_at_3": 0.5,
+      "recall_at_3": 0.5,
+      "mrr": 1.0,
+      "ndcg_at_3": 0.6131471927654584,
+      "latency_ms": 4637.041458991007,
+      "llm_usage": {
+        "prompt_tokens": 2563,
+        "completion_tokens": 246,
+        "total_tokens": 2809,
+        "cost_usd": 0.00096261,
+        "calls": 2
+      }
+    },
+    {
+      "config_name": "naive_vector",
+      "question": "统一检索如何把知识库和记忆结合起来？",
+      "generated_queries": [
+        "统一检索如何把知识库和记忆结合起来？"
+      ],
+      "retrieved_chunk_ids": [
+        "pdf_learning_assistant::1",
+        "memory_system::1",
+        "unified_retrieval::0"
+      ],
+      "retrieved_source_ids": [
+        "pdf_learning_assistant",
+        "memory_system",
+        "unified_retrieval"
+      ],
+      "answer": "根据提供的参考资料，无法直接回答“统一检索如何把知识库和记忆结合起来”这一问题。参考资料中仅描述了统一检索框架（MQE + HyDE）的流程和核心概念（来源 3），以及记忆系统的三种类型（WorkingMemory、EpisodicMemory、SemanticMemory）（来源 2），但未说明统一检索如何具体与知识库或记忆系统进行结合。建议补充相关实现细节或架构说明。",
+      "faithfulness": 0.0,
+      "faithfulness_reason": "待评估回答声称无法从参考资料中找到答案，但参考资料中明确显示了MemoryRAG包含WorkingMemory、EpisodicMemory、SemanticMemory和UnifiedRetriever，且统一检索框架与记忆系统结合使用，因此回答内容与参考资料无关且存在错误判断。",
+      "precision_at_3": 0.6666666666666666,
+      "recall_at_3": 0.6666666666666666,
+      "mrr": 1.0,
+      "ndcg_at_3": 0.7039180890341347,
+      "latency_ms": 3362.9766249941895,
+      "llm_usage": {
+        "prompt_tokens": 2330,
+        "completion_tokens": 162,
+        "total_tokens": 2492,
+        "cost_usd": 0.0008072999999999999,
+        "calls": 2
+      }
+    },
+    {
+      "config_name": "naive_vector",
+      "question": "PDF 学习助手如何结合 RAG 和记忆？",
+      "generated_queries": [
+        "PDF 学习助手如何结合 RAG 和记忆？"
+      ],
+      "retrieved_chunk_ids": [
+        "pdf_learning_assistant::0",
+        "memory_enhanced_rag::0",
+        "pdf_learning_assistant::1"
+      ],
+      "retrieved_source_ids": [
+        "pdf_learning_assistant",
+        "memory_enhanced_rag"
+      ],
+      "answer": "根据参考资料，PDF 学习助手通过整合记忆系统与 RAG 组件来实现结合。具体机制如下：\n\n1. **架构整合**：PDFLearningAssistant 类将记忆系统（WorkingMemory、EpisodicMemory、SemanticMemory）、统一检索（UnifiedRetriever）和 RAG 组件整合为一个完整应用（来源 1，来源 3）。\n\n2. **查询增强**：在检索前，使用记忆上下文（情景/语义记忆）丰富用户查询，提升检索质量（来源 2）。\n\n3. **上下文融合**：将检索到的文档和相关记忆合并为 LLM 的上下文，用于生成回答（来源 2）。\n\n4. **知识积累**：每次交互后，将关键信息自动存入记忆系统，形成正反馈循环，逐步改善多轮对话中的回答质量（来源 2）。\n\n5. **具体功能**：助手通过 `ask()` 方法调用 MemoryRAG.query() 实现带记忆的问答，通过 `add_note()` 存储语义记忆，通过 `review()` 检索记忆并总结（来源 1）。",
+      "faithfulness": 1.0,
+      "faithfulness_reason": "所有关键声明均能被参考资料直接支持，无泛化或编造内容。",
+      "precision_at_3": 1.0,
+      "recall_at_3": 0.5,
+      "mrr": 1.0,
+      "ndcg_at_3": 0.7653606369886217,
+      "latency_ms": 4185.019166994607,
+      "llm_usage": {
+        "prompt_tokens": 2547,
+        "completion_tokens": 258,
+        "total_tokens": 2805,
+        "cost_usd": 0.00097149,
+        "calls": 2
+      }
+    },
+    {
+      "config_name": "naive_vector",
+      "question": "LangGraph 为什么适合复杂 Agent 工作流？",
+      "generated_queries": [
+        "LangGraph 为什么适合复杂 Agent 工作流？"
+      ],
+      "retrieved_chunk_ids": [
+        "p3_langgraph_article::0",
+        "p3_multi_agent_article::0",
+        "p1_react_article::2"
+      ],
+      "retrieved_source_ids": [
+        "p3_langgraph_article",
+        "p3_multi_agent_article",
+        "p1_react_article"
+      ],
+      "answer": "根据参考资料，LangGraph 适合复杂 Agent 工作流的核心原因在于其**设计哲学**：它将 Agent 工作流建模为**状态机（图）**，而不是简单的 while 循环。\n\n具体来说，while 循环存在根本局限：它把“执行什么”和“以什么顺序执行”混在了一起，导致工作流无法“暂停-等待-恢复”。而 LangGraph 的“图纸思维”（先定义结构，再执行）允许开发者预先定义复杂的执行结构和顺序，从而能够处理需要中间暂停、用户确认等复杂交互的场景（来源 1）。\n\n此外，参考资料也指出，LangGraph 是构建 Agent 的成熟框架生态之一（来源 3），并且其“先定义结构，再执行”的范式与 CrewAI 和 Claude SDK 等其他多 Agent 框架有本质区别（来源 2）。",
+      "faithfulness": 1.0,
+      "faithfulness_reason": "回答中的关键声明（LangGraph将工作流建模为状态机/图、while循环的局限、图纸思维、成熟框架生态、与其他框架的范式区别）均能被参考资料直接支持，无编造或泛化。",
+      "precision_at_3": 0.3333333333333333,
+      "recall_at_3": 0.5,
+      "mrr": 1.0,
+      "ndcg_at_3": 0.6131471927654584,
+      "latency_ms": 4699.611791991629,
+      "llm_usage": {
+        "prompt_tokens": 3008,
+        "completion_tokens": 239,
+        "total_tokens": 3247,
+        "cost_usd": 0.00107506,
+        "calls": 2
+      }
+    },
+    {
+      "config_name": "naive_vector",
+      "question": "不同 Agent 框架应该从哪些维度对比？",
+      "generated_queries": [
+        "不同 Agent 框架应该从哪些维度对比？"
+      ],
+      "retrieved_chunk_ids": [
+        "p3_framework_article::0",
+        "p3_multi_agent_article::0",
+        "p1_react_article::2"
+      ],
+      "retrieved_source_ids": [
+        "p3_framework_article",
+        "p3_multi_agent_article",
+        "p1_react_article"
+      ],
+      "answer": "根据参考资料，不同 Agent 框架的对比不应只关注功能是否存在，而应关注更本质的维度。\n\n参考资料指出，大多数框架对比文章（如功能表格）的价值有限，因为它们只比较“功能是否存在”，而不是“功能如何实现”[来源 1]。例如，两个框架可能都支持“多 Agent”，但一个是通过图节点间的条件路由实现，另一个是通过角色间的隐式上下文传递实现，其背后的设计哲学完全不同[来源 1]。\n\n因此，正确的对比维度是：**框架“隐藏了什么”和“暴露了什么”，以及当需求超出框架预设时，是否有退路**[来源 1]。\n\n具体来说，一个重要的分析维度是“框架隐藏了什么”。例如，LangGraph 隐藏了执行循环、状态持久化和检查点管理[来源 1]。",
+      "faithfulness": 0.7,
+      "faithfulness_reason": "回答正确指出了框架对比应关注‘隐藏了什么’和‘暴露了什么’这一核心维度，并引用了参考资料中的具体例子，但未完全覆盖人工参考答案中列出的所有对比维度（如状态管理、工作流可控性等），存在轻微泛化。",
+      "precision_at_3": 0.6666666666666666,
+      "recall_at_3": 0.6666666666666666,
+      "mrr": 1.0,
+      "ndcg_at_3": 0.7653606369886217,
+      "latency_ms": 4517.94454199262,
+      "llm_usage": {
+        "prompt_tokens": 3073,
+        "completion_tokens": 233,
+        "total_tokens": 3306,
+        "cost_usd": 0.00108601,
+        "calls": 2
+      }
+    },
+    {
+      "config_name": "hybrid",
+      "question": "ReAct Agent 和普通 LLM 对话的核心区别是什么？",
+      "generated_queries": [
+        "ReAct Agent 和普通 LLM 对话的核心区别是什么？"
+      ],
+      "retrieved_chunk_ids": [
+        "p1_react_article::0",
+        "p1_react_article::2",
+        "rag_loading::7"
+      ],
+      "retrieved_source_ids": [
+        "p1_react_article",
+        "rag_loading"
+      ],
+      "answer": "根据参考资料，ReAct Agent 和普通 LLM 对话的核心区别在于：\n\n- **LLM** 本质上只做一件事：**输入文本，输出文本**。它没有手，不能上网查天气，不能调用 API，甚至不知道\"现在\"是几点（来源 1）。\n- **Agent** 是一个**能思考、能动手、能从结果中学习的完整系统**。它不仅能生成文本，还能调用工具、观察结果，并进行多步推理和自主决策（来源 1）。\n\n具体对比见下表（来源 1）：\n\n| | LLM | Agent |\n|---|---|---|\n| 能力 | 生成文本 | 生成文本 + 调用工具 + 观察结果 |\n| 状态 | 无状态（每次对话独立） | 有记忆（记住之前做了什么） |\n| 决策 | 一次性回答 | 多步推理，自主决定下一步 |\n| 边界 | 训练数据截止日期内的知识 | 可以访问实时数据和外部系统 |",
+      "faithfulness": 1.0,
+      "faithfulness_reason": "待评估回答中的所有关键声明均直接来源于参考资料，包括LLM与Agent的核心区别描述及对比表格，未发现任何编造或泛化内容。",
+      "precision_at_3": 0.5,
+      "recall_at_3": 0.5,
+      "mrr": 1.0,
+      "ndcg_at_3": 0.6131471927654584,
+      "latency_ms": 4607.039916998474,
+      "llm_usage": {
+        "prompt_tokens": 2854,
+        "completion_tokens": 250,
+        "total_tokens": 3104,
+        "cost_usd": 0.00104558,
+        "calls": 2
+      }
+    },
+    {
+      "config_name": "hybrid",
+      "question": "一个 Agent 框架通常可以拆成哪几层架构？",
+      "generated_queries": [
+        "一个 Agent 框架通常可以拆成哪几层架构？"
+      ],
+      "retrieved_chunk_ids": [
+        "p1_arch_article::0",
+        "p3_framework_article::0",
+        "p3_langgraph_article::10"
+      ],
+      "retrieved_source_ids": [
+        "p1_arch_article",
+        "p3_framework_article",
+        "p3_langgraph_article"
+      ],
+      "answer": "根据参考资料，可以提炼出 Agent 框架的架构设计思路，但参考资料并未直接给出一个明确的“分几层”的完整列表。不过，从[来源 1]和[来源 2]中可以归纳出框架设计中的核心模块和抽象层次：\n\n1.  **执行循环层**：框架隐藏了底层的循环逻辑（如 LangGraph 隐藏了 `while` 循环），让开发者无需手动编写 Agent 的迭代执行过程（[来源 2]）。\n2.  **状态管理层**：框架定义了清晰的状态结构，并管理状态的持久化、检查点（checkpointer）和恢复（[来源 2]）。\n3.  **控制流层**：框架提供了显式的控制流（如条件路由、图节点），使得 Agent 的执行流程可以被可视化（[来源 3]）。\n4.  **工具与交互层**：框架封装了工具调用、多 Agent 协作等交互模式（[来源 2]）。\n\n**不足说明**：参考资料并未提供一个标准化的、分层的架构定义（如“四层架构”或“五层架构”），上述内容是基于对框架隐藏和暴露的功能的推断。如需更精确的分层结构，需要补充更详细的架构设计文档。",
+      "faithfulness": 0.7,
+      "faithfulness_reason": "回答从参考资料中归纳了执行循环、状态管理、控制流、工具交互等核心模块，但参考资料并未给出明确的分层架构定义，回答存在一定程度的泛化和推断。",
+      "precision_at_3": 0.3333333333333333,
+      "recall_at_3": 0.3333333333333333,
+      "mrr": 1.0,
+      "ndcg_at_3": 0.46927872602275644,
+      "latency_ms": 5111.1458749946905,
+      "llm_usage": {
+        "prompt_tokens": 2826,
+        "completion_tokens": 313,
+        "total_tokens": 3139,
+        "cost_usd": 0.0011073200000000002,
+        "calls": 2
+      }
+    },
+    {
+      "config_name": "hybrid",
+      "question": "工具系统为什么要使用 schema 驱动注册与调用？",
+      "generated_queries": [
+        "工具系统为什么要使用 schema 驱动注册与调用？"
+      ],
+      "retrieved_chunk_ids": [
+        "arch_tool_system::0",
+        "p1_arch_article::13",
+        "p1_arch_article::1"
+      ],
+      "retrieved_source_ids": [
+        "arch_tool_system",
+        "p1_arch_article"
+      ],
+      "answer": "根据参考资料，工具系统使用 schema 驱动注册与调用的核心原因是：**LLM 不是通过“看代码”来理解工具的，而是通过阅读结构化的 schema（名称、描述、参数类型）**。这个 schema 会被注入到 System Prompt 中，成为 LLM 的“工具说明书”[来源 2]。\n\n具体来说，schema 驱动设计是 smolagents 和 langchain 等框架的共同核心模式，通过 `ToolSchema` 或 `args_schema` 等结构，LLM 能够理解工具的能力和调用方式[来源 1][来源 2]。",
+      "faithfulness": 1.0,
+      "faithfulness_reason": "回答中的关键声明（LLM通过结构化schema理解工具、schema注入System Prompt作为工具说明书、以及smolagents和langchain的共同核心模式）均能被参考资料直接支持。",
+      "precision_at_3": 1.0,
+      "recall_at_3": 0.6666666666666666,
+      "mrr": 1.0,
+      "ndcg_at_3": 0.7653606369886217,
+      "latency_ms": 3655.4069580015494,
+      "llm_usage": {
+        "prompt_tokens": 2613,
+        "completion_tokens": 178,
+        "total_tokens": 2791,
+        "cost_usd": 0.00090131,
+        "calls": 2
+      }
+    },
+    {
+      "config_name": "hybrid",
+      "question": "Prompt 引擎在 Agent 中主要解决什么问题？",
+      "generated_queries": [
+        "Prompt 引擎在 Agent 中主要解决什么问题？"
+      ],
+      "retrieved_chunk_ids": [
+        "p1_arch_article::19",
+        "p3_framework_article::4",
+        "p1_arch_article::38"
+      ],
+      "retrieved_source_ids": [
+        "p1_arch_article",
+        "p3_framework_article"
+      ],
+      "answer": "根据参考资料，Prompt 引擎在 Agent 中主要解决**动态组装 Prompt 的问题**。具体来说：\n\n1. **System Prompt 是模板而非硬编码字符串**：Agent 的行为模式、输出格式、安全边界等全部由 Prompt 定义，但 Prompt 本身是一个 Jinja2 模板（存储在 YAML 文件中），运行时通过 `populate_template()` 注入变量（来源 1）。\n\n2. **实现运行时动态注入**：工具描述、自定义指令、甚至输出格式都是运行时注入的变量，这意味着同一个 Agent 类可以通过不同的 Prompt 模板表现出完全不同的行为（来源 1）。\n\n3. **支持多种模式**：配套代码中包含“动态 Prompt 组装引擎（含 summary 模式）”，说明 Prompt 引擎能够根据场景切换不同的 Prompt 组装策略（来源 3）。\n\n简言之，Prompt 引擎解决了“如何根据运行时上下文动态生成和组装 Agent 的 System Prompt”这一核心问题，使 Agent 的行为可配置、可扩展。",
+      "faithfulness": 0.7,
+      "faithfulness_reason": "回答正确概括了Prompt引擎动态组装模板的核心功能，但部分细节（如‘支持多种模式’）在参考资料中未明确提及，属于轻微泛化。",
+      "precision_at_3": 0.5,
+      "recall_at_3": 0.5,
+      "mrr": 1.0,
+      "ndcg_at_3": 0.6131471927654584,
+      "latency_ms": 4420.243540997035,
+      "llm_usage": {
+        "prompt_tokens": 2999,
+        "completion_tokens": 255,
+        "total_tokens": 3254,
+        "cost_usd": 0.0010902300000000002,
+        "calls": 2
+      }
+    },
+    {
+      "config_name": "hybrid",
+      "question": "Supervisor/Worker 多 Agent 模式适合解决什么问题？",
+      "generated_queries": [
+        "Supervisor/Worker 多 Agent 模式适合解决什么问题？"
+      ],
+      "retrieved_chunk_ids": [
+        "p1_arch_article::24",
+        "arch_supervisor::0",
+        "p3_framework_article::4"
+      ],
+      "retrieved_source_ids": [
+        "p1_arch_article",
+        "arch_supervisor",
+        "p3_framework_article"
+      ],
+      "answer": "根据参考资料，Supervisor/Worker 多 Agent 模式适合解决**需要多个 Agent 协作的复杂任务**。参考资料中明确提到：“真实场景中，复杂任务往往需要多个 Agent 协作”（来源 1），并指出 Supervisor/Worker 模式是一种“中心调度”模式，其中 Supervisor（LLM）负责决策路由，将任务分发给具有专项工具集的 Worker Agent，并汇总结果（来源 1、来源 2）。",
+      "faithfulness": 1.0,
+      "faithfulness_reason": "回答中的关键声明（适合解决需要多个Agent协作的复杂任务、Supervisor负责决策路由和分发任务、Worker具有专项工具集并汇总结果）均能被参考资料直接支持，无泛化或编造。",
+      "precision_at_3": 0.6666666666666666,
+      "recall_at_3": 0.5,
+      "mrr": 1.0,
+      "ndcg_at_3": 0.7653606369886217,
+      "latency_ms": 3208.124290991691,
+      "llm_usage": {
+        "prompt_tokens": 2777,
+        "completion_tokens": 153,
+        "total_tokens": 2930,
+        "cost_usd": 0.0009180900000000001,
+        "calls": 2
+      }
+    },
+    {
+      "config_name": "hybrid",
+      "question": "RAG 主要解决 LLM 的哪几个根本限制？",
+      "generated_queries": [
+        "RAG 主要解决 LLM 的哪几个根本限制？"
+      ],
+      "retrieved_chunk_ids": [
+        "rag_reranking::2",
+        "p2_rag_overview::0",
+        "rag_loading::7"
+      ],
+      "retrieved_source_ids": [
+        "rag_reranking",
+        "p2_rag_overview",
+        "rag_loading"
+      ],
+      "answer": "根据参考资料，RAG 主要解决 LLM 的三个根本限制：\n\n1. **知识有截止日期**：模型只知道训练数据里的内容，无法获取最新的产品文档、内部 wiki 或行业报告（来源 2）。\n2. **不了解私有数据**：公司的代码库、客户数据、业务流程等从未出现在训练集中（来源 2）。\n3. **不确定时会编造答案（幻觉）**：在医疗、法律、金融等需要准确性的场景中，幻觉是致命的（来源 2）。\n\n此外，参考资料还提到 RAG 解决了 LLM 的两大痛点：**知识过时和幻觉问题**（来源 3）。",
+      "faithfulness": 1.0,
+      "faithfulness_reason": "待评估回答中的关键声明（知识截止日期、不了解私有数据、幻觉问题）均能被参考资料[来源2]和[来源3]明确支持，且未出现泛化或编造。",
+      "precision_at_3": 0.3333333333333333,
+      "recall_at_3": 0.3333333333333333,
+      "mrr": 0.5,
+      "ndcg_at_3": 0.2960819109658652,
+      "latency_ms": 3266.0695829981705,
+      "llm_usage": {
+        "prompt_tokens": 2760,
+        "completion_tokens": 192,
+        "total_tokens": 2952,
+        "cost_usd": 0.0009564,
+        "calls": 2
+      }
+    },
+    {
+      "config_name": "hybrid",
+      "question": "RAG 的离线索引阶段包含哪些步骤？",
+      "generated_queries": [
+        "RAG 的离线索引阶段包含哪些步骤？"
+      ],
+      "retrieved_chunk_ids": [
+        "pdf_learning_assistant::12",
+        "rag_naive::0",
+        "p2_rag_overview::1"
+      ],
+      "retrieved_source_ids": [
+        "pdf_learning_assistant",
+        "rag_naive",
+        "p2_rag_overview"
+      ],
+      "answer": "根据参考资料，RAG 的离线索引阶段包含以下步骤：\n\n1. **文档加载**：支持 PDF、Word、网页等多种格式（来源 1）。\n2. **文本分块**：将长文档切分为适合检索的小块（来源 1）。\n3. **向量化**：使用嵌入模型将文本转换为高维向量（来源 1）。\n4. **存储**：将向量存入向量数据库（如 ChromaDB）（来源 1）。\n\n此外，参考资料还补充了更详细的步骤：**文本提取与清洗**（将 PDF、网页等格式转成纯文本）和**切块（Chunking）**（将文档切成小段落，经验值为 200-500 字符一个块，相邻块重叠 10-20%）（来源 3）。",
+      "faithfulness": 1.0,
+      "faithfulness_reason": "回答中的所有关键声明（文档加载、文本分块、向量化、存储）均能被参考资料直接支持，且补充的文本提取与清洗、切块细节也来自参考资料，无编造或泛化。",
+      "precision_at_3": 0.3333333333333333,
+      "recall_at_3": 0.2,
+      "mrr": 0.3333333333333333,
+      "ndcg_at_3": 0.23463936301137822,
+      "latency_ms": 4402.5365419947775,
+      "llm_usage": {
+        "prompt_tokens": 3230,
+        "completion_tokens": 225,
+        "total_tokens": 3455,
+        "cost_usd": 0.0011196000000000001,
+        "calls": 2
+      }
+    },
+    {
+      "config_name": "hybrid",
+      "question": "RAG 的在线查询阶段包含哪些步骤？",
+      "generated_queries": [
+        "RAG 的在线查询阶段包含哪些步骤？"
+      ],
+      "retrieved_chunk_ids": [
+        "pdf_learning_assistant::12",
+        "p2_rag_overview::15",
+        "pdf_learning_assistant::14"
+      ],
+      "retrieved_source_ids": [
+        "pdf_learning_assistant",
+        "p2_rag_overview"
+      ],
+      "answer": "根据参考资料，RAG 的在线查询阶段包含以下步骤：\n\n1. **查询向量化**：将用户问题转换为向量。\n2. **相似度检索**：在向量数据库中找到最相关的文档块。\n3. **上下文构建**：将检索结果拼接为 LLM 的上下文。\n4. **生成回答**：LLM 基于上下文生成准确的回答。\n\n（来源：[来源 1] 第 2.2 节）",
+      "faithfulness": 1.0,
+      "faithfulness_reason": "回答中的四个关键步骤（查询向量化、相似度检索、上下文构建、生成回答）均直接来源于参考资料[来源1]第2.2节，无编造或泛化。",
+      "precision_at_3": 0.5,
+      "recall_at_3": 0.25,
+      "mrr": 0.5,
+      "ndcg_at_3": 0.2960819109658652,
+      "latency_ms": 3072.7308339992305,
+      "llm_usage": {
+        "prompt_tokens": 3026,
+        "completion_tokens": 149,
+        "total_tokens": 3175,
+        "cost_usd": 0.0009809200000000001,
+        "calls": 2
+      }
+    },
+    {
+      "config_name": "hybrid",
+      "question": "为什么 chunk_size 和 chunk_overlap 会影响 RAG 效果？",
+      "generated_queries": [
+        "为什么 chunk_size 和 chunk_overlap 会影响 RAG 效果？"
+      ],
+      "retrieved_chunk_ids": [
+        "p2_rag_pipeline::2",
+        "rag_chunking::0",
+        "rag_chunking::3"
+      ],
+      "retrieved_source_ids": [
+        "p2_rag_pipeline",
+        "rag_chunking"
+      ],
+      "answer": "根据参考资料，chunk_size 和 chunk_overlap 直接影响检索质量，原因如下：\n\n1. **chunk_size 的权衡**：\n   - 块太大 → 检索不精确（来源 2）\n   - 块太小 → 丢失上下文（来源 1、2）\n   - LLM 上下文窗口有限，塞不进整本书（来源 1）\n\n2. **chunk_overlap 的作用**：\n   - 在块边界处留\"缓冲区\"，防止一句关键信息正好被切成两半（来源 1）\n   - 相邻块的重叠部分，防止语义被截断（来源 2）\n\n总结：这两个参数需要在\"检索精度\"和\"上下文完整性\"之间做权衡，没有银弹，只有经验值（来源 1）。",
+      "faithfulness": 1.0,
+      "faithfulness_reason": "所有关键声明均能被参考资料直接支持，无泛化或编造内容。",
+      "precision_at_3": 1.0,
+      "recall_at_3": 0.6666666666666666,
+      "mrr": 1.0,
+      "ndcg_at_3": 0.7653606369886217,
+      "latency_ms": 3863.9822080003796,
+      "llm_usage": {
+        "prompt_tokens": 2785,
+        "completion_tokens": 194,
+        "total_tokens": 2979,
+        "cost_usd": 0.00096535,
+        "calls": 2
+      }
+    },
+    {
+      "config_name": "hybrid",
+      "question": "文档加载和清洗为什么是 RAG 的上限因素？",
+      "generated_queries": [
+        "文档加载和清洗为什么是 RAG 的上限因素？"
+      ],
+      "retrieved_chunk_ids": [
+        "p2_rag_overview::1",
+        "rag_loading::0",
+        "pdf_learning_assistant::12"
+      ],
+      "retrieved_source_ids": [
+        "p2_rag_overview",
+        "rag_loading",
+        "pdf_learning_assistant"
+      ],
+      "answer": "根据参考资料，文档加载和清洗之所以是 RAG 的上限因素，是因为**清洗质量直接决定后续所有环节的上限**（来源 1）。具体来说，文档加载是 RAG 流程的第一步，负责将 PDF、网页、Word 等非结构化数据转化为可处理的文本（来源 2）。如果这一步处理不当，例如 PDF 表格乱序、网页包含导航栏和广告噪声、扫描件需要 OCR 等，会导致后续的文本分块、向量化和检索等环节基于有缺陷的数据进行，从而限制了整个系统的最终效果（来源 1）。",
+      "faithfulness": 1.0,
+      "faithfulness_reason": "回答中的关键声明（清洗质量决定上限、文档加载是第一步、PDF乱序和网页噪声等具体问题）均能被参考资料直接支持，无编造或泛化。",
+      "precision_at_3": 0.3333333333333333,
+      "recall_at_3": 0.5,
+      "mrr": 0.5,
+      "ndcg_at_3": 0.38685280723454163,
+      "latency_ms": 3526.069458006532,
+      "llm_usage": {
+        "prompt_tokens": 3303,
+        "completion_tokens": 173,
+        "total_tokens": 3476,
+        "cost_usd": 0.0010821099999999998,
+        "calls": 2
+      }
+    },
+    {
+      "config_name": "hybrid",
+      "question": "Chroma 向量库在基础 RAG 中承担什么职责？",
+      "generated_queries": [
+        "Chroma 向量库在基础 RAG 中承担什么职责？"
+      ],
+      "retrieved_chunk_ids": [
+        "rag_naive::9",
+        "rag_optimization_lab::3",
+        "ragas_from_scratch::4"
+      ],
+      "retrieved_source_ids": [
+        "rag_naive",
+        "rag_optimization_lab",
+        "ragas_from_scratch"
+      ],
+      "answer": "根据提供的参考资料，无法明确回答 Chroma 向量库在基础 RAG 中承担的具体职责。参考资料中仅提到 HNSW 算法被 Chroma、Milvus 等向量数据库广泛采用（来源 2），但未说明 Chroma 在基础 RAG 流程中的角色或功能。建议补充相关文档。",
+      "faithfulness": 0.0,
+      "faithfulness_reason": "待评估回答声称无法从参考资料中明确回答，但参考资料中明确提到了Chroma在基础RAG中承担存储向量和相似度检索的职责，因此回答与参考资料无关且存在编造。",
+      "precision_at_3": 0.3333333333333333,
+      "recall_at_3": 0.3333333333333333,
+      "mrr": 1.0,
+      "ndcg_at_3": 0.46927872602275644,
+      "latency_ms": 2591.29304200178,
+      "llm_usage": {
+        "prompt_tokens": 2372,
+        "completion_tokens": 127,
+        "total_tokens": 2499,
+        "cost_usd": 0.00078014,
+        "calls": 2
+      }
+    },
+    {
+      "config_name": "hybrid",
+      "question": "Naive RAG 的主要局限性有哪些？",
+      "generated_queries": [
+        "Naive RAG 的主要局限性有哪些？"
+      ],
+      "retrieved_chunk_ids": [
+        "rag_naive::8",
+        "p2_rag_overview::3",
+        "rag_naive::0"
+      ],
+      "retrieved_source_ids": [
+        "rag_naive",
+        "p2_rag_overview"
+      ],
+      "answer": "根据参考资料，Naive RAG 的主要局限性包括以下五点（来源 1，source_id=rag_naive）：\n\n1.  **检索质量**：语义搜索可能遗漏关键文档，尤其是查询和文档用词不同时。\n2.  **上下文窗口**：检索到的文档可能超出 LLM 上下文限制。\n3.  **信息整合**：答案可能需要综合多个文档，但 Naive RAG 只是简单拼接。\n4.  **查询理解**：用户的问题可能模糊或多义，直接检索效果差。\n5.  **排序质量**：向量相似度不等于相关性，需要重排序。\n\n此外，来源 2（source_id=p2_rag_overview）也补充了相关问题：检索精度低（噪声多）、召回不足、幻觉依旧、复杂问题无力（需要多步推理的问题，一次检索不够）。",
+      "faithfulness": 1.0,
+      "faithfulness_reason": "回答中所有关键声明均直接来源于参考资料，包括来源1列出的五项局限性和来源2补充的四项问题，无编造或泛化。",
+      "precision_at_3": 0.5,
+      "recall_at_3": 0.3333333333333333,
+      "mrr": 1.0,
+      "ndcg_at_3": 0.46927872602275644,
+      "latency_ms": 3743.3170000003884,
+      "llm_usage": {
+        "prompt_tokens": 2769,
+        "completion_tokens": 223,
+        "total_tokens": 2992,
+        "cost_usd": 0.0009929300000000002,
+        "calls": 2
+      }
+    },
+    {
+      "config_name": "hybrid",
+      "question": "BM25 和向量检索分别擅长什么？",
+      "generated_queries": [
+        "BM25 和向量检索分别擅长什么？"
+      ],
+      "retrieved_chunk_ids": [
+        "ragas_from_scratch::3",
+        "p2_hybrid_article::1",
+        "rag_optimization_lab::3"
+      ],
+      "retrieved_source_ids": [
+        "ragas_from_scratch",
+        "p2_hybrid_article",
+        "rag_optimization_lab"
+      ],
+      "answer": "根据参考资料，BM25 和向量检索的擅长领域如下：\n\n- **BM25**：擅长精确的关键词匹配。例如，对于查询“Python 装饰器”，BM25 能精确匹配包含该关键词的文档（来源 2）。\n- **向量检索**：擅长语义匹配，能捕获文本的深层语义关系。例如，对于查询“Python 装饰器”，向量检索能匹配语义相关但无关键词的文档，如“函数包装器模式”（来源 2）。\n\n两者互补，混合使用效果最好（来源 1）。",
+      "faithfulness": 1.0,
+      "faithfulness_reason": "所有关键声明（BM25擅长精确关键词匹配、向量检索擅长语义匹配、两者互补）均能被参考资料明确支持。",
+      "precision_at_3": 0.3333333333333333,
+      "recall_at_3": 0.3333333333333333,
+      "mrr": 0.5,
+      "ndcg_at_3": 0.2960819109658652,
+      "latency_ms": 2991.0428339935606,
+      "llm_usage": {
+        "prompt_tokens": 3134,
+        "completion_tokens": 154,
+        "total_tokens": 3288,
+        "cost_usd": 0.00101558,
+        "calls": 2
+      }
+    },
+    {
+      "config_name": "hybrid",
+      "question": "混合检索为什么通常比单一检索更稳？",
+      "generated_queries": [
+        "混合检索为什么通常比单一检索更稳？"
+      ],
+      "retrieved_chunk_ids": [
+        "p3_framework_article::0",
+        "rag_hybrid_pipeline::7",
+        "p2_hybrid_article::5"
+      ],
+      "retrieved_source_ids": [
+        "p3_framework_article",
+        "rag_hybrid_pipeline",
+        "p2_hybrid_article"
+      ],
+      "answer": "根据提供的参考资料，无法直接回答“混合检索为什么通常比单一检索更稳”这个问题。\n\n参考资料[来源 2]和[来源 3]描述了混合检索的流程（BM25 + 向量检索 + RRF 融合排序）以及完整的 RAG 管道架构，但并未解释混合检索相比单一检索更稳定的原因。参考资料[来源 1]是关于 Agent 框架对比的，与检索问题无关。\n\n因此，现有资料不足，无法给出基于参考来源的准确回答。",
+      "faithfulness": 0.0,
+      "faithfulness_reason": "回答声称参考资料无法解释混合检索更稳定的原因，但参考资料[来源2]和[来源3]明确描述了混合检索结合BM25与向量检索的流程，并隐含了兼顾关键词和语义可降低单一路径风险的稳定性优势，因此回答存在明显编造或与参考资料矛盾的内容。",
+      "precision_at_3": 0.6666666666666666,
+      "recall_at_3": 0.6666666666666666,
+      "mrr": 0.5,
+      "ndcg_at_3": 0.5307212739772434,
+      "latency_ms": 3422.395374989719,
+      "llm_usage": {
+        "prompt_tokens": 2877,
+        "completion_tokens": 180,
+        "total_tokens": 3057,
+        "cost_usd": 0.0009747900000000001,
+        "calls": 2
+      }
+    },
+    {
+      "config_name": "hybrid",
+      "question": "RRF 排序融合的作用是什么？",
+      "generated_queries": [
+        "RRF 排序融合的作用是什么？"
+      ],
+      "retrieved_chunk_ids": [
+        "p2_rag_pipeline::6",
+        "p2_rag_overview::16",
+        "p2_hybrid_article::5"
+      ],
+      "retrieved_source_ids": [
+        "p2_rag_pipeline",
+        "p2_rag_overview",
+        "p2_hybrid_article"
+      ],
+      "answer": "根据提供的参考资料，可以回答关于RRF排序融合作用的问题。\n\nRRF（Reciprocal Rank Fusion）的作用是**将BM25打分和余弦相似度打分这两种不同量纲的检索结果进行融合**，而不需要进行归一化处理。它通过不看分数看排名的方式，计算每个文档在两个检索器中的排名倒数之和（RRF_score(文档) = Σ 1 / (k + 排名)，k一般取60），从而选出在两个检索器里都排前面的文档，因为这些文档大概率真的相关[来源 1]。\n\n参考资料中明确指出，RRF的优点是“因为只用排名不用分数，彻底避开了归一化的问题”，并且“这个方法简单到令人发指，但效果出奇好”[来源 1]。",
+      "faithfulness": 1.0,
+      "faithfulness_reason": "回答中所有关键声明（RRF通过排名而非分数融合、避免归一化、公式及k值、用于混合检索）均能被参考资料[来源1]直接支持。",
+      "precision_at_3": 0.3333333333333333,
+      "recall_at_3": 0.25,
+      "mrr": 0.3333333333333333,
+      "ndcg_at_3": 0.23463936301137822,
+      "latency_ms": 3946.690958997351,
+      "llm_usage": {
+        "prompt_tokens": 3309,
+        "completion_tokens": 205,
+        "total_tokens": 3514,
+        "cost_usd": 0.0011189300000000002,
+        "calls": 2
+      }
+    },
+    {
+      "config_name": "hybrid",
+      "question": "Cross-Encoder 重排序为什么更准但更慢？",
+      "generated_queries": [
+        "Cross-Encoder 重排序为什么更准但更慢？"
+      ],
+      "retrieved_chunk_ids": [
+        "p2_rag_pipeline::7",
+        "p2_hybrid_article::5",
+        "p2_hybrid_article::4"
+      ],
+      "retrieved_source_ids": [
+        "p2_rag_pipeline",
+        "p2_hybrid_article"
+      ],
+      "answer": "根据提供的参考资料，可以回答以下问题：\n\n**问题：Cross-Encoder 重排序为什么更准但更慢？**\n\nCross-Encoder 重排序更准但更慢，原因如下：\n\n1. **计算成本高**：Cross-Encoder 的计算成本是 O(n)（n = 候选数），需要对每个候选文档对进行深度交互计算，因此速度较慢（来源 3，score=0.0310）。\n2. **不能扫全量**：由于速度限制，Cross-Encoder 不能直接对全量文档使用，只能用于少量候选（如 20 个）的精排阶段（来源 1，score=0.0328；来源 3，score=0.0310）。\n3. **精度高**：它通过深度交互计算相关性分数，比 Bi-Encoder 更准，但代价是速度慢（来源 3，score=0.0310）。\n\n**总结**：Cross-Encoder 的\"慢\"源于其高计算复杂度，只能用于精排少量候选；\"准\"源于其深度交互机制，能更精确地评估相关性。",
+      "faithfulness": 0.7,
+      "faithfulness_reason": "回答中关于计算成本高、不能扫全量、精度高的关键声明均能被参考资料支持，但回答将'更准'归因于'深度交互计算'，参考资料中未明确提及此机制，属于轻微泛化。",
+      "precision_at_3": 0.5,
+      "recall_at_3": 0.25,
+      "mrr": 0.5,
+      "ndcg_at_3": 0.2960819109658652,
+      "latency_ms": 5128.400874993531,
+      "llm_usage": {
+        "prompt_tokens": 3454,
+        "completion_tokens": 298,
+        "total_tokens": 3752,
+        "cost_usd": 0.0012603800000000002,
+        "calls": 2
+      }
+    },
+    {
+      "config_name": "hybrid",
+      "question": "两阶段检索管道通常如何组织？",
+      "generated_queries": [
+        "两阶段检索管道通常如何组织？"
+      ],
+      "retrieved_chunk_ids": [
+        "rag_rerank_pipeline::0",
+        "rag_reranking::4",
+        "p1_arch_article::2"
+      ],
+      "retrieved_source_ids": [
+        "rag_rerank_pipeline",
+        "rag_reranking",
+        "p1_arch_article"
+      ],
+      "answer": "根据参考资料，两阶段检索管道通常组织为“检索-重排序”架构：\n\n1. **第一阶段：混合粗检索**（来源 1，source_id=rag_rerank_pipeline）  \n   使用 BM25 + Dense（向量检索）+ RRF（倒数排名融合）从全部文档中快速召回约20个候选结果。这一阶段速度快、召回率高。\n\n2. **第二阶段：Cross-Encoder 重排序**（来源 1，source_id=rag_rerank_pipeline）  \n   对第一阶段得到的每个 (query, doc) 对，使用 Cross-Encoder 模型计算精确的相关性分数，进行精排，最终输出 Top-K 最相关文档送入 LLM 生成回答。\n\n该架构的优点是：第一阶段保证高召回和速度，第二阶段保证高精度，整体平衡了效率与准确性。",
+      "faithfulness": 1.0,
+      "faithfulness_reason": "回答中的关键声明（第一阶段混合粗检索、第二阶段Cross-Encoder重排序、输出Top-K送入LLM）均能被参考资料[来源1]明确支持，无泛化或编造。",
+      "precision_at_3": 0.3333333333333333,
+      "recall_at_3": 0.3333333333333333,
+      "mrr": 1.0,
+      "ndcg_at_3": 0.46927872602275644,
+      "latency_ms": 4189.185416005785,
+      "llm_usage": {
+        "prompt_tokens": 2439,
+        "completion_tokens": 230,
+        "total_tokens": 2669,
+        "cost_usd": 0.00091153,
+        "calls": 2
+      }
+    },
+    {
+      "config_name": "hybrid",
+      "question": "HyDE 查询改写的基本思想是什么？",
+      "generated_queries": [
+        "HyDE 查询改写的基本思想是什么？"
+      ],
+      "retrieved_chunk_ids": [
+        "rag_query_transform::0",
+        "p2_rag_overview::3",
+        "p2_hybrid_article::5"
+      ],
+      "retrieved_source_ids": [
+        "rag_query_transform",
+        "p2_rag_overview",
+        "p2_hybrid_article"
+      ],
+      "answer": "根据参考资料，HyDE（假设性文档嵌入）的基本思想是：**让 LLM 先生成一个假设性答案，然后用这个答案去检索**。因为生成的答案在表述上更接近文档，所以能更好地弥合用户提问与文档表述之间的“语义鸿沟”[来源 1][来源 2]。",
+      "faithfulness": 1.0,
+      "faithfulness_reason": "回答中的关键声明（让LLM先生成假设性答案，再用答案去检索，弥合语义鸿沟）均能被参考资料[1]和[2]明确支持，无编造或泛化。",
+      "precision_at_3": 0.6666666666666666,
+      "recall_at_3": 0.6666666666666666,
+      "mrr": 1.0,
+      "ndcg_at_3": 0.7039180890341347,
+      "latency_ms": 2844.1809170035413,
+      "llm_usage": {
+        "prompt_tokens": 3191,
+        "completion_tokens": 125,
+        "total_tokens": 3316,
+        "cost_usd": 0.0009990700000000001,
+        "calls": 2
+      }
+    },
+    {
+      "config_name": "hybrid",
+      "question": "Multi-Query 扩展如何提升召回率？",
+      "generated_queries": [
+        "Multi-Query 扩展如何提升召回率？"
+      ],
+      "retrieved_chunk_ids": [
+        "rag_eval_pipeline::2",
+        "rag_query_transform::2",
+        "rag_full_pipeline::3"
+      ],
+      "retrieved_source_ids": [
+        "rag_eval_pipeline",
+        "rag_query_transform",
+        "rag_full_pipeline"
+      ],
+      "answer": "根据参考资料，多查询扩展（Multi-Query Expansion）通过将用户的一个问题改写为多个不同角度的查询，并行检索后合并去重，从而提高召回率（来源 1、来源 2、来源 3）。",
+      "faithfulness": 1.0,
+      "faithfulness_reason": "待评估回答中的关键声明（多查询扩展将用户问题改写为多个不同角度的查询、并行检索后合并去重、提高召回率）均能被参考资料直接支持。",
+      "precision_at_3": 0.6666666666666666,
+      "recall_at_3": 0.6666666666666666,
+      "mrr": 0.5,
+      "ndcg_at_3": 0.5307212739772434,
+      "latency_ms": 2354.578250000486,
+      "llm_usage": {
+        "prompt_tokens": 2715,
+        "completion_tokens": 99,
+        "total_tokens": 2814,
+        "cost_usd": 0.0008419500000000001,
+        "calls": 2
+      }
+    },
+    {
+      "config_name": "hybrid",
+      "question": "RAGAS 的四个核心指标是什么？",
+      "generated_queries": [
+        "RAGAS 的四个核心指标是什么？"
+      ],
+      "retrieved_chunk_ids": [
+        "ragas_from_scratch::4",
+        "p2_rag_overview::13",
+        "p2_hybrid_article::6"
+      ],
+      "retrieved_source_ids": [
+        "ragas_from_scratch",
+        "p2_rag_overview",
+        "p2_hybrid_article"
+      ],
+      "answer": "根据参考资料，RAGAS 框架提供四个核心评估指标：\n\n1. **Faithfulness（忠实度）**：回答是否基于检索到的文档（来源 1, 2）\n2. **Answer Relevancy（答案相关性）**：回答是否切题（来源 1, 2）\n3. **Context Precision（上下文精确度）**：检索结果中相关文档的比例（来源 1, 2）\n4. **Context Recall（上下文召回率）**：是否检索到了所有需要的信息（来源 1, 2）\n\n参考资料中未提供关于如何提升 RAG 系统检索质量的具体方法，因此无法回答该问题。",
+      "faithfulness": 1.0,
+      "faithfulness_reason": "回答中的四个核心指标（Faithfulness、Answer Relevancy、Context Precision、Context Recall）均能在参考资料中找到明确支持，且描述准确无误。",
+      "precision_at_3": 0.6666666666666666,
+      "recall_at_3": 0.5,
+      "mrr": 1.0,
+      "ndcg_at_3": 0.7039180890341347,
+      "latency_ms": 3673.316666012397,
+      "llm_usage": {
+        "prompt_tokens": 2829,
+        "completion_tokens": 183,
+        "total_tokens": 3012,
+        "cost_usd": 0.0009651300000000001,
+        "calls": 2
+      }
+    },
+    {
+      "config_name": "hybrid",
+      "question": "Faithfulness 低通常意味着什么，应该怎么优化？",
+      "generated_queries": [
+        "Faithfulness 低通常意味着什么，应该怎么优化？"
+      ],
+      "retrieved_chunk_ids": [
+        "p2_hybrid_article::7",
+        "p2_rag_overview::13",
+        "p2_rag_pipeline::8"
+      ],
+      "retrieved_source_ids": [
+        "p2_hybrid_article",
+        "p2_rag_overview",
+        "p2_rag_pipeline"
+      ],
+      "answer": "根据参考资料，Faithfulness（忠实度）低通常意味着**存在幻觉，LLM 在编造**（来源 2）。优化方向是**改进 Prompt，强调“只基于文档回答”**（来源 2），同时可以**降低 temperature**（来源 3）。",
+      "faithfulness": 1.0,
+      "faithfulness_reason": "回答中的两个关键声明（Faithfulness低意味着存在幻觉/LLM在编造，优化方向是改进Prompt强调只基于文档回答和降低temperature）均能在参考资料中找到明确依据。",
+      "precision_at_3": 0.3333333333333333,
+      "recall_at_3": 0.3333333333333333,
+      "mrr": 1.0,
+      "ndcg_at_3": 0.46927872602275644,
+      "latency_ms": 2266.174916003365,
+      "llm_usage": {
+        "prompt_tokens": 3119,
+        "completion_tokens": 112,
+        "total_tokens": 3231,
+        "cost_usd": 0.0009653300000000001,
+        "calls": 2
+      }
+    },
+    {
+      "config_name": "hybrid",
+      "question": "Context Precision 和 Context Recall 分别衡量什么？",
+      "generated_queries": [
+        "Context Precision 和 Context Recall 分别衡量什么？"
+      ],
+      "retrieved_chunk_ids": [
+        "p2_hybrid_article::8",
+        "rag_ragas_intro::13",
+        "p2_rag_pipeline::9"
+      ],
+      "retrieved_source_ids": [
+        "p2_hybrid_article",
+        "rag_ragas_intro",
+        "p2_rag_pipeline"
+      ],
+      "answer": "根据参考资料，Context Precision 和 Context Recall 的衡量内容如下：\n\n- **Context Precision（上下文精确度）**：衡量检索到的文档中，有多少是真正有用的。精确度低意味着检索结果中噪声多，LLM 需要从大量无关信息中筛选有用内容，容易被干扰（来源 1）。\n- **Context Recall（上下文召回率）**：衡量回答问题所需的所有信息是否都被检索到了。召回率低意味着遗漏了关键信息（来源 1）。\n\n此外，参考资料还给出了诊断建议：Context Precision 低时，应加 Cross-Encoder 重排序或减小 final_k；Context Recall 低时，应增大 first_stage_k，或使用混合检索加查询改写（来源 3）。",
+      "faithfulness": 1.0,
+      "faithfulness_reason": "待评估回答准确概括了Context Precision和Context Recall的定义，并引用了参考资料中的诊断建议，所有关键声明均能被参考资料支持。",
+      "precision_at_3": 0.6666666666666666,
+      "recall_at_3": 0.5,
+      "mrr": 1.0,
+      "ndcg_at_3": 0.7653606369886217,
+      "latency_ms": 4258.219333001762,
+      "llm_usage": {
+        "prompt_tokens": 2413,
+        "completion_tokens": 195,
+        "total_tokens": 2608,
+        "cost_usd": 0.00086601,
+        "calls": 2
+      }
+    },
+    {
+      "config_name": "hybrid",
+      "question": "为什么要用 Precision@K、Recall@K、MRR 和 NDCG 评估检索？",
+      "generated_queries": [
+        "为什么要用 Precision@K、Recall@K、MRR 和 NDCG 评估检索？"
+      ],
+      "retrieved_chunk_ids": [
+        "rag_eval_pipeline::8",
+        "rag_eval_pipeline::0",
+        "rag_eval_pipeline::17"
+      ],
+      "retrieved_source_ids": [
+        "rag_eval_pipeline"
+      ],
+      "answer": "根据参考资料，Precision@K、Recall@K、MRR 和 NDCG 是经典的信息检索（IR）评估指标，用于衡量检索结果的质量。具体原因如下：\n\n1. **Precision@K**：衡量前 K 个结果中相关文档的比例，反映检索的精确度（来源 1）。\n2. **Recall@K**：衡量前 K 个结果覆盖了多少相关文档，反映检索的召回率（来源 1）。\n3. **MRR（Mean Reciprocal Rank）**：衡量第一个相关文档的排名倒数，值越高表示第一个相关结果出现得越早（来源 1、3）。\n4. **NDCG（Normalized Discounted Cumulative Gain）**：归一化折损累积增益，综合考虑排名位置的综合指标（来源 3）。\n\n这些指标共同用于自动化评估管道中，以对比不同检索配置（如 BM25、Dense、Hybrid 等）的性能，帮助找到最优检索策略（来源 2）。",
+      "faithfulness": 1.0,
+      "faithfulness_reason": "回答中所有关键声明（各指标的定义、用途及评估管道中的角色）均能被参考资料直接支持，无泛化或编造。",
+      "precision_at_3": 1.0,
+      "recall_at_3": 0.3333333333333333,
+      "mrr": 1.0,
+      "ndcg_at_3": 0.46927872602275644,
+      "latency_ms": 4345.318500010762,
+      "llm_usage": {
+        "prompt_tokens": 2402,
+        "completion_tokens": 250,
+        "total_tokens": 2652,
+        "cost_usd": 0.00092354,
+        "calls": 2
+      }
+    },
+    {
+      "config_name": "hybrid",
+      "question": "参数扫描在 RAG 优化中有什么价值？",
+      "generated_queries": [
+        "参数扫描在 RAG 优化中有什么价值？"
+      ],
+      "retrieved_chunk_ids": [
+        "rag_optimization_lab::0",
+        "p2_rag_overview::13",
+        "ragas_from_scratch::4"
+      ],
+      "retrieved_source_ids": [
+        "rag_optimization_lab",
+        "p2_rag_overview",
+        "ragas_from_scratch"
+      ],
+      "answer": "根据参考资料，参数扫描（parameter sweep）在 RAG 优化中的价值是：**自动寻找最优配置**。\n\n来源 1 明确指出，参数扫描的目的是“自动寻找最优配置”（source_id=rag_optimization_lab, title=RAG optimization lab script）。\n\n参考资料未提供关于参数扫描其他价值（如对比不同配置效果、发现系统薄弱环节等）的详细说明，因此无法进一步展开。",
+      "faithfulness": 0.4,
+      "faithfulness_reason": "回答仅提及‘自动寻找最优配置’，但参考资料中明确提到参数扫描还可系统比较不同配置对质量、延迟和成本的影响，回答遗漏了这些关键信息，属于有明显未被支持的声明。",
+      "precision_at_3": 0.3333333333333333,
+      "recall_at_3": 0.5,
+      "mrr": 1.0,
+      "ndcg_at_3": 0.6131471927654584,
+      "latency_ms": 2970.8491249912186,
+      "llm_usage": {
+        "prompt_tokens": 2764,
+        "completion_tokens": 142,
+        "total_tokens": 2906,
+        "cost_usd": 0.00090248,
+        "calls": 2
+      }
+    },
+    {
+      "config_name": "hybrid",
+      "question": "Agent 记忆系统可以分成哪些类型？",
+      "generated_queries": [
+        "Agent 记忆系统可以分成哪些类型？"
+      ],
+      "retrieved_chunk_ids": [
+        "p1_arch_article::0",
+        "rag_loading::6",
+        "arch_memory::4"
+      ],
+      "retrieved_source_ids": [
+        "p1_arch_article",
+        "rag_loading",
+        "arch_memory"
+      ],
+      "answer": "根据参考资料，Agent 记忆系统可以分成以下类型：\n\n- **system_prompt**：单独存储，可随时更新（来源 3）\n- **steps**：追加式列表，不可变记录（来源 3）\n- **state**：步骤间的共享状态字典（来源 3）\n- **summary_mode**：压缩上下文（去掉 system prompt 和 planning）（来源 3）\n- **callbacks**：在每步追加时触发（来源 3）\n\n此外，参考资料[来源 2]还提到 Agent 具备“记忆系统”能力，可以记住之前的对话和操作结果，用于后续决策。",
+      "faithfulness": 0.4,
+      "faithfulness_reason": "待评估回答将AgentMemory的组件（system_prompt、steps、state、summary_mode、callbacks）误当作记忆系统的分类，而参考资料并未定义这些为记忆类型，且人工参考答案明确列出工作记忆、情节记忆、语义记忆等类型，因此存在明显未被支持的声明。",
+      "precision_at_3": 0.0,
+      "recall_at_3": 0.0,
+      "mrr": 0.0,
+      "ndcg_at_3": 0.0,
+      "latency_ms": 3788.8446249999106,
+      "llm_usage": {
+        "prompt_tokens": 2745,
+        "completion_tokens": 204,
+        "total_tokens": 2949,
+        "cost_usd": 0.0009655500000000001,
+        "calls": 2
+      }
+    },
+    {
+      "config_name": "hybrid",
+      "question": "记忆生命周期管理通常包含哪些机制？",
+      "generated_queries": [
+        "记忆生命周期管理通常包含哪些机制？"
+      ],
+      "retrieved_chunk_ids": [
+        "p1_arch_article::30",
+        "memory_lifecycle::0",
+        "p1_arch_article::29"
+      ],
+      "retrieved_source_ids": [
+        "p1_arch_article",
+        "memory_lifecycle"
+      ],
+      "answer": "根据参考资料，记忆生命周期管理包含以下机制：\n\n1. **编码 → 存储 → 检索 → 整合 → 遗忘**的完整流程（来源 2）\n2. **整合（Consolidation）**：重要的短期记忆提升为长期记忆，例如 WorkingMemory → EpisodicMemory → SemanticMemory 的逐级提升（来源 2）\n3. **遗忘（Forgetting）**：清理低价值记忆，包含三种策略：\n   - 基于重要性\n   - 基于时间\n   - 基于容量（来源 2）\n4. **评分（Scoring）**：多因素综合评分决定记忆的检索优先级，例如使用时间衰减评分（指数衰减模型模拟艾宾浩斯遗忘曲线）（来源 2）\n\n此外，参考资料还区分了**执行状态**（单次任务生命周期）和**持久记忆**（跨任务生命周期）两个层次（来源 1）。",
+      "faithfulness": 1.0,
+      "faithfulness_reason": "待评估回答中的所有关键声明均能被参考资料直接支持，没有泛化或编造内容。",
+      "precision_at_3": 0.5,
+      "recall_at_3": 0.5,
+      "mrr": 0.5,
+      "ndcg_at_3": 0.38685280723454163,
+      "latency_ms": 3800.6958339974517,
+      "llm_usage": {
+        "prompt_tokens": 2649,
+        "completion_tokens": 223,
+        "total_tokens": 2872,
+        "cost_usd": 0.0009605300000000001,
+        "calls": 2
+      }
+    },
+    {
+      "config_name": "hybrid",
+      "question": "统一检索如何把知识库和记忆结合起来？",
+      "generated_queries": [
+        "统一检索如何把知识库和记忆结合起来？"
+      ],
+      "retrieved_chunk_ids": [
+        "p2_rag_overview::0",
+        "pdf_learning_assistant::1",
+        "p2_rag_overview::1"
+      ],
+      "retrieved_source_ids": [
+        "p2_rag_overview",
+        "pdf_learning_assistant"
+      ],
+      "answer": "根据提供的参考资料，**无法直接回答**“统一检索如何把知识库和记忆结合起来”这个问题。\n\n参考资料中仅提到了 `UnifiedRetriever` 这个组件名称（来源 2），以及 RAG 的核心流程（来源 1 和 3），但**没有具体说明统一检索是如何将知识库与记忆系统结合起来的机制或实现细节**。\n\n建议查阅更详细的系统设计文档或相关代码实现（如来源 2 中提到的 `11_unified_retrieval` 模块）以获取具体信息。",
+      "faithfulness": 0.0,
+      "faithfulness_reason": "待评估回答声称无法从参考资料中找到答案，但参考资料中明确提到了UnifiedRetriever组件以及知识库和记忆结合的概念，回答属于错误否定，与参考资料无关。",
+      "precision_at_3": 0.5,
+      "recall_at_3": 0.3333333333333333,
+      "mrr": 0.5,
+      "ndcg_at_3": 0.2960819109658652,
+      "latency_ms": 3755.955125001492,
+      "llm_usage": {
+        "prompt_tokens": 2960,
+        "completion_tokens": 166,
+        "total_tokens": 3126,
+        "cost_usd": 0.0009818000000000001,
+        "calls": 2
+      }
+    },
+    {
+      "config_name": "hybrid",
+      "question": "PDF 学习助手如何结合 RAG 和记忆？",
+      "generated_queries": [
+        "PDF 学习助手如何结合 RAG 和记忆？"
+      ],
+      "retrieved_chunk_ids": [
+        "pdf_learning_assistant::0",
+        "pdf_learning_assistant::17",
+        "memory_enhanced_rag::0"
+      ],
+      "retrieved_source_ids": [
+        "pdf_learning_assistant",
+        "memory_enhanced_rag"
+      ],
+      "answer": "根据参考资料，PDF学习助手（PDFLearningAssistant）结合RAG和记忆的方式如下：\n\n1. **整合架构**：将记忆系统、生命周期、统一检索和RAG整合为完整应用（来源1）。\n2. **记忆增强检索**：通过`MemoryRAG.query()`实现查询增强——用历史记忆上下文丰富用户查询，并将检索文档和相关记忆合并为LLM上下文（来源3）。\n3. **知识积累**：每次交互后（如`ask()`、`add_note()`），关键信息自动存入记忆系统，形成正反馈循环，逐步改善回答质量（来源3）。\n4. **对比评估**：支持对比有/无记忆的RAG效果差异（来源1、2），例如无记忆时仅进行直接向量检索，而有记忆时结合历史讨论生成回答（来源2）。\n\n参考资料中未提供更具体的代码实现细节或性能数据。",
+      "faithfulness": 1.0,
+      "faithfulness_reason": "所有关键声明均能被参考资料支持，包括整合架构、记忆增强检索、知识积累和对比评估等核心内容。",
+      "precision_at_3": 1.0,
+      "recall_at_3": 0.5,
+      "mrr": 1.0,
+      "ndcg_at_3": 0.7653606369886217,
+      "latency_ms": 3816.012208000757,
+      "llm_usage": {
+        "prompt_tokens": 2588,
+        "completion_tokens": 225,
+        "total_tokens": 2813,
+        "cost_usd": 0.00094626,
+        "calls": 2
+      }
+    },
+    {
+      "config_name": "hybrid",
+      "question": "LangGraph 为什么适合复杂 Agent 工作流？",
+      "generated_queries": [
+        "LangGraph 为什么适合复杂 Agent 工作流？"
+      ],
+      "retrieved_chunk_ids": [
+        "p3_langgraph_article::0",
+        "p3_framework_article::4",
+        "p3_langgraph_article::9"
+      ],
+      "retrieved_source_ids": [
+        "p3_langgraph_article",
+        "p3_framework_article"
+      ],
+      "answer": "根据参考资料，LangGraph 适合复杂 Agent 工作流的原因主要有以下几点：\n\n1. **显式控制流**：LangGraph 将工作流建模为“图”（节点和边），控制流是显式的，别人可以看着代码画出流程图，而不是只能从头读到尾（来源 1, 来源 3）。\n\n2. **状态有清晰定义**：LangGraph 要求对 Agent 的所有中间数据有一个清晰的结构定义，而不是散落在各处（来源 3）。\n\n3. **支持暂停-等待-恢复**：LangGraph 的 checkpointing 机制允许你“回到案发现场”，且现场的每一件物品都完好无损，解决了 while 循环无法做到的“暂停-等待-恢复”问题（来源 1）。\n\n4. **经得起时间考验**：LangGraph 适合“当你需要精确控制执行路径，而且这个控制需要经得起时间考验”的场景，例如 Agent 六个月后还需要维护、调试、扩展（来源 3）。\n\n**总结**：LangGraph 适合复杂工作流，因为它提供了显式控制流、清晰的状态定义、暂停恢复能力，以及长期可维护性。",
+      "faithfulness": 1.0,
+      "faithfulness_reason": "回答中的关键声明（显式控制流、状态定义、暂停恢复、长期可维护性）均能从参考资料中找到直接支持，无编造或泛化。",
+      "precision_at_3": 1.0,
+      "recall_at_3": 1.0,
+      "mrr": 1.0,
+      "ndcg_at_3": 1.0,
+      "latency_ms": 4639.220208002371,
+      "llm_usage": {
+        "prompt_tokens": 3281,
+        "completion_tokens": 285,
+        "total_tokens": 3566,
+        "cost_usd": 0.0011993700000000002,
+        "calls": 2
+      }
+    },
+    {
+      "config_name": "hybrid",
+      "question": "不同 Agent 框架应该从哪些维度对比？",
+      "generated_queries": [
+        "不同 Agent 框架应该从哪些维度对比？"
+      ],
+      "retrieved_chunk_ids": [
+        "p3_framework_article::0",
+        "p1_arch_article::0",
+        "p3_multi_agent_article::0"
+      ],
+      "retrieved_source_ids": [
+        "p3_framework_article",
+        "p1_arch_article",
+        "p3_multi_agent_article"
+      ],
+      "answer": "根据提供的参考资料，我无法直接回答“不同 Agent 框架应该从哪些维度对比”这个问题。\n\n参考资料中提到了一个评估框架的思考工具，即比较框架的“隐藏了什么，暴露了什么，以及当你的需求超出框架预设时，你有没有退路”[来源 1]。同时，资料也指出，比较框架的正确方式不是比“有什么功能”，而是比“功能如何实现”以及背后的设计哲学[来源 1]。\n\n然而，这些资料并未系统性地列出或总结出具体的对比维度。因此，基于现有信息，我无法给出一个完整的维度列表。",
+      "faithfulness": 0.4,
+      "faithfulness_reason": "回答声称参考资料未系统性列出对比维度，但参考资料[来源1]明确提出了'隐藏了什么、暴露了什么、退路'等评估框架，并隐含了状态管理、工作流可控性、多Agent表达等维度，因此存在明显未被支持的声明。",
+      "precision_at_3": 0.6666666666666666,
+      "recall_at_3": 0.6666666666666666,
+      "mrr": 1.0,
+      "ndcg_at_3": 0.7039180890341347,
+      "latency_ms": 3758.4557910013245,
+      "llm_usage": {
+        "prompt_tokens": 3136,
+        "completion_tokens": 188,
+        "total_tokens": 3324,
+        "cost_usd": 0.00105352,
+        "calls": 2
+      }
+    },
+    {
+      "config_name": "hybrid_rerank",
+      "question": "ReAct Agent 和普通 LLM 对话的核心区别是什么？",
+      "generated_queries": [
+        "ReAct Agent 和普通 LLM 对话的核心区别是什么？"
+      ],
+      "retrieved_chunk_ids": [
+        "p1_react_article::0",
+        "rag_loading::6",
+        "p1_react_article::9"
+      ],
+      "retrieved_source_ids": [
+        "p1_react_article",
+        "rag_loading"
+      ],
+      "answer": "根据参考资料，ReAct Agent 和普通 LLM 对话的核心区别在于：**LLM 本质上只做一件事——输入文本，输出文本；而 Agent 是一个能思考、能动手、能从结果中学习的完整系统** [来源 1]。\n\n具体区别如下表所示 [来源 1]：\n\n| 维度 | LLM | Agent |\n|------|-----|-------|\n| 能力 | 生成文本 | 生成文本 + 调用工具 + 观察结果 |\n| 状态 | 无状态（每次对话独立） | 有记忆（记住之前做了什么） |\n| 决策 | 一次性回答 | 多步推理，自主决定下一步 |\n| 边界 | 训练数据截止日期内的知识 | 可以访问实时数据和外部系统 |\n\n此外，ReAct 框架让 LLM 交替进行“思考”和“行动”，通过 Thought（分析状态）、Action（调用工具）、Observation（观察结果）的循环持续进行，直到任务完成 [来源 2]。",
+      "faithfulness": 1.0,
+      "faithfulness_reason": "所有关键声明（LLM仅文本生成、Agent具备工具调用/记忆/多步推理/实时数据访问、ReAct循环机制）均被参考资料明确支持，无泛化或编造。",
+      "precision_at_3": 0.5,
+      "recall_at_3": 0.5,
+      "mrr": 1.0,
+      "ndcg_at_3": 0.6131471927654584,
+      "latency_ms": 4367.880458987202,
+      "llm_usage": {
+        "prompt_tokens": 2979,
+        "completion_tokens": 264,
+        "total_tokens": 3243,
+        "cost_usd": 0.00109473,
+        "calls": 2
+      }
+    },
+    {
+      "config_name": "hybrid_rerank",
+      "question": "一个 Agent 框架通常可以拆成哪几层架构？",
+      "generated_queries": [
+        "一个 Agent 框架通常可以拆成哪几层架构？"
+      ],
+      "retrieved_chunk_ids": [
+        "p1_arch_article::37",
+        "p1_arch_article::0",
+        "p3_framework_article::6"
+      ],
+      "retrieved_source_ids": [
+        "p1_arch_article",
+        "p3_framework_article"
+      ],
+      "answer": "根据参考资料，一个 Agent 框架通常可以拆解为以下六层架构（来源 1）：\n\n1. **执行引擎**：while 循环 + 步骤抽象 + 终止判断 + 错误恢复\n2. **工具系统**：Schema-Driven + 装饰器/类继承注册 + Code/JSON 两种调用路径\n3. **Prompt 引擎**：模板系统 + 动态变量注入 + 消息历史管理\n4. **多 Agent 编排**：Supervisor/Worker + Pipeline + Agent 作为 Tool\n5. **状态与记忆**：执行状态（单次任务）+ 持久记忆（跨任务）\n6. **LLM 适配**：Provider-Agnostic 设计\n\n这些是 Agent 框架的**通用架构模式**，不同框架（如 smolagents 和 langchain）用不同的方式实现了相同的本质。",
+      "faithfulness": 1.0,
+      "faithfulness_reason": "回答中的六层架构及其描述完全来自参考资料[来源1]的总结部分，所有关键声明均有明确支持，无泛化或编造。",
+      "precision_at_3": 0.5,
+      "recall_at_3": 0.3333333333333333,
+      "mrr": 1.0,
+      "ndcg_at_3": 0.46927872602275644,
+      "latency_ms": 4528.629709006054,
+      "llm_usage": {
+        "prompt_tokens": 3216,
+        "completion_tokens": 226,
+        "total_tokens": 3442,
+        "cost_usd": 0.00111692,
+        "calls": 2
+      }
+    },
+    {
+      "config_name": "hybrid_rerank",
+      "question": "工具系统为什么要使用 schema 驱动注册与调用？",
+      "generated_queries": [
+        "工具系统为什么要使用 schema 驱动注册与调用？"
+      ],
+      "retrieved_chunk_ids": [
+        "arch_tool_system::0",
+        "p1_arch_article::17",
+        "p1_arch_article::12"
+      ],
+      "retrieved_source_ids": [
+        "arch_tool_system",
+        "p1_arch_article"
+      ],
+      "answer": "根据参考资料，工具系统使用 schema 驱动注册与调用的原因如下：\n\n1. **LLM 通过 schema 理解工具能力**：Schema 提供了工具的元数据描述（如名称、描述、参数类型等），LLM 通过读取这些 schema 来理解每个工具的功能和调用方式（来源 1）。\n\n2. **保持调用风格一致**：不同 Agent 类型（如 CodeAgent 和 ToolCallingAgent）使用不同的调用格式（函数签名风格或 JSON 风格），Schema 驱动的方式让 LLM 能够根据 Agent 类型生成相应格式的调用代码（来源 2）。\n\n3. **实现自动化注册**：通过装饰器或类继承，可以从函数签名或类定义自动提取参数 schema，无需手动编写工具描述（来源 2）。\n\n参考资料中未提及 schema 驱动的其他原因，如安全性、错误处理或动态管理等方面的具体说明。",
+      "faithfulness": 0.7,
+      "faithfulness_reason": "大部分关键声明能被参考资料支持，但第2点关于'保持调用风格一致'的表述是对来源2的轻微泛化，原文仅描述两种Agent的调用格式差异，未明确说明schema驱动是为了保持风格一致。",
+      "precision_at_3": 1.0,
+      "recall_at_3": 0.6666666666666666,
+      "mrr": 1.0,
+      "ndcg_at_3": 0.7653606369886217,
+      "latency_ms": 5124.280667005223,
+      "llm_usage": {
+        "prompt_tokens": 2458,
+        "completion_tokens": 248,
+        "total_tokens": 2706,
+        "cost_usd": 0.0009364600000000001,
+        "calls": 2
+      }
+    },
+    {
+      "config_name": "hybrid_rerank",
+      "question": "Prompt 引擎在 Agent 中主要解决什么问题？",
+      "generated_queries": [
+        "Prompt 引擎在 Agent 中主要解决什么问题？"
+      ],
+      "retrieved_chunk_ids": [
+        "p1_arch_article::38",
+        "p1_arch_article::19",
+        "p1_arch_article::9"
+      ],
+      "retrieved_source_ids": [
+        "p1_arch_article"
+      ],
+      "answer": "根据参考资料，Prompt 引擎在 Agent 中主要解决 **动态组装** 的问题。具体来说：\n\n- System Prompt 是**模板**（如 Jinja2 或 `{variable}` 格式），不是硬编码的字符串（来源 2）。\n- 工具描述、自定义指令、甚至输出格式都是**运行时注入的变量**（来源 2）。\n- 这使得同一个 Agent 类可以通过不同的 Prompt 模板表现出完全不同的行为（来源 2）。\n\n简而言之，Prompt 引擎解决了 **Agent 行为模式、输出格式、安全边界的动态定义与灵活配置** 问题。",
+      "faithfulness": 0.7,
+      "faithfulness_reason": "回答正确概括了Prompt引擎的动态组装功能，但未提及模板管理、变量注入、消息历史组织和工具描述拼接等具体细节，存在轻微泛化。",
+      "precision_at_3": 1.0,
+      "recall_at_3": 0.5,
+      "mrr": 1.0,
+      "ndcg_at_3": 0.6131471927654584,
+      "latency_ms": 3758.1211249926127,
+      "llm_usage": {
+        "prompt_tokens": 2712,
+        "completion_tokens": 173,
+        "total_tokens": 2885,
+        "cost_usd": 0.0009225400000000001,
+        "calls": 2
+      }
+    },
+    {
+      "config_name": "hybrid_rerank",
+      "question": "Supervisor/Worker 多 Agent 模式适合解决什么问题？",
+      "generated_queries": [
+        "Supervisor/Worker 多 Agent 模式适合解决什么问题？"
+      ],
+      "retrieved_chunk_ids": [
+        "arch_supervisor::0",
+        "p1_arch_article::24",
+        "arch_supervisor::1"
+      ],
+      "retrieved_source_ids": [
+        "arch_supervisor",
+        "p1_arch_article"
+      ],
+      "answer": "根据参考资料，Supervisor/Worker 多 Agent 模式适合解决**真实场景中需要多个 Agent 协作的复杂任务**（来源 2）。该模式通过一个中心化的 Supervisor（通常由 LLM 决策路由）来调度多个专项 Worker Agent，每个 Worker 拥有独立的工具集，负责处理特定子任务，最终由 Supervisor 汇总结果（来源 2）。这种模式的核心优势在于将复杂任务分解为多个可管理的子任务，由专门的 Worker 分别处理，从而提升整体系统的处理能力和灵活性（来源 1）。",
+      "faithfulness": 1.0,
+      "faithfulness_reason": "回答中的关键声明（适合解决复杂任务、Supervisor调度Worker、Worker有专项工具集、结果汇总）均能被参考资料直接支持，无泛化或编造。",
+      "precision_at_3": 1.0,
+      "recall_at_3": 0.5,
+      "mrr": 1.0,
+      "ndcg_at_3": 0.7653606369886217,
+      "latency_ms": 3614.629125004285,
+      "llm_usage": {
+        "prompt_tokens": 2458,
+        "completion_tokens": 165,
+        "total_tokens": 2623,
+        "cost_usd": 0.0008451600000000001,
+        "calls": 2
+      }
+    },
+    {
+      "config_name": "hybrid_rerank",
+      "question": "RAG 主要解决 LLM 的哪几个根本限制？",
+      "generated_queries": [
+        "RAG 主要解决 LLM 的哪几个根本限制？"
+      ],
+      "retrieved_chunk_ids": [
+        "rag_loading::7",
+        "p2_rag_overview::0",
+        "pdf_learning_assistant::12"
+      ],
+      "retrieved_source_ids": [
+        "rag_loading",
+        "p2_rag_overview",
+        "pdf_learning_assistant"
+      ],
+      "answer": "根据参考资料，RAG主要解决LLM的两个根本限制：\n\n1. **知识过时**：模型的知识停留在训练数据的截止日期（来源2、来源3）\n2. **幻觉问题**：当模型不知道答案时，会自信地编造看起来合理的答案（来源2、来源3）\n\n此外，来源2还补充了一个限制：**不了解私有数据**——公司的代码库、客户数据、业务流程等从未出现在LLM的训练集中。",
+      "faithfulness": 1.0,
+      "faithfulness_reason": "待评估回答准确提取了参考资料中关于RAG解决LLM知识过时和幻觉问题的核心声明，并补充了参考资料中提到的私有数据限制，所有关键声明均有来源支持。",
+      "precision_at_3": 0.3333333333333333,
+      "recall_at_3": 0.3333333333333333,
+      "mrr": 0.5,
+      "ndcg_at_3": 0.2960819109658652,
+      "latency_ms": 3300.7424579991493,
+      "llm_usage": {
+        "prompt_tokens": 3109,
+        "completion_tokens": 147,
+        "total_tokens": 3256,
+        "cost_usd": 0.00100113,
+        "calls": 2
+      }
+    },
+    {
+      "config_name": "hybrid_rerank",
+      "question": "RAG 的离线索引阶段包含哪些步骤？",
+      "generated_queries": [
+        "RAG 的离线索引阶段包含哪些步骤？"
+      ],
+      "retrieved_chunk_ids": [
+        "pdf_learning_assistant::14",
+        "pdf_learning_assistant::12",
+        "rag_naive::0"
+      ],
+      "retrieved_source_ids": [
+        "pdf_learning_assistant",
+        "rag_naive"
+      ],
+      "answer": "根据参考资料，RAG 的离线索引阶段包含以下步骤：\n\n1. **文档加载**：支持 PDF、Word、网页等多种格式（来源 2）。\n2. **文本分块**：将长文档切分为适合检索的小块（来源 2）。\n3. **向量化**：使用嵌入模型将文本转换为高维向量（来源 2）。\n4. **存储**：将向量存入向量数据库（如 ChromaDB）（来源 2）。\n\n这些步骤在来源 2 的“2.1 离线索引阶段”中有明确说明，并在来源 3 的“完整 RAG 管道”图示中得到了印证。",
+      "faithfulness": 1.0,
+      "faithfulness_reason": "回答中的每个关键声明（文档加载、文本分块、向量化、存储）都能在参考资料[来源2]的2.1节中找到明确支持，且与人工参考答案一致。",
+      "precision_at_3": 0.0,
+      "recall_at_3": 0.0,
+      "mrr": 0.0,
+      "ndcg_at_3": 0.0,
+      "latency_ms": 3514.746750006452,
+      "llm_usage": {
+        "prompt_tokens": 2760,
+        "completion_tokens": 190,
+        "total_tokens": 2950,
+        "cost_usd": 0.0009542000000000001,
+        "calls": 2
+      }
+    },
+    {
+      "config_name": "hybrid_rerank",
+      "question": "RAG 的在线查询阶段包含哪些步骤？",
+      "generated_queries": [
+        "RAG 的在线查询阶段包含哪些步骤？"
+      ],
+      "retrieved_chunk_ids": [
+        "pdf_learning_assistant::12",
+        "p2_rag_overview::2",
+        "pdf_learning_assistant::14"
+      ],
+      "retrieved_source_ids": [
+        "pdf_learning_assistant",
+        "p2_rag_overview"
+      ],
+      "answer": "根据参考资料，RAG 的在线查询阶段包含以下四个步骤：\n\n1. **查询向量化**：将用户问题转换为向量（来源 1，来源 2）。\n2. **相似度检索**：在向量数据库中找到最相关的文档块（来源 1，来源 2）。\n3. **上下文构建**：将检索结果拼接为 LLM 的上下文（来源 1），即组装成包含参考文档和用户问题的 Prompt（来源 2）。\n4. **生成回答**：LLM 基于上下文生成准确的回答（来源 1，来源 2）。",
+      "faithfulness": 1.0,
+      "faithfulness_reason": "回答中的四个步骤（查询向量化、相似度检索、上下文构建、生成回答）均被参考资料明确支持，且表述准确无泛化。",
+      "precision_at_3": 0.5,
+      "recall_at_3": 0.25,
+      "mrr": 0.5,
+      "ndcg_at_3": 0.2960819109658652,
+      "latency_ms": 3527.2260420024395,
+      "llm_usage": {
+        "prompt_tokens": 3146,
+        "completion_tokens": 168,
+        "total_tokens": 3314,
+        "cost_usd": 0.0010342200000000002,
+        "calls": 2
+      }
+    },
+    {
+      "config_name": "hybrid_rerank",
+      "question": "为什么 chunk_size 和 chunk_overlap 会影响 RAG 效果？",
+      "generated_queries": [
+        "为什么 chunk_size 和 chunk_overlap 会影响 RAG 效果？"
+      ],
+      "retrieved_chunk_ids": [
+        "p2_rag_pipeline::2",
+        "rag_hybrid_basic::2",
+        "rag_chunking::0"
+      ],
+      "retrieved_source_ids": [
+        "p2_rag_pipeline",
+        "rag_hybrid_basic",
+        "rag_chunking"
+      ],
+      "answer": "根据参考资料，chunk_size 和 chunk_overlap 直接影响检索质量，原因如下：\n\n1. **chunk_size（块大小）**：块太大则检索不精确，块太小则丢失上下文（来源 1，来源 3）。\n2. **chunk_overlap（块重叠）**：用于在块边界处留出“缓冲区”，防止一句关键信息正好被切成两半（来源 1）。\n\n这两个参数没有银弹，需要根据场景调整经验值：chunk_size 建议 200-500 字符，chunk_overlap 建议 10%-20%（来源 1）。",
+      "faithfulness": 1.0,
+      "faithfulness_reason": "回答中的所有关键声明（chunk_size影响检索精度和上下文、chunk_overlap防止边界截断、参数建议值）均能被参考资料直接支持，无编造或泛化。",
+      "precision_at_3": 0.6666666666666666,
+      "recall_at_3": 0.6666666666666666,
+      "mrr": 1.0,
+      "ndcg_at_3": 0.7039180890341347,
+      "latency_ms": 3627.932792005595,
+      "llm_usage": {
+        "prompt_tokens": 3088,
+        "completion_tokens": 182,
+        "total_tokens": 3270,
+        "cost_usd": 0.00103396,
+        "calls": 2
+      }
+    },
+    {
+      "config_name": "hybrid_rerank",
+      "question": "文档加载和清洗为什么是 RAG 的上限因素？",
+      "generated_queries": [
+        "文档加载和清洗为什么是 RAG 的上限因素？"
+      ],
+      "retrieved_chunk_ids": [
+        "p2_rag_overview::1",
+        "rag_loading::0",
+        "pdf_learning_assistant::12"
+      ],
+      "retrieved_source_ids": [
+        "p2_rag_overview",
+        "rag_loading",
+        "pdf_learning_assistant"
+      ],
+      "answer": "根据参考资料，文档加载和清洗之所以是 RAG 的上限因素，是因为**清洗质量直接决定后续所有环节的上限**。具体来说，在离线索引阶段的第一步“文本提取与清洗”中，如果 PDF 的表格乱序、网页有导航栏和广告噪声、扫描件需要 OCR 等问题没有得到妥善处理，那么后续的切块、向量化和检索都会基于有缺陷的文本，从而限制整个系统的最终表现（来源 1，source_id=p2_rag_overview）。",
+      "faithfulness": 1.0,
+      "faithfulness_reason": "回答中的关键声明（清洗质量决定后续环节上限、PDF乱序等具体问题）均能被参考资料[来源1]直接支持，无编造或泛化。",
+      "precision_at_3": 0.3333333333333333,
+      "recall_at_3": 0.5,
+      "mrr": 0.5,
+      "ndcg_at_3": 0.38685280723454163,
+      "latency_ms": 3542.293582999264,
+      "llm_usage": {
+        "prompt_tokens": 3288,
+        "completion_tokens": 156,
+        "total_tokens": 3444,
+        "cost_usd": 0.00105936,
+        "calls": 2
+      }
+    },
+    {
+      "config_name": "hybrid_rerank",
+      "question": "Chroma 向量库在基础 RAG 中承担什么职责？",
+      "generated_queries": [
+        "Chroma 向量库在基础 RAG 中承担什么职责？"
+      ],
+      "retrieved_chunk_ids": [
+        "pdf_learning_assistant::12",
+        "rag_optimization_lab::3",
+        "rag_eval_pipeline::2"
+      ],
+      "retrieved_source_ids": [
+        "pdf_learning_assistant",
+        "rag_optimization_lab",
+        "rag_eval_pipeline"
+      ],
+      "answer": "根据提供的参考资料，Chroma 向量库在基础 RAG 中承担**向量存储与检索**的职责。\n\n在 RAG 的离线索引阶段，文档经过文本分块和向量化后，会“将向量存入向量数据库（如 ChromaDB）”[来源 1]。在在线查询阶段，系统会在向量数据库中进行相似度检索，找到最相关的文档块[来源 1]。此外，参考资料还提到 HNSW 算法被 Chroma 等向量数据库广泛采用，用于高效的近似最近邻搜索[来源 2][来源 3]。\n\n因此，Chroma 主要负责存储文档的向量表示，并支持高效的相似度检索，是 RAG 流程中连接索引与查询的核心组件。",
+      "faithfulness": 1.0,
+      "faithfulness_reason": "待评估回答中的关键声明（Chroma负责向量存储与检索、在离线索引阶段存储向量、在线查询阶段进行相似度检索、采用HNSW算法）均能被参考资料[来源1][来源2][来源3]明确支持，没有编造或泛化内容。",
+      "precision_at_3": 0.0,
+      "recall_at_3": 0.0,
+      "mrr": 0.0,
+      "ndcg_at_3": 0.0,
+      "latency_ms": 4503.665333002573,
+      "llm_usage": {
+        "prompt_tokens": 3340,
+        "completion_tokens": 226,
+        "total_tokens": 3566,
+        "cost_usd": 0.0011504000000000002,
+        "calls": 2
+      }
+    },
+    {
+      "config_name": "hybrid_rerank",
+      "question": "Naive RAG 的主要局限性有哪些？",
+      "generated_queries": [
+        "Naive RAG 的主要局限性有哪些？"
+      ],
+      "retrieved_chunk_ids": [
+        "rag_naive::8",
+        "rag_naive::0",
+        "rag_naive::7"
+      ],
+      "retrieved_source_ids": [
+        "rag_naive"
+      ],
+      "answer": "根据参考资料，Naive RAG 的主要局限性包括以下五点（来源 1，score=4.0435）：\n\n1. **检索质量**：语义搜索可能遗漏关键文档，尤其是查询和文档用词不同时。\n2. **上下文窗口**：检索到的文档可能超出 LLM 上下文限制。\n3. **信息整合**：答案可能需要综合多个文档，但 Naive RAG 只是简单拼接。\n4. **查询理解**：用户的问题可能模糊或多义，直接检索效果差。\n5. **排序质量**：向量相似度不等于相关性，需要重排序。\n\n这些局限性将在高级 RAG 中逐一解决。",
+      "faithfulness": 1.0,
+      "faithfulness_reason": "待评估回答中的五点局限性均直接来源于参考资料中 show_limitations 函数的描述，且最后一句关于高级 RAG 解决的说明也与参考资料一致，无任何编造或泛化。",
+      "precision_at_3": 1.0,
+      "recall_at_3": 0.3333333333333333,
+      "mrr": 1.0,
+      "ndcg_at_3": 0.46927872602275644,
+      "latency_ms": 3536.2712500063935,
+      "llm_usage": {
+        "prompt_tokens": 2297,
+        "completion_tokens": 190,
+        "total_tokens": 2487,
+        "cost_usd": 0.0008291900000000002,
+        "calls": 2
+      }
+    },
+    {
+      "config_name": "hybrid_rerank",
+      "question": "BM25 和向量检索分别擅长什么？",
+      "generated_queries": [
+        "BM25 和向量检索分别擅长什么？"
+      ],
+      "retrieved_chunk_ids": [
+        "ragas_from_scratch::3",
+        "rag_ragas_intro::3",
+        "p2_hybrid_article::1"
+      ],
+      "retrieved_source_ids": [
+        "ragas_from_scratch",
+        "rag_ragas_intro",
+        "p2_hybrid_article"
+      ],
+      "answer": "根据参考资料，BM25 和向量检索的区别如下：\n\n- **BM25** 是经典的稀疏检索算法，基于词频-逆文档频率来计算相关性，擅长精确的关键词匹配（来源 1，来源 2）。\n- **向量检索** 将文本编码为高维向量，通过余弦相似度衡量语义相关性，能捕获文本的深层语义关系（来源 1，来源 2）。\n\n两者互补，混合使用效果最好（来源 1，来源 2）。",
+      "faithfulness": 1.0,
+      "faithfulness_reason": "回答中的关键声明（BM25擅长精确关键词匹配、向量检索擅长语义相似度、两者互补）均能被参考资料直接支持，无编造或泛化。",
+      "precision_at_3": 0.3333333333333333,
+      "recall_at_3": 0.3333333333333333,
+      "mrr": 0.3333333333333333,
+      "ndcg_at_3": 0.23463936301137822,
+      "latency_ms": 3363.3873750077328,
+      "llm_usage": {
+        "prompt_tokens": 3137,
+        "completion_tokens": 150,
+        "total_tokens": 3287,
+        "cost_usd": 0.00101199,
+        "calls": 2
+      }
+    },
+    {
+      "config_name": "hybrid_rerank",
+      "question": "混合检索为什么通常比单一检索更稳？",
+      "generated_queries": [
+        "混合检索为什么通常比单一检索更稳？"
+      ],
+      "retrieved_chunk_ids": [
+        "p2_hybrid_article::0",
+        "p2_hybrid_article::5",
+        "p2_rag_pipeline::7"
+      ],
+      "retrieved_source_ids": [
+        "p2_hybrid_article",
+        "p2_rag_pipeline"
+      ],
+      "answer": "根据参考资料，混合检索通常比单一检索更稳，原因如下：\n\n1. **互补性**：混合检索结合了 BM25（基于精确关键词匹配）和向量检索（基于语义匹配），两者互补。纯向量检索在精确关键词匹配、专有名词和短查询上表现不佳，而 BM25 无法理解同义词和语义关系（来源 1，score=1.4589）。\n\n2. **高召回率粗筛**：混合检索作为“粗筛”阶段，能兼顾关键词和语义，提高召回率，为后续重排序提供更全面的候选文档（来源 2，score=1.2633）。\n\n3. **系统化管道**：在完整 RAG 管道中，混合检索后接 Cross-Encoder 重排序，实现“粗筛 + 精排”，确保最终上下文质量更高、更稳定（来源 2，score=1.2633；来源 3，score=0.8789）。\n\n因此，混合检索通过多维度覆盖和管道协同，提升了检索的稳定性和准确性。",
+      "faithfulness": 1.0,
+      "faithfulness_reason": "所有关键声明（互补性、高召回率粗筛、系统化管道）均能被参考资料直接支持，无泛化或编造。",
+      "precision_at_3": 0.5,
+      "recall_at_3": 0.3333333333333333,
+      "mrr": 1.0,
+      "ndcg_at_3": 0.46927872602275644,
+      "latency_ms": 5357.358542009024,
+      "llm_usage": {
+        "prompt_tokens": 3479,
+        "completion_tokens": 265,
+        "total_tokens": 3744,
+        "cost_usd": 0.00123083,
+        "calls": 2
+      }
+    },
+    {
+      "config_name": "hybrid_rerank",
+      "question": "RRF 排序融合的作用是什么？",
+      "generated_queries": [
+        "RRF 排序融合的作用是什么？"
+      ],
+      "retrieved_chunk_ids": [
+        "p2_rag_pipeline::6",
+        "rag_optimization_lab::3",
+        "p2_hybrid_article::2"
+      ],
+      "retrieved_source_ids": [
+        "p2_rag_pipeline",
+        "rag_optimization_lab",
+        "p2_hybrid_article"
+      ],
+      "answer": "根据参考资料，RRF（Reciprocal Rank Fusion）是一种排序融合算法，其作用是**通过倒数排名加权将多个检索器的结果合并，不需要对分数做归一化**[来源 2]。它解决了BM25打分和余弦相似度打分量纲不同、无法直接加权的问题，因为RRF只看排名不看分数，从而彻底避开了归一化问题[来源 1]。",
+      "faithfulness": 1.0,
+      "faithfulness_reason": "所有关键声明（RRF通过倒数排名加权合并多个检索器结果、不需要分数归一化、解决量纲不同问题）均能被参考资料直接支持。",
+      "precision_at_3": 0.3333333333333333,
+      "recall_at_3": 0.25,
+      "mrr": 0.3333333333333333,
+      "ndcg_at_3": 0.23463936301137822,
+      "latency_ms": 2896.336000005249,
+      "llm_usage": {
+        "prompt_tokens": 3091,
+        "completion_tokens": 127,
+        "total_tokens": 3218,
+        "cost_usd": 0.0009742700000000001,
+        "calls": 2
+      }
+    },
+    {
+      "config_name": "hybrid_rerank",
+      "question": "Cross-Encoder 重排序为什么更准但更慢？",
+      "generated_queries": [
+        "Cross-Encoder 重排序为什么更准但更慢？"
+      ],
+      "retrieved_chunk_ids": [
+        "rag_ragas_intro::4",
+        "p2_hybrid_article::3",
+        "ragas_from_scratch::3"
+      ],
+      "retrieved_source_ids": [
+        "rag_ragas_intro",
+        "p2_hybrid_article",
+        "ragas_from_scratch"
+      ],
+      "answer": "根据参考资料，Cross-Encoder 重排序更准是因为它能同时编码查询和文档，捕获查询和文档之间的**细粒度交互信息**，精度远高于 Bi-Encoder（来源 1、来源 2）。更慢是因为其计算成本是 O(n)（n = 候选数），只能用于少量候选的精排，不能直接对全量文档使用（来源 2）。",
+      "faithfulness": 1.0,
+      "faithfulness_reason": "回答中的所有关键声明（更准的原因、更慢的原因）均能被参考资料直接支持，没有编造或泛化。",
+      "precision_at_3": 0.3333333333333333,
+      "recall_at_3": 0.25,
+      "mrr": 0.5,
+      "ndcg_at_3": 0.2960819109658652,
+      "latency_ms": 3929.659832996549,
+      "llm_usage": {
+        "prompt_tokens": 2681,
+        "completion_tokens": 121,
+        "total_tokens": 2802,
+        "cost_usd": 0.0008569700000000001,
+        "calls": 2
+      }
+    },
+    {
+      "config_name": "hybrid_rerank",
+      "question": "两阶段检索管道通常如何组织？",
+      "generated_queries": [
+        "两阶段检索管道通常如何组织？"
+      ],
+      "retrieved_chunk_ids": [
+        "rag_reranking::4",
+        "p2_rag_pipeline::6",
+        "rag_reranking::0"
+      ],
+      "retrieved_source_ids": [
+        "rag_reranking",
+        "p2_rag_pipeline"
+      ],
+      "answer": "根据参考资料，两阶段检索管道的组织方式如下：\n\n1. **第一阶段：粗检索**  \n   使用 Bi-Encoder 或 BM25 从全量文档（如1万+篇）中快速筛选出约20个候选文档。这一阶段速度快、召回率高（来源2、来源3）。\n\n2. **第二阶段：重排序（精排）**  \n   使用 Cross-Encoder 对第一阶段筛选出的约20个候选文档进行精确排序，选出Top 3-5个最相关的文档。Cross-Encoder 将查询和文档拼接后输入模型，精度高但速度慢，因此只适用于小规模候选集（来源2、来源3）。\n\n3. **最终输出**  \n   将重排序后的Top 3-5个文档送入LLM生成回答（来源2、来源3）。\n\n这种“粗筛 + 精排”的架构在搜索系统中已使用多年，RAG 也不例外（来源2）。",
+      "faithfulness": 1.0,
+      "faithfulness_reason": "所有关键声明（第一阶段粗检索使用Bi-Encoder/BM25筛选约20个候选，第二阶段使用Cross-Encoder精排选出Top 3-5，最终送入LLM）均能被参考资料明确支持。",
+      "precision_at_3": 0.0,
+      "recall_at_3": 0.0,
+      "mrr": 0.0,
+      "ndcg_at_3": 0.0,
+      "latency_ms": 5451.218707996304,
+      "llm_usage": {
+        "prompt_tokens": 2863,
+        "completion_tokens": 256,
+        "total_tokens": 3119,
+        "cost_usd": 0.00105461,
+        "calls": 2
+      }
+    },
+    {
+      "config_name": "hybrid_rerank",
+      "question": "HyDE 查询改写的基本思想是什么？",
+      "generated_queries": [
+        "HyDE 查询改写的基本思想是什么？"
+      ],
+      "retrieved_chunk_ids": [
+        "rag_query_transform::0",
+        "p2_rag_pipeline::7",
+        "p2_hybrid_article::4"
+      ],
+      "retrieved_source_ids": [
+        "rag_query_transform",
+        "p2_rag_pipeline",
+        "p2_hybrid_article"
+      ],
+      "answer": "根据参考资料，HyDE（Hypothetical Document Embeddings）查询改写的基本思想是：**先让 LLM 生成一个假设性的答案，然后用这个假设答案的向量去检索**。因为 LLM 生成的“答案”在表述风格上更接近知识库里的文档，比用户的口语化问题更容易命中相关文档（来源 2、来源 3）。",
+      "faithfulness": 1.0,
+      "faithfulness_reason": "待评估回答中的关键声明（先让LLM生成假设性答案，再用该答案的向量去检索，以及解释其弥合语义鸿沟的原理）均能被参考资料[来源2]和[来源3]明确支持，无编造或泛化。",
+      "precision_at_3": 0.6666666666666666,
+      "recall_at_3": 0.6666666666666666,
+      "mrr": 1.0,
+      "ndcg_at_3": 0.7039180890341347,
+      "latency_ms": 3182.6065839995863,
+      "llm_usage": {
+        "prompt_tokens": 3028,
+        "completion_tokens": 148,
+        "total_tokens": 3176,
+        "cost_usd": 0.00098036,
+        "calls": 2
+      }
+    },
+    {
+      "config_name": "hybrid_rerank",
+      "question": "Multi-Query 扩展如何提升召回率？",
+      "generated_queries": [
+        "Multi-Query 扩展如何提升召回率？"
+      ],
+      "retrieved_chunk_ids": [
+        "rag_full_pipeline::3",
+        "rag_query_transform::2",
+        "rag_eval_pipeline::2"
+      ],
+      "retrieved_source_ids": [
+        "rag_full_pipeline",
+        "rag_query_transform",
+        "rag_eval_pipeline"
+      ],
+      "answer": "根据参考资料，多查询扩展（Multi-Query Expansion）通过将用户的一个问题改写为多个不同角度的查询，并行检索后合并去重，从而提高召回率（来源 1、来源 3）。",
+      "faithfulness": 1.0,
+      "faithfulness_reason": "待评估回答中的关键声明（将问题改写为多个不同角度的查询、并行检索后合并去重、提高召回率）均能被参考资料直接支持，无泛化或编造。",
+      "precision_at_3": 0.6666666666666666,
+      "recall_at_3": 0.6666666666666666,
+      "mrr": 1.0,
+      "ndcg_at_3": 0.7653606369886217,
+      "latency_ms": 2575.719417000073,
+      "llm_usage": {
+        "prompt_tokens": 2711,
+        "completion_tokens": 98,
+        "total_tokens": 2809,
+        "cost_usd": 0.0008397700000000001,
+        "calls": 2
+      }
+    },
+    {
+      "config_name": "hybrid_rerank",
+      "question": "RAGAS 的四个核心指标是什么？",
+      "generated_queries": [
+        "RAGAS 的四个核心指标是什么？"
+      ],
+      "retrieved_chunk_ids": [
+        "ragas_from_scratch::4",
+        "p2_hybrid_article::6",
+        "rag_ragas_intro::0"
+      ],
+      "retrieved_source_ids": [
+        "ragas_from_scratch",
+        "p2_hybrid_article",
+        "rag_ragas_intro"
+      ],
+      "answer": "根据参考资料，RAGAS 框架的四个核心评估指标是：\n\n1.  **忠实度 (Faithfulness)**：衡量回答是否基于检索到的上下文（来源 1, 来源 2, 来源 3）。\n2.  **答案相关性 (Answer Relevancy)**：衡量回答是否切题（来源 1, 来源 2, 来源 3）。\n3.  **上下文精确度 (Context Precision)**：衡量检索结果中相关文档的比例（来源 1, 来源 2）。\n4.  **上下文召回率 (Context Recall)**：衡量是否检索到了所有需要的信息（来源 1, 来源 2）。",
+      "faithfulness": 1.0,
+      "faithfulness_reason": "回答中的四个核心指标及其定义均能在参考资料中找到明确支持，无编造或泛化。",
+      "precision_at_3": 1.0,
+      "recall_at_3": 0.75,
+      "mrr": 1.0,
+      "ndcg_at_3": 1.0,
+      "latency_ms": 4422.523000001092,
+      "llm_usage": {
+        "prompt_tokens": 2526,
+        "completion_tokens": 173,
+        "total_tokens": 2699,
+        "cost_usd": 0.0008723200000000001,
+        "calls": 2
+      }
+    },
+    {
+      "config_name": "hybrid_rerank",
+      "question": "Faithfulness 低通常意味着什么，应该怎么优化？",
+      "generated_queries": [
+        "Faithfulness 低通常意味着什么，应该怎么优化？"
+      ],
+      "retrieved_chunk_ids": [
+        "p2_hybrid_article::7",
+        "p2_hybrid_article::11",
+        "p2_rag_overview::13"
+      ],
+      "retrieved_source_ids": [
+        "p2_hybrid_article",
+        "p2_rag_overview"
+      ],
+      "answer": "根据参考资料，Faithfulness（忠实度）低意味着**LLM在编造信息**，回答中的声明无法在检索到的文档中找到依据。\n\n优化方向是：**强化 Prompt（强调“只基于上下文回答”）**，以及**减少 temperature**（来源 1，来源 3）。",
+      "faithfulness": 1.0,
+      "faithfulness_reason": "回答中的关键声明（Faithfulness低意味着LLM编造信息、优化方向包括强化Prompt和减少temperature）均能被参考资料[来源1]和[来源3]明确支持，无编造或泛化。",
+      "precision_at_3": 0.5,
+      "recall_at_3": 0.3333333333333333,
+      "mrr": 1.0,
+      "ndcg_at_3": 0.46927872602275644,
+      "latency_ms": 2886.7413330008276,
+      "llm_usage": {
+        "prompt_tokens": 3142,
+        "completion_tokens": 121,
+        "total_tokens": 3263,
+        "cost_usd": 0.00098144,
+        "calls": 2
+      }
+    },
+    {
+      "config_name": "hybrid_rerank",
+      "question": "Context Precision 和 Context Recall 分别衡量什么？",
+      "generated_queries": [
+        "Context Precision 和 Context Recall 分别衡量什么？"
+      ],
+      "retrieved_chunk_ids": [
+        "ragas_from_scratch::4",
+        "p2_hybrid_article::8",
+        "p2_rag_overview::13"
+      ],
+      "retrieved_source_ids": [
+        "ragas_from_scratch",
+        "p2_hybrid_article",
+        "p2_rag_overview"
+      ],
+      "answer": "根据参考资料，Context Precision（上下文精确度）衡量的是“检索到的文档中，有多少是真正有用的”，即相关文档数除以检索文档总数（来源 2）。Context Recall（上下文召回率）衡量的是“回答问题所需的所有信息是否都被检索到了”，即被覆盖的信息点数除以总信息点数（来源 2）。",
+      "faithfulness": 1.0,
+      "faithfulness_reason": "回答中的关键声明均能被参考资料直接支持，没有泛化或编造。",
+      "precision_at_3": 0.6666666666666666,
+      "recall_at_3": 0.5,
+      "mrr": 1.0,
+      "ndcg_at_3": 0.7653606369886217,
+      "latency_ms": 2536.5647919970797,
+      "llm_usage": {
+        "prompt_tokens": 2961,
+        "completion_tokens": 99,
+        "total_tokens": 3060,
+        "cost_usd": 0.0009083700000000001,
+        "calls": 2
+      }
+    },
+    {
+      "config_name": "hybrid_rerank",
+      "question": "为什么要用 Precision@K、Recall@K、MRR 和 NDCG 评估检索？",
+      "generated_queries": [
+        "为什么要用 Precision@K、Recall@K、MRR 和 NDCG 评估检索？"
+      ],
+      "retrieved_chunk_ids": [
+        "rag_eval_pipeline::0",
+        "rag_eval_pipeline::8",
+        "p2_rag_overview::13"
+      ],
+      "retrieved_source_ids": [
+        "rag_eval_pipeline",
+        "p2_rag_overview"
+      ],
+      "answer": "根据参考资料，Precision@K、Recall@K、MRR 和 NDCG 是用于评估检索效果的经典 IR（信息检索）指标。参考资料中提到了这些指标的定义，但并未明确说明“为什么要用”这些指标的具体原因。\n\n不过，参考资料[来源 3]中提到了评估 RAG 系统的核心维度，其中 **Context Precision（上下文精确度）** 和 **Context Recall（上下文召回率）** 分别衡量检索结果中相关文档的比例和是否检索到了所有需要的信息。这与 Precision@K 和 Recall@K 的评估目标一致，说明这些指标用于量化检索质量，以便对比不同配置、发现薄弱环节和持续监控（来源 3，section 6.1-6.2）。\n\n**总结：** 参考资料未直接解释“为什么要用”这些指标，但指出它们用于量化检索效果，是评估和优化 RAG 系统的基础（来源 3）。如需更深入的原因分析，参考资料不足，无法进一步说明。",
+      "faithfulness": 0.7,
+      "faithfulness_reason": "回答正确指出这些是经典IR指标，并引用了来源3中关于量化检索质量的说明，但未提及人工参考答案中'避免凭感觉调参'这一关键目的，存在轻微泛化",
+      "precision_at_3": 0.5,
+      "recall_at_3": 0.3333333333333333,
+      "mrr": 1.0,
+      "ndcg_at_3": 0.46927872602275644,
+      "latency_ms": 4772.285125000053,
+      "llm_usage": {
+        "prompt_tokens": 2720,
+        "completion_tokens": 264,
+        "total_tokens": 2984,
+        "cost_usd": 0.0010248000000000002,
+        "calls": 2
+      }
+    },
+    {
+      "config_name": "hybrid_rerank",
+      "question": "参数扫描在 RAG 优化中有什么价值？",
+      "generated_queries": [
+        "参数扫描在 RAG 优化中有什么价值？"
+      ],
+      "retrieved_chunk_ids": [
+        "rag_optimization_lab::0",
+        "p2_hybrid_article::7",
+        "p2_hybrid_article::5"
+      ],
+      "retrieved_source_ids": [
+        "rag_optimization_lab",
+        "p2_hybrid_article"
+      ],
+      "answer": "根据参考资料，参数扫描（parameter sweep）在 RAG 优化中的价值是：**自动寻找最优配置**。参考资料 [来源 1] 明确指出，参数扫描的目标是“实现参数扫描（parameter sweep）自动寻找最优配置”，并“用评估指标驱动优化决策”。此外，[来源 3] 也强调了系统化评估的重要性，指出没有量化评估，无法判断系统在调参后是进步还是退步。",
+      "faithfulness": 0.7,
+      "faithfulness_reason": "回答正确指出参数扫描用于自动寻找最优配置，但未提及参考资料中明确提到的比较 retriever_type、first_stage_k、final_k、rerank 等具体参数对质量、延迟和成本的影响，存在轻微泛化。",
+      "precision_at_3": 1.0,
+      "recall_at_3": 1.0,
+      "mrr": 1.0,
+      "ndcg_at_3": 1.0,
+      "latency_ms": 3369.4866669975454,
+      "llm_usage": {
+        "prompt_tokens": 3028,
+        "completion_tokens": 157,
+        "total_tokens": 3185,
+        "cost_usd": 0.00099026,
+        "calls": 2
+      }
+    },
+    {
+      "config_name": "hybrid_rerank",
+      "question": "Agent 记忆系统可以分成哪些类型？",
+      "generated_queries": [
+        "Agent 记忆系统可以分成哪些类型？"
+      ],
+      "retrieved_chunk_ids": [
+        "p1_arch_article::30",
+        "rag_loading::6",
+        "arch_memory::4"
+      ],
+      "retrieved_source_ids": [
+        "p1_arch_article",
+        "rag_loading",
+        "arch_memory"
+      ],
+      "answer": "根据参考资料，Agent 的记忆系统可以分为两个层次：\n\n1. **执行状态**（单次任务）：记录当前任务的步骤历史、中间结果。框架实现包括 smolagents 的 `AgentMemory` 和 langgraph 的 `AgentState`（来源 1，source_id=p1_arch_article）。\n\n2. **持久记忆**（跨任务）：记录用户偏好、历史对话摘要、知识库。框架实现包括 langchain 的 `Memory` 抽象，而 smolagents 暂无内置支持（来源 1，source_id=p1_arch_article）。\n\n此外，参考资料还提到持久记忆通常需要结合向量数据库（RAG）来实现（来源 1，source_id=p1_arch_article）。",
+      "faithfulness": 1.0,
+      "faithfulness_reason": "回答中的关键声明（执行状态和持久记忆两个层次及其生命周期、内容、框架实现）均直接来源于参考资料[1]，且未添加额外信息或泛化。",
+      "precision_at_3": 0.0,
+      "recall_at_3": 0.0,
+      "mrr": 0.0,
+      "ndcg_at_3": 0.0,
+      "latency_ms": 3840.4710829927353,
+      "llm_usage": {
+        "prompt_tokens": 2689,
+        "completion_tokens": 203,
+        "total_tokens": 2892,
+        "cost_usd": 0.00094933,
+        "calls": 2
+      }
+    },
+    {
+      "config_name": "hybrid_rerank",
+      "question": "记忆生命周期管理通常包含哪些机制？",
+      "generated_queries": [
+        "记忆生命周期管理通常包含哪些机制？"
+      ],
+      "retrieved_chunk_ids": [
+        "memory_lifecycle::0",
+        "memory_system::0",
+        "p1_arch_article::30"
+      ],
+      "retrieved_source_ids": [
+        "memory_lifecycle",
+        "memory_system",
+        "p1_arch_article"
+      ],
+      "answer": "根据参考资料，记忆生命周期管理包含以下机制：\n\n1. **整合（Consolidation）**：将重要的短期记忆提升为长期记忆。具体路径包括：\n   - 工作记忆 → 情景记忆（当重要性 > 0.7 时）\n   - 情景记忆 → 语义记忆（当访问次数 > 5 时）[来源 1]\n\n2. **遗忘（Forgetting）**：清理低价值记忆，保持系统高效。包含三种策略：\n   - 基于重要性\n   - 基于时间\n   - 基于容量 [来源 1]\n\n3. **评分（Scoring）**：采用多因素综合评分（如时间衰减评分，使用指数衰减模型模拟艾宾浩斯遗忘曲线），决定记忆的检索优先级 [来源 1]\n\n完整的生命周期流程为：**编码 → 存储 → 检索 → 整合 → 遗忘** [来源 1]",
+      "faithfulness": 1.0,
+      "faithfulness_reason": "所有关键声明（整合、遗忘、评分机制及生命周期流程）均能被参考资料[来源1]直接支持，无泛化或编造。",
+      "precision_at_3": 0.6666666666666666,
+      "recall_at_3": 1.0,
+      "mrr": 1.0,
+      "ndcg_at_3": 1.0,
+      "latency_ms": 4403.416707995348,
+      "llm_usage": {
+        "prompt_tokens": 2778,
+        "completion_tokens": 235,
+        "total_tokens": 3013,
+        "cost_usd": 0.00100856,
+        "calls": 2
+      }
+    },
+    {
+      "config_name": "hybrid_rerank",
+      "question": "统一检索如何把知识库和记忆结合起来？",
+      "generated_queries": [
+        "统一检索如何把知识库和记忆结合起来？"
+      ],
+      "retrieved_chunk_ids": [
+        "memory_enhanced_rag::0",
+        "p2_rag_overview::4",
+        "unified_retrieval::0"
+      ],
+      "retrieved_source_ids": [
+        "memory_enhanced_rag",
+        "p2_rag_overview",
+        "unified_retrieval"
+      ],
+      "answer": "根据提供的参考资料，**无法直接回答“统一检索如何把知识库和记忆结合起来”这个问题**。\n\n参考资料中：\n- [来源 1] 描述了 Memory + RAG 的集成架构，其中统一检索（Unified Search）会接收“检索文档 + 记忆上下文”，但未说明统一检索内部如何具体结合知识库和记忆。\n- [来源 3] 详细介绍了统一检索（MQE + HyDE）的流程，但该流程仅涉及对用户查询的扩展和向量检索，**未提及如何将记忆系统（如情景/语义记忆）与知识库检索结果进行融合**。\n\n因此，现有资料不足以解释统一检索在内部如何将知识库与记忆结合起来。如需了解具体实现，建议查阅更详细的代码或文档。",
+      "faithfulness": 0.0,
+      "faithfulness_reason": "待评估回答声称无法回答，但参考资料[来源1]明确描述了统一检索接收‘检索文档+记忆上下文’的融合机制，属于编造性否定。",
+      "precision_at_3": 0.6666666666666666,
+      "recall_at_3": 0.6666666666666666,
+      "mrr": 1.0,
+      "ndcg_at_3": 0.7039180890341347,
+      "latency_ms": 3781.4033750037197,
+      "llm_usage": {
+        "prompt_tokens": 3090,
+        "completion_tokens": 211,
+        "total_tokens": 3301,
+        "cost_usd": 0.0010664,
+        "calls": 2
+      }
+    },
+    {
+      "config_name": "hybrid_rerank",
+      "question": "PDF 学习助手如何结合 RAG 和记忆？",
+      "generated_queries": [
+        "PDF 学习助手如何结合 RAG 和记忆？"
+      ],
+      "retrieved_chunk_ids": [
+        "pdf_learning_assistant::0",
+        "pdf_learning_assistant::17",
+        "pdf_learning_assistant::18"
+      ],
+      "retrieved_source_ids": [
+        "pdf_learning_assistant"
+      ],
+      "answer": "根据参考资料，PDF 学习助手通过以下方式结合 RAG 和记忆：\n\n1. **整合架构**：将记忆系统、生命周期、统一检索和 RAG 整合为完整应用（来源 1）。\n2. **记忆增强问答**：使用 `MemoryRAG.query()` 进行提问，而非直接向量检索（来源 1）。\n3. **记忆存储与检索**：\n   - 通过 `add_note()` 将笔记存储为语义记忆（来源 1）。\n   - 通过 `review()` 检索记忆并结合 LLM 总结（来源 1）。\n4. **对比效果**：代码中对比了“无记忆 RAG”（直接向量检索）与“有记忆 RAG”（结合工作记忆、情景记忆、语义记忆）的回答差异（来源 2、3）。\n\n总结：助手在 RAG 基础上叠加了多类型记忆（工作、情景、语义），使问答能利用历史交互积累的知识，而非仅依赖当前检索到的文档片段。",
+      "faithfulness": 1.0,
+      "faithfulness_reason": "所有关键声明均能被参考资料支持，包括整合架构、记忆增强问答、记忆存储与检索以及对比效果，无泛化或编造。",
+      "precision_at_3": 1.0,
+      "recall_at_3": 0.25,
+      "mrr": 1.0,
+      "ndcg_at_3": 0.46927872602275644,
+      "latency_ms": 4731.053541996516,
+      "llm_usage": {
+        "prompt_tokens": 2427,
+        "completion_tokens": 252,
+        "total_tokens": 2679,
+        "cost_usd": 0.00093249,
+        "calls": 2
+      }
+    },
+    {
+      "config_name": "hybrid_rerank",
+      "question": "LangGraph 为什么适合复杂 Agent 工作流？",
+      "generated_queries": [
+        "LangGraph 为什么适合复杂 Agent 工作流？"
+      ],
+      "retrieved_chunk_ids": [
+        "p3_langgraph_article::0",
+        "p3_langgraph_article::1",
+        "p3_framework_article::4"
+      ],
+      "retrieved_source_ids": [
+        "p3_langgraph_article",
+        "p3_framework_article"
+      ],
+      "answer": "根据参考资料，LangGraph 适合复杂 Agent 工作流的原因在于其核心设计哲学：**将控制流从代码逻辑中分离出来，把 Agent 工作流建模为有向图（状态机），而不是传统的 while 循环**[来源 1][来源 2]。\n\n具体来说，while 循环在处理复杂流程时有三个致命问题：无法暂停、状态隐式不可恢复、流程不可见[来源 2]。而 LangGraph 通过 `StateGraph` 将控制流作为“一等公民”，用节点（处理函数）和边（控制流）来显式定义工作流[来源 2]。这使得工作流可以“暂停-等待-恢复”，状态结构化且可持久化，执行流程清晰可见，从而解决了复杂场景下的可维护性和可控性问题[来源 1][来源 2]。\n\n此外，参考资料指出，LangGraph 适合“这个 Agent 六个月后还需要改”的场景，其声明式控制换取了可维护性[来源 3]。",
+      "faithfulness": 1.0,
+      "faithfulness_reason": "所有关键声明（将控制流从代码逻辑中分离、建模为有向图/状态机、解决while循环的三大问题、适合长期维护场景）均能被参考资料直接支持。",
+      "precision_at_3": 1.0,
+      "recall_at_3": 1.0,
+      "mrr": 1.0,
+      "ndcg_at_3": 1.0,
+      "latency_ms": 4763.401417003479,
+      "llm_usage": {
+        "prompt_tokens": 3243,
+        "completion_tokens": 259,
+        "total_tokens": 3502,
+        "cost_usd": 0.00116051,
+        "calls": 2
+      }
+    },
+    {
+      "config_name": "hybrid_rerank",
+      "question": "不同 Agent 框架应该从哪些维度对比？",
+      "generated_queries": [
+        "不同 Agent 框架应该从哪些维度对比？"
+      ],
+      "retrieved_chunk_ids": [
+        "p3_framework_article::0",
+        "p3_multi_agent_article::0",
+        "p1_arch_article::0"
+      ],
+      "retrieved_source_ids": [
+        "p3_framework_article",
+        "p3_multi_agent_article",
+        "p1_arch_article"
+      ],
+      "answer": "根据参考资料，可以从以下维度对比不同 Agent 框架：\n\n1. **框架隐藏了什么**：框架的本质是抽象，隐藏了复杂度。例如 LangGraph 隐藏了执行循环、状态持久化和检查点管理（来源 1）。\n2. **框架暴露了什么**：即框架允许用户控制哪些部分（来源 1）。\n3. **当需求超出框架预设时，是否有退路**：即框架的灵活性和扩展性（来源 1）。\n4. **功能如何实现，而非功能是否存在**：例如“多 Agent 支持”在不同框架中实现哲学完全不同——LangGraph 是图节点间的条件路由，CrewAI 是角色间的隐式上下文传递（来源 1）。\n5. **设计范式差异**：不同框架采用不同的协作范式，如 LangGraph 的“图纸思维”（先定义结构再执行）、CrewAI 的“角色分工”（先定义角色再协作）、Claude SDK 的“自主决策”（步步为营）（来源 2）。\n\n参考资料未提供其他对比维度（如性能、易用性、社区支持等），因此无法补充。",
+      "faithfulness": 0.7,
+      "faithfulness_reason": "回答准确提取了参考资料中的关键对比维度（隐藏/暴露、实现方式、范式差异），但未包含人工参考答案中的状态管理、工作流可控性、调试可观测性等维度，存在轻微泛化遗漏。",
+      "precision_at_3": 0.6666666666666666,
+      "recall_at_3": 0.6666666666666666,
+      "mrr": 1.0,
+      "ndcg_at_3": 0.7653606369886217,
+      "latency_ms": 5140.702999997302,
+      "llm_usage": {
+        "prompt_tokens": 3248,
+        "completion_tokens": 292,
+        "total_tokens": 3540,
+        "cost_usd": 0.0011981600000000002,
+        "calls": 2
+      }
+    },
+    {
+      "config_name": "query_transform_rerank",
+      "question": "ReAct Agent 和普通 LLM 对话的核心区别是什么？",
+      "generated_queries": [
+        "ReAct Agent 和普通 LLM 对话的核心区别是什么？",
+        "ReAct Agent 与普通 LLM 对话的主要差异",
+        "ReAct 智能体和标准大语言模型对话机制的区别",
+        "ReAct Agent 相比普通 LLM 对话的核心特点"
+      ],
+      "retrieved_chunk_ids": [
+        "p1_react_article::0",
+        "rag_loading::6",
+        "rag_embedding_store::4"
+      ],
+      "retrieved_source_ids": [
+        "p1_react_article",
+        "rag_loading",
+        "rag_embedding_store"
+      ],
+      "answer": "根据参考资料，ReAct Agent 和普通 LLM 对话的核心区别在于：\n\n1. **能力不同**：LLM 只能生成文本，而 Agent 能生成文本 + 调用工具 + 观察结果（来源 1）。\n2. **状态不同**：LLM 无状态（每次对话独立），Agent 有记忆（记住之前做了什么）（来源 1）。\n3. **决策方式不同**：LLM 一次性回答，Agent 多步推理，自主决定下一步（来源 1）。\n4. **知识边界不同**：LLM 受限于训练数据截止日期，Agent 可以访问实时数据和外部系统（来源 1）。\n\n此外，ReAct 框架让 LLM 交替进行“思考”和“行动”，通过 Thought → Action → Observation 循环持续进行，直到任务完成，而普通 LLM 对话没有这种循环机制（来源 2）。",
+      "faithfulness": 1.0,
+      "faithfulness_reason": "待评估回答中的所有关键声明均能被参考资料直接支持，包括能力、状态、决策方式、知识边界的对比以及ReAct框架的循环机制，没有出现泛化或编造。",
+      "precision_at_3": 0.3333333333333333,
+      "recall_at_3": 0.5,
+      "mrr": 1.0,
+      "ndcg_at_3": 0.6131471927654584,
+      "latency_ms": 5464.437332993839,
+      "llm_usage": {
+        "prompt_tokens": 3114,
+        "completion_tokens": 283,
+        "total_tokens": 3397,
+        "cost_usd": 0.0011520800000000002,
+        "calls": 3
+      }
+    },
+    {
+      "config_name": "query_transform_rerank",
+      "question": "一个 Agent 框架通常可以拆成哪几层架构？",
+      "generated_queries": [
+        "一个 Agent 框架通常可以拆成哪几层架构？",
+        "Agent 框架 分层 架构",
+        "Agent 系统 架构 层次 划分",
+        "Agent 框架 通常 包含 哪些 层"
+      ],
+      "retrieved_chunk_ids": [
+        "p1_arch_article::1",
+        "p1_arch_article::37",
+        "p1_arch_article::36"
+      ],
+      "retrieved_source_ids": [
+        "p1_arch_article"
+      ],
+      "answer": "根据参考资料，一个 Agent 框架的核心架构可以抽象为以下六层（来源 1，来源 2）：\n\n1.  **第 6 层：多 Agent 编排层** — 负责 Supervisor / Pipeline / Hierarchy 等编排模式。\n2.  **第 5 层：Prompt 引擎层** — 负责模板系统、变量注入、消息历史管理。\n3.  **第 4 层：执行引擎层** — 负责核心循环、步骤抽象、终止判断、错误恢复。\n4.  **第 3 层：工具系统层** — 负责 Schema 驱动、注册发现、调用执行。\n5.  **第 2 层：状态与记忆层** — 负责执行状态、短期记忆、上下文管理。\n6.  **第 1 层：LLM 适配层** — 负责多模型支持、统一接口、输出解析。",
+      "faithfulness": 1.0,
+      "faithfulness_reason": "待评估回答中的六层架构及其描述与参考资料中的内容完全一致，所有关键声明均有明确来源支持。",
+      "precision_at_3": 1.0,
+      "recall_at_3": 0.3333333333333333,
+      "mrr": 1.0,
+      "ndcg_at_3": 0.46927872602275644,
+      "latency_ms": 5456.571000002441,
+      "llm_usage": {
+        "prompt_tokens": 3121,
+        "completion_tokens": 263,
+        "total_tokens": 3384,
+        "cost_usd": 0.00113197,
+        "calls": 3
+      }
+    },
+    {
+      "config_name": "query_transform_rerank",
+      "question": "工具系统为什么要使用 schema 驱动注册与调用？",
+      "generated_queries": [
+        "工具系统为什么要使用 schema 驱动注册与调用？",
+        "schema驱动注册与调用的优势",
+        "工具系统采用schema驱动的原因",
+        "schema驱动在工具注册与调用中的作用"
+      ],
+      "retrieved_chunk_ids": [
+        "arch_tool_system::0",
+        "p1_arch_article::12",
+        "p1_arch_article::2"
+      ],
+      "retrieved_source_ids": [
+        "arch_tool_system",
+        "p1_arch_article"
+      ],
+      "answer": "根据参考资料，工具系统使用 schema 驱动注册与调用的原因如下：\n\n1. **LLM 通过 schema 理解工具能力**：在 [来源 1] 中明确指出，`ToolSchema` 是“工具的元数据描述，LLM 通过它理解工具”。这意味着 schema 充当了 LLM 与工具之间的接口，让 LLM 能够知道工具的名称、功能描述、参数类型和返回值类型。\n\n2. **两个主流框架的共同设计模式**：[来源 2] 提到，smolagents 的 `Tool` 类和 langchain 的 `BaseTool` 都包含 `name`、`description`、`inputs`（参数 schema）等字段，且“两个框架对工具的抽象惊人地相似”。这种共性说明 schema 驱动是工具系统的核心设计模式。\n\n3. **实现工具的统一抽象**：通过 schema，工具系统能够以标准化的方式描述工具，使得 LLM 可以动态地理解并调用不同的工具，而不需要硬编码工具的具体实现逻辑。\n\n**参考资料不足说明**：参考资料未详细说明 schema 驱动在动态管理、Prompt 生成等方面的具体优势，也未提供不使用 schema 驱动的对比案例。",
+      "faithfulness": 0.7,
+      "faithfulness_reason": "回答正确提取了参考资料中关于schema驱动使LLM理解工具能力及框架共同设计模式的关键声明，但额外补充了参考资料未明确提及的‘动态理解并调用不同工具’等泛化表述，且未完全覆盖参考资料中提到的统一注册、注入prompt、校验参数等具体优势。",
+      "precision_at_3": 1.0,
+      "recall_at_3": 0.6666666666666666,
+      "mrr": 1.0,
+      "ndcg_at_3": 0.7653606369886217,
+      "latency_ms": 6913.228541001445,
+      "llm_usage": {
+        "prompt_tokens": 2607,
+        "completion_tokens": 354,
+        "total_tokens": 2961,
+        "cost_usd": 0.0010932900000000002,
+        "calls": 3
+      }
+    },
+    {
+      "config_name": "query_transform_rerank",
+      "question": "Prompt 引擎在 Agent 中主要解决什么问题？",
+      "generated_queries": [
+        "Prompt 引擎在 Agent 中主要解决什么问题？",
+        "Prompt 引擎在 Agent 中的核心作用是什么",
+        "Agent 系统中 Prompt 引擎解决的关键问题",
+        "Prompt 引擎如何解决 Agent 的交互与决策问题"
+      ],
+      "retrieved_chunk_ids": [
+        "p1_arch_article::38",
+        "p1_arch_article::19",
+        "p1_arch_article::22"
+      ],
+      "retrieved_source_ids": [
+        "p1_arch_article"
+      ],
+      "answer": "根据参考资料，Prompt 引擎在 Agent 中主要解决 **System Prompt 的灵活组装与动态注入**问题。\n\n具体来说，参考资料[来源 2]指出，System Prompt 是**模板**而非硬编码字符串，工具描述、自定义指令、甚至输出格式都是**运行时注入的变量**。这意味着同一个 Agent 类可以通过不同的 Prompt 模板表现出完全不同的行为。Prompt 引擎的核心设计就是通过 `build_system_prompt` 等方法，在运行时将 `tool_descriptions`、`custom_instructions` 等变量注入到模板中，从而动态组装出最终的 System Prompt（来源 2、来源 3）。",
+      "faithfulness": 0.7,
+      "faithfulness_reason": "回答正确概括了Prompt引擎解决System Prompt灵活组装与动态注入的核心问题，但未提及模板管理、消息历史组织等细节，存在轻微泛化",
+      "precision_at_3": 1.0,
+      "recall_at_3": 0.5,
+      "mrr": 1.0,
+      "ndcg_at_3": 0.6131471927654584,
+      "latency_ms": 5442.637125001056,
+      "llm_usage": {
+        "prompt_tokens": 2759,
+        "completion_tokens": 219,
+        "total_tokens": 2978,
+        "cost_usd": 0.00098583,
+        "calls": 3
+      }
+    },
+    {
+      "config_name": "query_transform_rerank",
+      "question": "Supervisor/Worker 多 Agent 模式适合解决什么问题？",
+      "generated_queries": [
+        "Supervisor/Worker 多 Agent 模式适合解决什么问题？",
+        "Supervisor Worker 多 Agent 模式 适用场景",
+        "多智能体架构中 Supervisor 和 Worker 的典型应用问题",
+        "Supervisor Worker 模式 解决哪些任务"
+      ],
+      "retrieved_chunk_ids": [
+        "arch_supervisor::0",
+        "p1_arch_article::24",
+        "arch_supervisor::1"
+      ],
+      "retrieved_source_ids": [
+        "arch_supervisor",
+        "p1_arch_article"
+      ],
+      "answer": "根据参考资料，Supervisor/Worker 多 Agent 模式适合解决**真实场景中需要多个 Agent 协作的复杂任务**（来源 2）。该模式通过一个 Supervisor（LLM 决策路由）将任务分发到多个专项 Worker Agent，并汇总结果，适用于需要中心调度和分工协作的场景（来源 1、来源 2）。",
+      "faithfulness": 1.0,
+      "faithfulness_reason": "待评估回答中的关键声明（适合解决复杂任务、Supervisor分发任务、Worker专项协作、中心调度与结果汇总）均能被参考资料直接支持，无泛化或编造。",
+      "precision_at_3": 1.0,
+      "recall_at_3": 0.5,
+      "mrr": 1.0,
+      "ndcg_at_3": 0.7653606369886217,
+      "latency_ms": 4876.035291003063,
+      "llm_usage": {
+        "prompt_tokens": 2494,
+        "completion_tokens": 167,
+        "total_tokens": 2661,
+        "cost_usd": 0.0008570800000000001,
+        "calls": 3
+      }
+    },
+    {
+      "config_name": "query_transform_rerank",
+      "question": "RAG 主要解决 LLM 的哪几个根本限制？",
+      "generated_queries": [
+        "RAG 主要解决 LLM 的哪几个根本限制？",
+        "RAG 技术解决了大语言模型的哪些核心缺陷",
+        "检索增强生成针对 LLM 的哪些根本性局限进行改进",
+        "RAG 主要弥补了语言模型的哪些关键不足"
+      ],
+      "retrieved_chunk_ids": [
+        "rag_loading::7",
+        "rag_embedding_store::4",
+        "pdf_learning_assistant::12"
+      ],
+      "retrieved_source_ids": [
+        "rag_loading",
+        "rag_embedding_store",
+        "pdf_learning_assistant"
+      ],
+      "answer": "根据参考资料，RAG（检索增强生成）主要解决大语言模型（LLM）的两个根本性限制：\n\n1.  **知识过时**：模型的知识停留在训练数据的截止日期。\n2.  **幻觉问题**：当模型不知道答案时，会自信地编造看似合理但实际错误的内容。\n\n（来源 1，来源 3）",
+      "faithfulness": 1.0,
+      "faithfulness_reason": "回答中的两个关键声明（知识过时和幻觉问题）均能被参考资料明确支持，且未出现泛化或编造内容。",
+      "precision_at_3": 0.0,
+      "recall_at_3": 0.0,
+      "mrr": 0.0,
+      "ndcg_at_3": 0.0,
+      "latency_ms": 4225.896040996304,
+      "llm_usage": {
+        "prompt_tokens": 3045,
+        "completion_tokens": 160,
+        "total_tokens": 3205,
+        "cost_usd": 0.00099815,
+        "calls": 3
+      }
+    },
+    {
+      "config_name": "query_transform_rerank",
+      "question": "RAG 的离线索引阶段包含哪些步骤？",
+      "generated_queries": [
+        "RAG 的离线索引阶段包含哪些步骤？",
+        "RAG 离线索引阶段的具体步骤",
+        "检索增强生成中索引构建的流程",
+        "RAG 系统索引阶段包含哪些操作"
+      ],
+      "retrieved_chunk_ids": [
+        "pdf_learning_assistant::14",
+        "pdf_learning_assistant::12",
+        "rag_naive::0"
+      ],
+      "retrieved_source_ids": [
+        "pdf_learning_assistant",
+        "rag_naive"
+      ],
+      "answer": "根据参考资料，RAG 的离线索引阶段包含以下步骤：\n\n1. **文档加载**：支持 PDF、Word、网页等多种格式（来源 2）。\n2. **文本分块**：将长文档切分为适合检索的小块（来源 2）。\n3. **向量化**：使用嵌入模型将文本转换为高维向量（来源 2）。\n4. **存储**：将向量存入向量数据库（如 ChromaDB）（来源 2）。\n\n这些步骤在来源 2 和来源 3 中均有提及，目标是将文档转换为可检索的向量索引。",
+      "faithfulness": 1.0,
+      "faithfulness_reason": "回答中的每个关键声明（文档加载、文本分块、向量化、存储）都能被参考资料[来源2]明确支持，且与人工参考答案一致。",
+      "precision_at_3": 0.0,
+      "recall_at_3": 0.0,
+      "mrr": 0.0,
+      "ndcg_at_3": 0.0,
+      "latency_ms": 4501.518625009339,
+      "llm_usage": {
+        "prompt_tokens": 2822,
+        "completion_tokens": 202,
+        "total_tokens": 3024,
+        "cost_usd": 0.00098414,
+        "calls": 3
+      }
+    },
+    {
+      "config_name": "query_transform_rerank",
+      "question": "RAG 的在线查询阶段包含哪些步骤？",
+      "generated_queries": [
+        "RAG 的在线查询阶段包含哪些步骤？",
+        "RAG 在线查询阶段流程步骤",
+        "检索增强生成系统查询阶段具体操作",
+        "RAG 推理时查询过程包含哪些环节"
+      ],
+      "retrieved_chunk_ids": [
+        "pdf_learning_assistant::12",
+        "p2_rag_overview::2",
+        "p2_hybrid_article::5"
+      ],
+      "retrieved_source_ids": [
+        "pdf_learning_assistant",
+        "p2_rag_overview",
+        "p2_hybrid_article"
+      ],
+      "answer": "根据参考资料，RAG 的在线查询阶段包含以下步骤：\n\n1.  **查询向量化**：将用户问题转换为向量（来源 2）。\n2.  **相似度检索**：在向量数据库中查找“距离最近”的 K 个文档块，返回对应的文本内容（来源 2）。\n3.  **上下文构建**：将检索到的文档块和用户问题组装成一个 Prompt（来源 2）。\n4.  **生成回答**：LLM 基于 Prompt 中的文档内容生成回答（来源 2）。\n\n此外，高级流程中还会包含**查询改写**（如 HyDE、Multi-Query）和**重排序**等步骤（来源 1、3）。",
+      "faithfulness": 1.0,
+      "faithfulness_reason": "回答中的关键声明（查询向量化、相似度检索、上下文构建、生成回答）均能被参考资料直接支持，且提及的高级步骤（查询改写、重排序）也有来源支撑，无编造或泛化。",
+      "precision_at_3": 0.3333333333333333,
+      "recall_at_3": 0.25,
+      "mrr": 0.5,
+      "ndcg_at_3": 0.2960819109658652,
+      "latency_ms": 5356.365915999049,
+      "llm_usage": {
+        "prompt_tokens": 3664,
+        "completion_tokens": 240,
+        "total_tokens": 3904,
+        "cost_usd": 0.0012532799999999998,
+        "calls": 3
+      }
+    },
+    {
+      "config_name": "query_transform_rerank",
+      "question": "为什么 chunk_size 和 chunk_overlap 会影响 RAG 效果？",
+      "generated_queries": [
+        "为什么 chunk_size 和 chunk_overlap 会影响 RAG 效果？",
+        "RAG 中 chunk_size 和 chunk_overlap 对检索效果的影响原因",
+        "chunk_size 与 chunk_overlap 如何影响 RAG 系统的性能",
+        "为什么文本分块大小和重叠长度会改变 RAG 的检索质量"
+      ],
+      "retrieved_chunk_ids": [
+        "p2_rag_pipeline::2",
+        "rag_hybrid_basic::2",
+        "rag_chunking::0"
+      ],
+      "retrieved_source_ids": [
+        "p2_rag_pipeline",
+        "rag_hybrid_basic",
+        "rag_chunking"
+      ],
+      "answer": "根据参考资料，chunk_size 和 chunk_overlap 直接影响检索质量，原因如下：\n\n1. **chunk_size（块大小）**：块太大则检索不精确，块太小则丢失上下文（来源 1，来源 3）。\n2. **chunk_overlap（块重叠）**：用于在块边界处留出“缓冲区”，防止一句关键信息正好被切成两半（来源 1）。\n\n这两个参数没有银弹，需要根据场景调整经验值：chunk_size 通常为 200-500 字符，chunk_overlap 为 10%-20%（来源 1）。",
+      "faithfulness": 1.0,
+      "faithfulness_reason": "所有关键声明均能被参考资料直接支持，无泛化或编造",
+      "precision_at_3": 0.6666666666666666,
+      "recall_at_3": 0.6666666666666666,
+      "mrr": 1.0,
+      "ndcg_at_3": 0.7039180890341347,
+      "latency_ms": 4360.667583998293,
+      "llm_usage": {
+        "prompt_tokens": 3168,
+        "completion_tokens": 213,
+        "total_tokens": 3381,
+        "cost_usd": 0.00108966,
+        "calls": 3
+      }
+    },
+    {
+      "config_name": "query_transform_rerank",
+      "question": "文档加载和清洗为什么是 RAG 的上限因素？",
+      "generated_queries": [
+        "文档加载和清洗为什么是 RAG 的上限因素？",
+        "RAG 系统中文档加载和清洗为何成为性能瓶颈",
+        "文档加载与清洗对 RAG 效果上限的影响机制",
+        "为什么文档预处理（加载和清洗）是 RAG 系统的关键限制因素"
+      ],
+      "retrieved_chunk_ids": [
+        "p2_rag_overview::1",
+        "rag_loading::0",
+        "pdf_learning_assistant::12"
+      ],
+      "retrieved_source_ids": [
+        "p2_rag_overview",
+        "rag_loading",
+        "pdf_learning_assistant"
+      ],
+      "answer": "根据参考资料，文档加载和清洗之所以是 RAG 的上限因素，是因为**清洗质量直接决定后续所有环节的上限**。如果文档加载和清洗做得不好，后续的检索和生成环节都会受到根本性的限制。\n\n- 来源 1（source_id=p2_rag_overview）明确指出：“清洗质量直接决定后续所有环节的上限。”\n- 该来源还举例说明了清洗中的常见问题，如“PDF 的表格会乱序，网页有导航栏和广告噪声，扫描件需要 OCR”，这些问题如果处理不当，会严重影响后续的文本分块、向量化和检索效果。",
+      "faithfulness": 1.0,
+      "faithfulness_reason": "回答中的关键声明（清洗质量决定后续环节上限）和举例（PDF乱序、网页噪声等）均直接来源于参考资料，无编造或泛化。",
+      "precision_at_3": 0.3333333333333333,
+      "recall_at_3": 0.5,
+      "mrr": 0.5,
+      "ndcg_at_3": 0.38685280723454163,
+      "latency_ms": 4617.993000007118,
+      "llm_usage": {
+        "prompt_tokens": 3387,
+        "completion_tokens": 224,
+        "total_tokens": 3611,
+        "cost_usd": 0.00116089,
+        "calls": 3
+      }
+    },
+    {
+      "config_name": "query_transform_rerank",
+      "question": "Chroma 向量库在基础 RAG 中承担什么职责？",
+      "generated_queries": [
+        "Chroma 向量库在基础 RAG 中承担什么职责？",
+        "Chroma 向量库在基础RAG中的角色和功能",
+        "基础RAG架构中Chroma向量数据库的职责",
+        "Chroma向量库在检索增强生成流程中的作用"
+      ],
+      "retrieved_chunk_ids": [
+        "memory_enhanced_rag::10",
+        "rag_full_pipeline::2",
+        "pdf_learning_assistant::12"
+      ],
+      "retrieved_source_ids": [
+        "memory_enhanced_rag",
+        "rag_full_pipeline",
+        "pdf_learning_assistant"
+      ],
+      "answer": "根据参考资料，Chroma 向量库在基础 RAG 中承担**存储和检索向量索引**的职责。\n\n具体来说，在 RAG 的离线索引阶段，文档经过文本分块和向量化后，会被存入向量数据库（如 ChromaDB），以便在在线查询阶段进行高效的相似度搜索（来源 3，source_id=pdf_learning_assistant）。参考资料中还提到，Chroma 使用了 HNSW 算法作为近似最近邻搜索的实现（来源 2，source_id=rag_full_pipeline）。",
+      "faithfulness": 0.7,
+      "faithfulness_reason": "回答正确指出Chroma存储和检索向量索引的职责，但声称Chroma使用HNSW算法在参考资料中仅提到HNSW被Chroma等向量数据库广泛采用，未明确说明Chroma具体使用HNSW，存在轻微泛化。",
+      "precision_at_3": 0.0,
+      "recall_at_3": 0.0,
+      "mrr": 0.0,
+      "ndcg_at_3": 0.0,
+      "latency_ms": 5058.564332997776,
+      "llm_usage": {
+        "prompt_tokens": 3221,
+        "completion_tokens": 221,
+        "total_tokens": 3442,
+        "cost_usd": 0.00111277,
+        "calls": 3
+      }
+    },
+    {
+      "config_name": "query_transform_rerank",
+      "question": "Naive RAG 的主要局限性有哪些？",
+      "generated_queries": [
+        "Naive RAG 的主要局限性有哪些？",
+        "Naive RAG 的缺点和不足",
+        "基础RAG架构的主要局限",
+        "朴素RAG方法的局限性有哪些"
+      ],
+      "retrieved_chunk_ids": [
+        "rag_naive::8",
+        "rag_naive::0",
+        "rag_naive::7"
+      ],
+      "retrieved_source_ids": [
+        "rag_naive"
+      ],
+      "answer": "根据参考资料，Naive RAG 的主要局限性包括以下五点（来源 1）：\n\n1. **检索质量**：语义搜索可能遗漏关键文档，尤其是查询和文档用词不同时。\n2. **上下文窗口**：检索到的文档可能超出 LLM 上下文限制。\n3. **信息整合**：答案可能需要综合多个文档，但 Naive RAG 只是简单拼接。\n4. **查询理解**：用户的问题可能模糊或多义，直接检索效果差。\n5. **排序质量**：向量相似度不等于相关性，需要重排序。",
+      "faithfulness": 1.0,
+      "faithfulness_reason": "待评估回答中的五点局限性均直接来源于参考资料[来源1]中show_limitations函数列出的内容，表述一致且无编造或泛化。",
+      "precision_at_3": 1.0,
+      "recall_at_3": 0.3333333333333333,
+      "mrr": 1.0,
+      "ndcg_at_3": 0.46927872602275644,
+      "latency_ms": 4047.424874996068,
+      "llm_usage": {
+        "prompt_tokens": 2352,
+        "completion_tokens": 192,
+        "total_tokens": 2544,
+        "cost_usd": 0.0008462400000000001,
+        "calls": 3
+      }
+    },
+    {
+      "config_name": "query_transform_rerank",
+      "question": "BM25 和向量检索分别擅长什么？",
+      "generated_queries": [
+        "BM25 和向量检索分别擅长什么？",
+        "BM25 算法的主要优势和应用场景",
+        "向量检索的适用领域和核心能力",
+        "BM25 与向量检索的对比及各自擅长处理的问题类型"
+      ],
+      "retrieved_chunk_ids": [
+        "ragas_from_scratch::3",
+        "rag_hybrid_basic::0",
+        "rag_ragas_intro::3"
+      ],
+      "retrieved_source_ids": [
+        "ragas_from_scratch",
+        "rag_hybrid_basic",
+        "rag_ragas_intro"
+      ],
+      "answer": "根据参考资料，BM25 擅长精确的关键词匹配，而向量检索擅长语义匹配（即捕获文本的深层语义关系）。两者互补，混合使用效果最好。[来源 1][来源 2][来源 3]",
+      "faithfulness": 1.0,
+      "faithfulness_reason": "所有关键声明（BM25擅长精确关键词匹配、向量检索擅长语义匹配、两者互补）均能被参考资料直接支持。",
+      "precision_at_3": 0.3333333333333333,
+      "recall_at_3": 0.3333333333333333,
+      "mrr": 0.5,
+      "ndcg_at_3": 0.2960819109658652,
+      "latency_ms": 3115.5440000002272,
+      "llm_usage": {
+        "prompt_tokens": 2860,
+        "completion_tokens": 122,
+        "total_tokens": 2982,
+        "cost_usd": 0.0009064000000000001,
+        "calls": 3
+      }
+    },
+    {
+      "config_name": "query_transform_rerank",
+      "question": "混合检索为什么通常比单一检索更稳？",
+      "generated_queries": [
+        "混合检索为什么通常比单一检索更稳？",
+        "混合检索 稳定性 优势 原因",
+        "为什么混合检索比单一检索更可靠",
+        "混合检索 与 单一检索 对比 稳定性 分析"
+      ],
+      "retrieved_chunk_ids": [
+        "p2_hybrid_article::0",
+        "p2_rag_overview::10",
+        "p2_rag_overview::4"
+      ],
+      "retrieved_source_ids": [
+        "p2_hybrid_article",
+        "p2_rag_overview"
+      ],
+      "answer": "基于参考资料，混合检索比单一检索更稳，因为它结合了**BM25（关键词匹配）**和**向量检索（语义匹配）**两种互补方式，弥补了各自的弱点。\n\n- **纯向量检索**擅长语义匹配，但在精确关键词匹配（如“BM25 算法”）、专有名词和短查询上表现不佳（来源 1）。\n- **BM25**擅长精确关键词匹配，但无法理解同义词和语义关系（来源 1）。\n- **混合检索**将两者结合，并用 RRF（Reciprocal Rank Fusion）融合排名，从而在不同查询场景下都能获得更全面的结果（来源 1、2）。",
+      "faithfulness": 1.0,
+      "faithfulness_reason": "回答中的关键声明（混合检索结合BM25与向量检索、弥补各自弱点、使用RRF融合排名）均能被参考资料直接支持，无编造或泛化。",
+      "precision_at_3": 0.5,
+      "recall_at_3": 0.3333333333333333,
+      "mrr": 1.0,
+      "ndcg_at_3": 0.46927872602275644,
+      "latency_ms": 4624.27891700645,
+      "llm_usage": {
+        "prompt_tokens": 3524,
+        "completion_tokens": 224,
+        "total_tokens": 3748,
+        "cost_usd": 0.0011978800000000001,
+        "calls": 3
+      }
+    },
+    {
+      "config_name": "query_transform_rerank",
+      "question": "RRF 排序融合的作用是什么？",
+      "generated_queries": [
+        "RRF 排序融合的作用是什么？",
+        "RRF 排序融合的作用",
+        "RRF 融合排序的原理与优势",
+        "RRF 在信息检索中的功能"
+      ],
+      "retrieved_chunk_ids": [
+        "p2_rag_pipeline::6",
+        "rag_optimization_lab::3",
+        "p2_hybrid_article::2"
+      ],
+      "retrieved_source_ids": [
+        "p2_rag_pipeline",
+        "rag_optimization_lab",
+        "p2_hybrid_article"
+      ],
+      "answer": "根据参考资料，RRF（Reciprocal Rank Fusion）是一种排序融合算法，其作用是通过倒数排名加权将多个检索器的结果合并，不需要对分数做归一化（来源 2）。具体来说，它解决了 BM25 打分和余弦相似度打分量纲不同、无法直接加权的问题，通过只看排名不看分数，彻底避免了归一化问题（来源 1）。",
+      "faithfulness": 1.0,
+      "faithfulness_reason": "所有关键声明（RRF是排序融合算法、通过倒数排名加权合并多个检索器结果、不需要分数归一化、解决BM25和余弦相似度量纲不同问题）均能被参考资料直接支持。",
+      "precision_at_3": 0.3333333333333333,
+      "recall_at_3": 0.25,
+      "mrr": 0.3333333333333333,
+      "ndcg_at_3": 0.23463936301137822,
+      "latency_ms": 3941.0294170083944,
+      "llm_usage": {
+        "prompt_tokens": 3161,
+        "completion_tokens": 164,
+        "total_tokens": 3325,
+        "cost_usd": 0.00103387,
+        "calls": 3
+      }
+    },
+    {
+      "config_name": "query_transform_rerank",
+      "question": "Cross-Encoder 重排序为什么更准但更慢？",
+      "generated_queries": [
+        "Cross-Encoder 重排序为什么更准但更慢？",
+        "Cross-Encoder 重排序 准确率 高 原因 分析",
+        "Cross-Encoder 推理速度 慢 计算复杂度 解释",
+        "Cross-Encoder 与 Bi-Encoder 性能对比 为什么更准更慢"
+      ],
+      "retrieved_chunk_ids": [
+        "rag_ragas_intro::4",
+        "p2_hybrid_article::3",
+        "ragas_from_scratch::3"
+      ],
+      "retrieved_source_ids": [
+        "rag_ragas_intro",
+        "p2_hybrid_article",
+        "ragas_from_scratch"
+      ],
+      "answer": "根据参考资料，Cross-Encoder 重排序更准是因为它能同时编码查询和文档，捕获查询和文档之间的细粒度交互信息，精度远高于 Bi-Encoder（来源 1，来源 2）。更慢是因为其计算成本是 O(n)（n = 候选数），只能用于少量候选的精排，不能直接对全量文档使用（来源 2）。",
+      "faithfulness": 1.0,
+      "faithfulness_reason": "回答中的所有关键声明（更准的原因、更慢的原因）均能被参考资料直接支持，无编造或泛化。",
+      "precision_at_3": 0.3333333333333333,
+      "recall_at_3": 0.25,
+      "mrr": 0.5,
+      "ndcg_at_3": 0.2960819109658652,
+      "latency_ms": 4272.236582997721,
+      "llm_usage": {
+        "prompt_tokens": 2756,
+        "completion_tokens": 170,
+        "total_tokens": 2926,
+        "cost_usd": 0.0009311200000000001,
+        "calls": 3
+      }
+    },
+    {
+      "config_name": "query_transform_rerank",
+      "question": "两阶段检索管道通常如何组织？",
+      "generated_queries": [
+        "两阶段检索管道通常如何组织？",
+        "两阶段检索管道的典型架构和流程",
+        "两阶段检索系统的组织方式与实现原理",
+        "两阶段检索管道中粗排和精排的协作机制"
+      ],
+      "retrieved_chunk_ids": [
+        "rag_reranking::4",
+        "p2_rag_pipeline::6",
+        "rag_reranking::0"
+      ],
+      "retrieved_source_ids": [
+        "rag_reranking",
+        "p2_rag_pipeline"
+      ],
+      "answer": "根据参考资料，两阶段检索管道的组织方式如下：\n\n1. **第一阶段：粗检索**  \n   使用 Bi-Encoder 或 BM25 从全量文档（如1万+篇）中快速筛选出约20个候选文档。这一阶段速度快、召回率高（来源 2、来源 3）。\n\n2. **第二阶段：重排序（精排）**  \n   使用 Cross-Encoder 对第一阶段筛选出的约20个候选文档进行精确排序，选出 Top 3-5 个最相关的文档送入 LLM 生成回答。Cross-Encoder 精度高但速度慢，因此只处理少量候选（来源 2、来源 3）。\n\n整体流程可概括为：**全量文档 → BM25 + 向量 + RRF（快，召回率高）→ ~20个候选 → Cross-Encoder（慢但准）→ Top 3-5，送入 LLM**（来源 2）。",
+      "faithfulness": 1.0,
+      "faithfulness_reason": "所有关键声明（两阶段结构、第一阶段用Bi-Encoder/BM25粗筛约20个候选、第二阶段用Cross-Encoder精排Top3-5、整体流程描述）均能被参考资料明确支持。",
+      "precision_at_3": 0.0,
+      "recall_at_3": 0.0,
+      "mrr": 0.0,
+      "ndcg_at_3": 0.0,
+      "latency_ms": 5969.442166999215,
+      "llm_usage": {
+        "prompt_tokens": 2933,
+        "completion_tokens": 291,
+        "total_tokens": 3224,
+        "cost_usd": 0.00111201,
+        "calls": 3
+      }
+    },
+    {
+      "config_name": "query_transform_rerank",
+      "question": "HyDE 查询改写的基本思想是什么？",
+      "generated_queries": [
+        "HyDE 查询改写的基本思想是什么？",
+        "HyDE 查询改写 核心思想",
+        "HyDE 方法 基本原理 是什么",
+        "HyDE 查询改写 技术思路 介绍"
+      ],
+      "retrieved_chunk_ids": [
+        "pdf_learning_assistant::12",
+        "rag_query_transform::0",
+        "p2_rag_pipeline::7"
+      ],
+      "retrieved_source_ids": [
+        "pdf_learning_assistant",
+        "rag_query_transform",
+        "p2_rag_pipeline"
+      ],
+      "answer": "根据参考资料，HyDE（假设性文档嵌入）查询改写的基本思想是：**先让 LLM 生成一个假设性的答案，然后用这个答案的向量去检索**。因为 LLM 编造的“答案”在风格上更像知识库里的文档，比用户的口语化问题更容易命中相关文档（来源 3，source_id=p2_rag_pipeline）。",
+      "faithfulness": 1.0,
+      "faithfulness_reason": "回答中的关键声明（先让LLM生成假设性答案，再用该答案的向量进行检索）完全被参考资料支持，且未出现泛化或编造内容。",
+      "precision_at_3": 0.3333333333333333,
+      "recall_at_3": 0.3333333333333333,
+      "mrr": 0.5,
+      "ndcg_at_3": 0.2960819109658652,
+      "latency_ms": 3775.0346249958966,
+      "llm_usage": {
+        "prompt_tokens": 3268,
+        "completion_tokens": 162,
+        "total_tokens": 3430,
+        "cost_usd": 0.0010605599999999999,
+        "calls": 3
+      }
+    },
+    {
+      "config_name": "query_transform_rerank",
+      "question": "Multi-Query 扩展如何提升召回率？",
+      "generated_queries": [
+        "Multi-Query 扩展如何提升召回率？",
+        "Multi-Query 扩展 提升 召回率 原理",
+        "多查询扩展 对 信息检索 召回率 影响",
+        "Multi-Query 扩展 提高 检索 召回率 方法"
+      ],
+      "retrieved_chunk_ids": [
+        "rag_full_pipeline::3",
+        "rag_query_transform::2",
+        "unified_retrieval::10"
+      ],
+      "retrieved_source_ids": [
+        "rag_full_pipeline",
+        "rag_query_transform",
+        "unified_retrieval"
+      ],
+      "answer": "根据参考资料，多查询扩展（Multi-Query Expansion）将用户的一个问题改写为多个不同角度的查询，并行检索后合并去重，从而提高召回率（来源 1、来源 2、来源 3）。",
+      "faithfulness": 1.0,
+      "faithfulness_reason": "待评估回答中的关键声明（多查询扩展将用户问题改写为多个不同角度的查询、并行检索后合并去重、提高召回率）均能被参考资料直接支持，无编造或泛化。",
+      "precision_at_3": 0.6666666666666666,
+      "recall_at_3": 0.6666666666666666,
+      "mrr": 1.0,
+      "ndcg_at_3": 0.7653606369886217,
+      "latency_ms": 3839.318208003533,
+      "llm_usage": {
+        "prompt_tokens": 2586,
+        "completion_tokens": 150,
+        "total_tokens": 2736,
+        "cost_usd": 0.00086322,
+        "calls": 3
+      }
+    },
+    {
+      "config_name": "query_transform_rerank",
+      "question": "RAGAS 的四个核心指标是什么？",
+      "generated_queries": [
+        "RAGAS 的四个核心指标是什么？",
+        "RAGAS 核心指标有哪些",
+        "RAGAS 评估指标包括哪四个",
+        "RAGAS 的四个主要评价维度是什么"
+      ],
+      "retrieved_chunk_ids": [
+        "ragas_from_scratch::4",
+        "pdf_learning_assistant::13",
+        "p2_hybrid_article::6"
+      ],
+      "retrieved_source_ids": [
+        "ragas_from_scratch",
+        "pdf_learning_assistant",
+        "p2_hybrid_article"
+      ],
+      "answer": "根据提供的参考资料，RAGAS 框架提供四个核心评估指标：\n\n1. **忠实度（Faithfulness）**：回答是否基于检索到的文档（来源 1，来源 2）。\n2. **答案相关性（Answer Relevancy）**：回答是否切题（来源 1，来源 2）。\n3. **上下文精确度（Context Precision）**：检索结果中相关文档的比例，或检索结果是否精确（来源 1，来源 2）。\n4. **上下文召回率（Context Recall）**：是否检索到了所有需要的信息（来源 1，来源 2）。",
+      "faithfulness": 1.0,
+      "faithfulness_reason": "回答中的四个核心指标及其解释均与参考资料完全一致，无任何编造或泛化。",
+      "precision_at_3": 0.6666666666666666,
+      "recall_at_3": 0.5,
+      "mrr": 1.0,
+      "ndcg_at_3": 0.7039180890341347,
+      "latency_ms": 4646.625416004099,
+      "llm_usage": {
+        "prompt_tokens": 2728,
+        "completion_tokens": 193,
+        "total_tokens": 2921,
+        "cost_usd": 0.0009488600000000002,
+        "calls": 3
+      }
+    },
+    {
+      "config_name": "query_transform_rerank",
+      "question": "Faithfulness 低通常意味着什么，应该怎么优化？",
+      "generated_queries": [
+        "Faithfulness 低通常意味着什么，应该怎么优化？",
+        "Faithfulness 低的原因和含义",
+        "如何优化模型输出的 Faithfulness",
+        "提高生成内容忠实度的优化方法"
+      ],
+      "retrieved_chunk_ids": [
+        "p2_hybrid_article::7",
+        "p2_rag_overview::13",
+        "p2_rag_pipeline::8"
+      ],
+      "retrieved_source_ids": [
+        "p2_hybrid_article",
+        "p2_rag_overview",
+        "p2_rag_pipeline"
+      ],
+      "answer": "根据参考资料，Faithfulness（忠实度）低意味着**存在幻觉，LLM 在编造**（来源 2，来源 3）。优化方向是**改进 Prompt，强调“只基于文档回答”**，并降低 temperature（来源 2，来源 3）。",
+      "faithfulness": 1.0,
+      "faithfulness_reason": "回答中的关键声明（Faithfulness低意味着存在幻觉、LLM编造，优化方向是改进Prompt强调基于文档回答并降低temperature）均能被参考资料[来源2]和[来源3]明确支持，无编造或泛化。",
+      "precision_at_3": 0.3333333333333333,
+      "recall_at_3": 0.3333333333333333,
+      "mrr": 1.0,
+      "ndcg_at_3": 0.46927872602275644,
+      "latency_ms": 3715.0992499955464,
+      "llm_usage": {
+        "prompt_tokens": 3195,
+        "completion_tokens": 150,
+        "total_tokens": 3345,
+        "cost_usd": 0.0010276500000000002,
+        "calls": 3
+      }
+    },
+    {
+      "config_name": "query_transform_rerank",
+      "question": "Context Precision 和 Context Recall 分别衡量什么？",
+      "generated_queries": [
+        "Context Precision 和 Context Recall 分别衡量什么？",
+        "Context Precision 衡量什么",
+        "Context Recall 评估指标含义",
+        "上下文精确度与召回率的区别"
+      ],
+      "retrieved_chunk_ids": [
+        "ragas_from_scratch::4",
+        "p2_hybrid_article::8",
+        "p2_rag_overview::13"
+      ],
+      "retrieved_source_ids": [
+        "ragas_from_scratch",
+        "p2_hybrid_article",
+        "p2_rag_overview"
+      ],
+      "answer": "根据参考资料，Context Precision（上下文精确度）衡量的是“检索到的文档中，有多少是真正有用的”，即相关文档数除以检索文档总数（来源 2）。Context Recall（上下文召回率）衡量的是“回答问题所需的所有信息是否都被检索到了”，即被覆盖的信息点数除以总信息点数（来源 2）。",
+      "faithfulness": 1.0,
+      "faithfulness_reason": "回答中的关键声明均能被参考资料直接支持，没有泛化或编造。",
+      "precision_at_3": 0.6666666666666666,
+      "recall_at_3": 0.5,
+      "mrr": 1.0,
+      "ndcg_at_3": 0.7653606369886217,
+      "latency_ms": 3682.6519169990206,
+      "llm_usage": {
+        "prompt_tokens": 3036,
+        "completion_tokens": 123,
+        "total_tokens": 3159,
+        "cost_usd": 0.00095502,
+        "calls": 3
+      }
+    },
+    {
+      "config_name": "query_transform_rerank",
+      "question": "为什么要用 Precision@K、Recall@K、MRR 和 NDCG 评估检索？",
+      "generated_queries": [
+        "为什么要用 Precision@K、Recall@K、MRR 和 NDCG 评估检索？",
+        "检索评估指标 Precision@K Recall@K MRR NDCG 的作用",
+        "为什么信息检索系统需要 Precision Recall MRR NDCG 多个指标",
+        "Precision@K Recall@K MRR NDCG 评估检索效果的原因"
+      ],
+      "retrieved_chunk_ids": [
+        "rag_eval_pipeline::0",
+        "rag_eval_pipeline::8",
+        "p2_rag_overview::13"
+      ],
+      "retrieved_source_ids": [
+        "rag_eval_pipeline",
+        "p2_rag_overview"
+      ],
+      "answer": "根据参考资料，Precision@K、Recall@K、MRR 和 NDCG 是用于评估检索效果的经典 IR（信息检索）指标。参考资料中明确提到，这些指标被用于“对比不同 RAG 检索配置”的自动化评估管道中，通过计算这些指标来量化检索结果的质量，从而找到最优的检索策略（来源 1）。\n\n具体来说：\n- **Precision@K**：衡量前 K 个检索结果中相关文档的比例（来源 2）。\n- **Recall@K**：衡量前 K 个检索结果覆盖了多少相关文档（来源 2）。\n- **MRR（Mean Reciprocal Rank）**：衡量第一个相关文档在检索结果中的排名位置（来源 2）。\n- **NDCG@K**：衡量前 K 个检索结果的排序质量（来源 2）。\n\n这些指标共同构成了评估检索性能的量化标准，帮助开发者对比不同配置（如 BM25、Dense、Hybrid 等）的效果，并发现系统的薄弱环节（来源 1、来源 3）。",
+      "faithfulness": 1.0,
+      "faithfulness_reason": "回答中的所有关键声明（指标定义、用途、来源引用）均能被参考资料直接支持，无编造或泛化。",
+      "precision_at_3": 0.5,
+      "recall_at_3": 0.3333333333333333,
+      "mrr": 1.0,
+      "ndcg_at_3": 0.46927872602275644,
+      "latency_ms": 5669.256000008318,
+      "llm_usage": {
+        "prompt_tokens": 2817,
+        "completion_tokens": 314,
+        "total_tokens": 3131,
+        "cost_usd": 0.0011059900000000003,
+        "calls": 3
+      }
+    },
+    {
+      "config_name": "query_transform_rerank",
+      "question": "参数扫描在 RAG 优化中有什么价值？",
+      "generated_queries": [
+        "参数扫描在 RAG 优化中有什么价值？",
+        "RAG 优化中参数扫描的作用",
+        "参数扫描对RAG系统性能提升的价值",
+        "参数扫描在检索增强生成优化中的意义"
+      ],
+      "retrieved_chunk_ids": [
+        "rag_optimization_lab::0",
+        "p2_hybrid_article::7",
+        "p2_rag_overview::4"
+      ],
+      "retrieved_source_ids": [
+        "rag_optimization_lab",
+        "p2_hybrid_article",
+        "p2_rag_overview"
+      ],
+      "answer": "根据参考资料，参数扫描（parameter sweep）在 RAG 优化中的价值是：**自动寻找最优配置**。\n\n具体来说，参考资料 [来源 1] 中明确将“实现参数扫描（parameter sweep）自动寻找最优配置”列为 RAG 参数调优实验室的学习目标之一，并指出可以通过评估指标驱动优化决策（来源 1，source_id=rag_optimization_lab）。",
+      "faithfulness": 0.7,
+      "faithfulness_reason": "回答中'自动寻找最优配置'这一关键声明能被参考资料支持，但未提及参数扫描可系统比较retriever_type、first_stage_k等具体配置对质量、延迟和成本的影响，存在轻微泛化。",
+      "precision_at_3": 0.6666666666666666,
+      "recall_at_3": 1.0,
+      "mrr": 1.0,
+      "ndcg_at_3": 1.0,
+      "latency_ms": 4157.291915995302,
+      "llm_usage": {
+        "prompt_tokens": 3038,
+        "completion_tokens": 179,
+        "total_tokens": 3217,
+        "cost_usd": 0.00101716,
+        "calls": 3
+      }
+    },
+    {
+      "config_name": "query_transform_rerank",
+      "question": "Agent 记忆系统可以分成哪些类型？",
+      "generated_queries": [
+        "Agent 记忆系统可以分成哪些类型？",
+        "Agent 记忆系统 分类",
+        "智能体 记忆 类型 划分",
+        "Agent 记忆 系统 种类 有哪些"
+      ],
+      "retrieved_chunk_ids": [
+        "p1_arch_article::30",
+        "p2_rag_overview::5",
+        "p1_react_article::1"
+      ],
+      "retrieved_source_ids": [
+        "p1_arch_article",
+        "p2_rag_overview",
+        "p1_react_article"
+      ],
+      "answer": "根据参考资料，Agent 的记忆系统可以分为两个层次：\n\n1. **执行状态**：生命周期为单次任务，记录当前任务的步骤历史、中间结果。框架实现包括 smolagents 的 `AgentMemory` 和 langgraph 的 `AgentState`（来源 1）。\n2. **持久记忆**：生命周期为跨任务，记录用户偏好、历史对话摘要、知识库。框架实现包括 langchain 的 `Memory` 抽象，而 smolagents 暂无内置（来源 1）。",
+      "faithfulness": 0.7,
+      "faithfulness_reason": "回答准确引用了参考资料中关于执行状态和持久记忆的分类，但未提及人工参考答案中的工作记忆、情节记忆、语义记忆等更细分的记忆类型，存在轻微泛化。",
+      "precision_at_3": 0.0,
+      "recall_at_3": 0.0,
+      "mrr": 0.0,
+      "ndcg_at_3": 0.0,
+      "latency_ms": 4375.678250013152,
+      "llm_usage": {
+        "prompt_tokens": 2970,
+        "completion_tokens": 190,
+        "total_tokens": 3160,
+        "cost_usd": 0.0010109,
+        "calls": 3
+      }
+    },
+    {
+      "config_name": "query_transform_rerank",
+      "question": "记忆生命周期管理通常包含哪些机制？",
+      "generated_queries": [
+        "记忆生命周期管理通常包含哪些机制？",
+        "记忆生命周期管理 机制 有哪些",
+        "记忆生命周期管理 包含 哪些 策略",
+        "记忆生命周期管理 主要 机制 介绍"
+      ],
+      "retrieved_chunk_ids": [
+        "memory_lifecycle::0",
+        "memory_system::0",
+        "memory_lifecycle::7"
+      ],
+      "retrieved_source_ids": [
+        "memory_lifecycle",
+        "memory_system"
+      ],
+      "answer": "根据参考资料，记忆生命周期管理通常包含以下机制：\n\n1. **整合（Consolidation）**：将重要的短期记忆提升为长期记忆。例如，工作记忆中重要性大于0.7的记忆可提升为情景记忆，情景记忆中访问次数大于5的记忆可提升为语义记忆（来源1）。\n\n2. **遗忘（Forgetting）**：清理低价值记忆以保持系统高效。具体包括三种策略：\n   - 基于重要性遗忘\n   - 基于时间遗忘\n   - 基于容量遗忘（来源1）\n\n3. **评分（Scoring）**：通过多因素综合评分决定记忆的检索优先级，例如使用时间衰减评分（指数衰减模型，模拟艾宾浩斯遗忘曲线）（来源1）。\n\n4. **记忆生命周期流程**：编码 → 存储 → 检索 → 整合 → 遗忘（来源1）。",
+      "faithfulness": 1.0,
+      "faithfulness_reason": "所有关键声明（整合、遗忘、评分、生命周期流程）均能被参考资料直接支持，无泛化或编造。",
+      "precision_at_3": 1.0,
+      "recall_at_3": 1.0,
+      "mrr": 1.0,
+      "ndcg_at_3": 1.0,
+      "latency_ms": 5024.585249993834,
+      "llm_usage": {
+        "prompt_tokens": 2581,
+        "completion_tokens": 248,
+        "total_tokens": 2829,
+        "cost_usd": 0.0009696700000000001,
+        "calls": 3
+      }
+    },
+    {
+      "config_name": "query_transform_rerank",
+      "question": "统一检索如何把知识库和记忆结合起来？",
+      "generated_queries": [
+        "统一检索如何把知识库和记忆结合起来？",
+        "统一检索 知识库 记忆 结合 方法",
+        "知识库与记忆融合 统一检索 实现方式",
+        "如何将知识库和记忆整合到统一检索系统中"
+      ],
+      "retrieved_chunk_ids": [
+        "memory_enhanced_rag::0",
+        "rag_full_pipeline::2",
+        "memory_enhanced_rag::10"
+      ],
+      "retrieved_source_ids": [
+        "memory_enhanced_rag",
+        "rag_full_pipeline"
+      ],
+      "answer": "根据参考资料，统一检索（Unified Search）将知识库和记忆结合的方式是：**通过 MQE + HyDE + 候选池融合**来实现。\n\n具体来说，在 Memory + RAG 集成架构中，经过查询增强（Memory Enrich）后的查询会进入统一检索模块，该模块使用多查询扩展（MQE）和假设性文档嵌入（HyDE）等技术，并将检索到的文档与记忆上下文合并为一个候选池进行融合，最终输出“检索文档 + 记忆上下文”供 LLM 生成回答（来源 1）。\n\n简言之，统一检索不是分别处理知识库和记忆，而是将两者作为候选池进行融合检索。",
+      "faithfulness": 0.7,
+      "faithfulness_reason": "回答正确描述了统一检索通过MQE+HyDE+候选池融合实现知识库与记忆结合，但将‘候选池融合’表述为将检索文档与记忆上下文合并，而参考资料中明确统一检索是‘MQE + HyDE + 候选池融合’，且记忆上下文是在查询增强阶段引入，并非在统一检索中直接合并，存在轻微泛化。",
+      "precision_at_3": 0.5,
+      "recall_at_3": 0.3333333333333333,
+      "mrr": 1.0,
+      "ndcg_at_3": 0.46927872602275644,
+      "latency_ms": 5753.573042005883,
+      "llm_usage": {
+        "prompt_tokens": 2993,
+        "completion_tokens": 274,
+        "total_tokens": 3267,
+        "cost_usd": 0.0011095100000000002,
+        "calls": 3
+      }
+    },
+    {
+      "config_name": "query_transform_rerank",
+      "question": "PDF 学习助手如何结合 RAG 和记忆？",
+      "generated_queries": [
+        "PDF 学习助手如何结合 RAG 和记忆？",
+        "PDF学习助手 RAG 记忆机制 结合方式",
+        "基于RAG的PDF学习助手 长期记忆 实现方法",
+        "PDF学习助手 知识检索 记忆模块 集成方案"
+      ],
+      "retrieved_chunk_ids": [
+        "pdf_learning_assistant::6",
+        "pdf_learning_assistant::0",
+        "pdf_learning_assistant::17"
+      ],
+      "retrieved_source_ids": [
+        "pdf_learning_assistant"
+      ],
+      "answer": "根据参考资料，PDF 学习助手（`PDFLearningAssistant`）通过整合 **Memory + RAG** 来实现结合，具体方式如下：\n\n1. **核心架构**：该类被描述为“整合 Memory + RAG 的完整应用”[来源 1]，其内部集成了 `MemoryRAG` 组件[来源 1]。\n2. **功能流程**：\n   - `load_document()` 执行结构感知分块和索引[来源 2]。\n   - `ask()` 调用 `MemoryRAG.query()` 进行检索增强生成[来源 2]。\n   - `add_note()` 将笔记存储为语义记忆[来源 2]。\n   - `review()` 结合记忆检索与 LLM 总结[来源 2]。\n3. **对比验证**：参考资料中通过对比实验展示了效果差异——先通过 `ask()` 和 `add_note()` 积累记忆，再与“无记忆（直接向量检索）”进行对比，以体现记忆对 RAG 效果的提升[来源 3]。\n\n**总结**：该助手通过 `MemoryRAG` 将用户交互（提问、笔记）作为记忆存储，并在后续查询中结合向量检索与记忆，实现更连贯、个性化的问答。",
+      "faithfulness": 1.0,
+      "faithfulness_reason": "所有关键声明均能被参考资料直接支持，无泛化或编造内容。",
+      "precision_at_3": 1.0,
+      "recall_at_3": 0.25,
+      "mrr": 1.0,
+      "ndcg_at_3": 0.46927872602275644,
+      "latency_ms": 6411.015292003867,
+      "llm_usage": {
+        "prompt_tokens": 2447,
+        "completion_tokens": 338,
+        "total_tokens": 2785,
+        "cost_usd": 0.00103249,
+        "calls": 3
+      }
+    },
+    {
+      "config_name": "query_transform_rerank",
+      "question": "LangGraph 为什么适合复杂 Agent 工作流？",
+      "generated_queries": [
+        "LangGraph 为什么适合复杂 Agent 工作流？",
+        "LangGraph 复杂 Agent 工作流 优势",
+        "LangGraph 适用场景 多步骤任务编排",
+        "LangGraph 状态管理 图结构 工作流"
+      ],
+      "retrieved_chunk_ids": [
+        "p3_langgraph_article::0",
+        "p3_langgraph_article::1",
+        "p3_framework_article::4"
+      ],
+      "retrieved_source_ids": [
+        "p3_langgraph_article",
+        "p3_framework_article"
+      ],
+      "answer": "根据参考资料，LangGraph 适合复杂 Agent 工作流的原因在于其核心设计哲学：**将控制流从代码逻辑中分离出来，把 Agent 工作流建模为有向图**。\n\n具体来说，参考资料指出了传统 while 循环的三个致命问题，而 LangGraph 的 StateGraph 正好解决了这些问题：\n\n1.  **解决“无法暂停”问题**：while 循环是同步的，无法在中间暂停、等待用户确认后再恢复。而 LangGraph 将控制流作为“一等公民”，支持“暂停-等待-恢复”的复杂流程（来源 1）。\n2.  **解决“状态隐式”问题**：while 循环中的状态（如 `messages`）只是内存中的变量，没有结构化持久化机制，崩溃后无法恢复。LangGraph 通过状态机模型，使状态变得显式且可管理（来源 2）。\n3.  **解决“流程不可见”问题**：while 循环的流程隐藏在代码中，难以理解和维护。LangGraph 将工作流建模为有向图（节点是处理函数，边是控制流），使执行流程变得清晰可见，易于维护和修改（来源 1, 2）。\n\n此外，参考资料提到，LangGraph 采用“声明式控制”，虽然代码量（约120行）比CrewAI多，但换取了**可维护性**，特别适合“这个 Agent 六个月后还需要改”的场景（来源 3）。其核心隐喻是“图”（节点和边），这使其非常适合解决需要精细控制流程和状态的复杂问题（来源 3）。",
+      "faithfulness": 1.0,
+      "faithfulness_reason": "回答中的所有关键声明（包括LangGraph将控制流分离、解决while循环的三个问题、声明式控制与可维护性、核心隐喻为图）均能被参考资料直接支持，无编造或泛化。",
+      "precision_at_3": 1.0,
+      "recall_at_3": 1.0,
+      "mrr": 1.0,
+      "ndcg_at_3": 1.0,
+      "latency_ms": 7714.510416990379,
+      "llm_usage": {
+        "prompt_tokens": 3446,
+        "completion_tokens": 430,
+        "total_tokens": 3876,
+        "cost_usd": 0.0014034200000000003,
+        "calls": 3
+      }
+    },
+    {
+      "config_name": "query_transform_rerank",
+      "question": "不同 Agent 框架应该从哪些维度对比？",
+      "generated_queries": [
+        "不同 Agent 框架应该从哪些维度对比？",
+        "Agent框架对比维度",
+        "评估Agent框架的关键指标",
+        "Agent框架选型比较标准"
+      ],
+      "retrieved_chunk_ids": [
+        "p3_framework_article::0",
+        "p3_multi_agent_article::0",
+        "p1_arch_article::0"
+      ],
+      "retrieved_source_ids": [
+        "p3_framework_article",
+        "p3_multi_agent_article",
+        "p1_arch_article"
+      ],
+      "answer": "根据参考资料，不同 Agent 框架应该从以下维度进行对比：\n\n1. **框架隐藏了什么**：框架的本质是抽象，对比时应关注框架隐藏了哪些复杂度（如执行循环、状态持久化等），以及当你的需求超出框架预设时是否有退路[来源 1]。\n\n2. **框架暴露了什么**：除了功能是否存在，更要关注功能是如何实现的，因为不同框架对同一功能（如“多Agent支持”）的设计哲学完全不同[来源 1]。\n\n3. **设计范式**：不同框架采用不同的协作范式，例如 LangGraph 是“先定义结构再执行”的图纸思维，CrewAI 是“先定义角色再协作”的分工思维，Claude SDK 是“自主决策步步为营”的灵活思维[来源 2]。\n\n4. **架构设计共性**：通过阅读源码，可以提炼不同框架的共同设计模式，理解其核心模块和设计思路[来源 3]。\n\n**注意**：参考资料中未提供完整的对比维度清单，以上维度基于现有内容提取。如需更全面的对比框架，建议补充更多资料。",
+      "faithfulness": 0.7,
+      "faithfulness_reason": "回答中提到的'框架隐藏了什么'、'框架暴露了什么'和'设计范式'三个维度均能从参考资料[1]和[2]中找到支持，但'架构设计共性'维度在参考资料[3]中仅提及了方法（读源码、找共性），并未明确作为对比维度列出，属于轻微泛化；同时回答未涵盖人工参考答案中的'状态管理、工作流可控性、调试可观测性、开发复杂度、生产适配性'等维度，但忠实度评估仅基于参考资料，不要求与参考答案一致。",
+      "precision_at_3": 0.6666666666666666,
+      "recall_at_3": 0.6666666666666666,
+      "mrr": 1.0,
+      "ndcg_at_3": 0.7653606369886217,
+      "latency_ms": 7013.910000008764,
+      "llm_usage": {
+        "prompt_tokens": 3319,
+        "completion_tokens": 378,
+        "total_tokens": 3697,
+        "cost_usd": 0.0013119300000000002,
+        "calls": 3
+      }
+    }
+  ]
+}
