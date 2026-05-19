@@ -242,7 +242,7 @@ CrewAI 隐藏了：
 - 多角色 brainstorming
 - 快速验证多 Agent 协作是否有用
 
-所以重构后的 Phase 3 把 CrewAI 放在 legacy/reference，而不是主线。
+所以重构后的 Phase 3 把 CrewAI 放在 `phase-3-frameworks/01-framework-basics/02-crewai-multi-agent/` 作为 reference，而不是主线。
 
 它是一个重要对比项，但不是企业知识库 Agentic RAG 的主编排框架。
 

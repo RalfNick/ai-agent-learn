@@ -1,0 +1,80 @@
+<svg viewBox="0 0 1080 600" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&amp;display=swap');
+    text { font-family: 'JetBrains Mono', 'Noto Sans SC', 'PingFang SC', sans-serif; }
+    .title { fill: #f8fafc; font-size: 18px; font-weight: 700; }
+    .subtitle { fill: #94a3b8; font-size: 10px; }
+    .box-title { fill: #f8fafc; font-size: 13px; font-weight: 700; text-anchor: middle; }
+    .box-sub { fill: #cbd5e1; font-size: 9px; text-anchor: middle; }
+    .small { fill: #cbd5e1; font-size: 9px; text-anchor: middle; }
+    .label { fill: #94a3b8; font-size: 8px; text-anchor: middle; }
+  </style>
+  <defs>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1e293b" stroke-width="0.5"/>
+    </pattern>
+    <marker id="arrow" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#64748b"/>
+    </marker>
+    <marker id="arrow-cyan" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#22d3ee"/>
+    </marker>
+  </defs>
+  <rect width="1080" height="600" fill="#0f172a"/>
+  <rect width="1080" height="600" fill="url(#grid)"/>
+
+  <text x="40" y="44" class="title">从手写 Agent 到 Agentic RAG 的学习地图</text>
+  <text x="40" y="64" class="subtitle">先把能力组件化，再把流程显式化，最后进入可评价的真实系统</text>
+
+  <path d="M 192 280 L 303 280" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+  <path d="M 505 280 L 616 280" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+  <path d="M 814 280 L 925 280" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="250" y="265" class="label">能力标准化</text>
+  <text x="560" y="265" class="label">流程显式化</text>
+  <text x="870" y="265" class="label">可靠性验证</text>
+
+  <rect x="46" y="230" width="146" height="100" rx="8" fill="#0f172a"/>
+  <rect x="46" y="230" width="146" height="100" rx="8" fill="rgba(30,41,59,0.55)" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="119" y="263" class="box-title">Phase1</text>
+  <text x="119" y="284" class="box-sub">手写 ReAct Loop</text>
+  <text x="119" y="305" class="box-sub">Prompt / LLM / Tool</text>
+
+  <rect x="304" y="190" width="200" height="194" rx="10" fill="#0f172a"/>
+  <rect x="304" y="190" width="200" height="194" rx="10" fill="rgba(8,51,68,0.42)" stroke="#22d3ee" stroke-width="1.5"/>
+  <text x="404" y="222" class="box-title">LangChain</text>
+  <text x="404" y="243" class="box-sub">解决“能力怎么组合”</text>
+  <rect x="328" y="266" width="70" height="30" rx="5" fill="rgba(8,51,68,0.55)" stroke="#22d3ee"/>
+  <text x="363" y="285" class="small">Prompt</text>
+  <rect x="410" y="266" width="70" height="30" rx="5" fill="rgba(8,51,68,0.55)" stroke="#22d3ee"/>
+  <text x="445" y="285" class="small">Model</text>
+  <rect x="328" y="310" width="70" height="30" rx="5" fill="rgba(8,51,68,0.55)" stroke="#22d3ee"/>
+  <text x="363" y="329" class="small">Parser</text>
+  <rect x="410" y="310" width="70" height="30" rx="5" fill="rgba(8,51,68,0.55)" stroke="#22d3ee"/>
+  <text x="445" y="329" class="small">Tool</text>
+  <rect x="369" y="348" width="70" height="30" rx="5" fill="rgba(8,51,68,0.55)" stroke="#22d3ee"/>
+  <text x="404" y="367" class="small">Retriever</text>
+
+  <rect x="616" y="190" width="198" height="194" rx="10" fill="#0f172a"/>
+  <rect x="616" y="190" width="198" height="194" rx="10" fill="rgba(6,78,59,0.42)" stroke="#34d399" stroke-width="1.5"/>
+  <text x="715" y="222" class="box-title">LangGraph</text>
+  <text x="715" y="243" class="box-sub">解决“流程怎么编排”</text>
+  <rect x="640" y="266" width="70" height="30" rx="5" fill="rgba(6,78,59,0.55)" stroke="#34d399"/>
+  <text x="675" y="285" class="small">State</text>
+  <rect x="722" y="266" width="70" height="30" rx="5" fill="rgba(6,78,59,0.55)" stroke="#34d399"/>
+  <text x="757" y="285" class="small">Node</text>
+  <rect x="640" y="310" width="70" height="30" rx="5" fill="rgba(6,78,59,0.55)" stroke="#34d399"/>
+  <text x="675" y="329" class="small">Edge</text>
+  <rect x="722" y="310" width="70" height="30" rx="5" fill="rgba(6,78,59,0.55)" stroke="#34d399"/>
+  <text x="757" y="329" class="small">Checkpoint</text>
+
+  <rect x="926" y="230" width="128" height="100" rx="8" fill="#0f172a"/>
+  <rect x="926" y="230" width="128" height="100" rx="8" fill="rgba(76,29,149,0.42)" stroke="#a78bfa" stroke-width="1.5"/>
+  <text x="990" y="263" class="box-title">Agentic RAG</text>
+  <text x="990" y="284" class="box-sub">检索 / 评分 / 重写</text>
+  <text x="990" y="305" class="box-sub">生成 / 校验 / 拒答</text>
+
+  <rect x="305" y="430" width="510" height="78" rx="10" fill="#0f172a"/>
+  <rect x="305" y="430" width="510" height="78" rx="10" fill="rgba(120,53,15,0.25)" stroke="#fbbf24" stroke-dasharray="8,4"/>
+  <text x="560" y="459" fill="#fbbf24" font-size="12" font-weight="700" text-anchor="middle">核心判断</text>
+  <text x="560" y="482" fill="#f8fafc" font-size="11" text-anchor="middle">线性组合用 chain；分支、循环、暂停、恢复用 graph</text>
+</svg>

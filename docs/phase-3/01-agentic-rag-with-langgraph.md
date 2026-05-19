@@ -2,7 +2,7 @@
 
 > 这是 AI Agent 系统性学习 Phase 3 的第一篇。前两阶段我们已经手写过 Agent，也做了 RAG benchmark；这一篇不再写玩具 demo，而是把 Phase 2 的真实 RAG 基线升级成一个可路由、可修复、可拒答、可观测的 LangGraph Agentic RAG。
 >
-> 配套代码：`phase-3-frameworks/01-agentic-rag-langgraph/`
+> 配套代码：`phase-3-frameworks/02-agentic-rag-langgraph/`
 >
 > 关键词：LangGraph、Agentic RAG、Hybrid Search、Rerank、Faithfulness、Graph Trace
 
@@ -472,7 +472,7 @@ Agentic RAG 的适用场景是：
 单问运行：
 
 ```bash
-cd phase-3-frameworks/01-agentic-rag-langgraph
+cd phase-3-frameworks/02-agentic-rag-langgraph
 python3 run_agentic_rag.py --question "RAG 系统如何评估？"
 ```
 
@@ -517,7 +517,7 @@ phase-2-rag/05-rag-benchmark/
 ├── outputs/
 └── reports/
 
-phase-3-frameworks/01-agentic-rag-langgraph/
+phase-3-frameworks/02-agentic-rag-langgraph/
 ├── agentic_rag_graph.py
 ├── run_agentic_rag.py
 ├── benchmark_agentic_rag.py
@@ -530,7 +530,7 @@ phase-3-frameworks/01-agentic-rag-langgraph/
 如果你想复现，可以按下面顺序跑：
 
 ```bash
-cd phase-3-frameworks/01-agentic-rag-langgraph
+cd phase-3-frameworks/02-agentic-rag-langgraph
 
 python3 run_agentic_rag.py --question "RAG 系统如何评估？"
 python3 benchmark_agentic_rag.py --limit 2

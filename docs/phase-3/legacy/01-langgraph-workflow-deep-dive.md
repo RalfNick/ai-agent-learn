@@ -1,5 +1,7 @@
 # LangGraph 的设计哲学：为什么说 Agent 不是 while 循环，而是状态机
 
+> 归档说明：本文内容已整合至 [从 LangChain 到 LangGraph：Agent 框架基础真正要掌握什么](../00-langchain-to-langgraph-foundations.md)，这里保留为 Phase3 早期学习素材。
+
 > 把 Agent 工作流建模为"图"而不是"循环"——这不只是 API 的变化，而是编程范式的跃迁。本文带你理解 LangGraph 背后的五个关键设计决策，以及它们如何改变你构建 Agent 的方式。
 
 ---
@@ -281,4 +283,4 @@ app.invoke(None, checkpoint_3.config)  # 从 checkpoint 3 重新开始
 
 ---
 
-*本文是 Phase 3 系列第一篇。下一篇讨论多 Agent 协作的三种范式——同样的任务，三个框架完全不同的解法。配套代码在 `phase-3-frameworks/01-langgraph-deep-dive/`。*
+*本文是 Phase 3 早期文章。配套代码在 `phase-3-frameworks/01-framework-basics/01-langgraph-deep-dive/`，当前 Phase3 主线会在这些框架基础之上继续进入 `phase-3-frameworks/02-agentic-rag-langgraph/`。*

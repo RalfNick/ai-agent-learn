@@ -24,6 +24,7 @@ LangGraph 的 interrupt() 是一等公民设计：
 from __future__ import annotations
 
 import os
+import sys
 from typing import Annotated, TypedDict
 
 from dotenv import load_dotenv
@@ -145,6 +146,22 @@ app = graph.compile(checkpointer=memory)
 
 # ── 5. 运行演示 ─────────────────────────────────────────────────
 
+def get_review_feedback() -> str:
+    """获取审核反馈。
+
+    交互运行时由用户输入；自动化测试或非 TTY 环境下默认批准，避免 smoke test
+    因 stdin 不可用而失败。也可以通过 HUMAN_REVIEW_FEEDBACK 指定固定反馈。
+    """
+    env_feedback = os.getenv("HUMAN_REVIEW_FEEDBACK")
+    if env_feedback:
+        console.print(f"[dim]使用 HUMAN_REVIEW_FEEDBACK={env_feedback!r} 作为审核反馈[/dim]")
+        return env_feedback
+    if not sys.stdin.isatty():
+        console.print("[dim]检测到非交互环境，自动使用 'approve' 作为审核反馈[/dim]")
+        return "approve"
+    return Prompt.ask("你的反馈（输入 'approve' 批准，或输入修改意见）")
+
+
 def run_demo():
     if not os.getenv("DEEPSEEK_API_KEY"):
         console.print("[red]请设置 DEEPSEEK_API_KEY 环境变量[/red]")
@@ -174,7 +191,7 @@ def run_demo():
     max_rounds = 3
     for round_num in range(1, max_rounds + 1):
         console.print(f"\n[bold cyan]审核轮次 {round_num}/{max_rounds}[/bold cyan]")
-        feedback = Prompt.ask("你的反馈（输入 'approve' 批准，或输入修改意见）")
+        feedback = get_review_feedback()
 
         # Command(resume=value) 恢复执行，value 成为 interrupt() 的返回值
         result = app.invoke(Command(resume=feedback), config)
