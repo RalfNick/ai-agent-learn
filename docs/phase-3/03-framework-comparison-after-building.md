@@ -407,10 +407,10 @@ Claude SDK 更灵活
 
 有了 benchmark，就可以说得更具体：
 
-- LangGraph Agentic RAG 把 Faithfulness 从 0.910 提升到 0.970。
-- 代价是延迟从 4597ms 增加到 7139ms。
-- 成本从 $0.0296 增加到 $0.0461。
-- LLM 调用从 60 次增加到 98 次。
+- LangGraph Agentic RAG 把 Faithfulness 从 0.907 提升到 0.980。
+- 代价是延迟从 3269ms 增加到 5108ms。
+- 成本从 $0.0296 增加到 $0.0443。
+- LLM 调用从 60 次增加到 94 次。
 - 系统触发 6 次拒答。
 
 这才是能指导工程决策的对比。

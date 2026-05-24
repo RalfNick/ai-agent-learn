@@ -146,11 +146,10 @@ def main() -> None:
             progress.advance(task)
 
     summaries = summarize(records)
-    write_outputs(records, summaries)
+    output_paths = write_outputs(records, summaries, suffix=output_suffix(args.limit))
     print_summary(summaries)
-    console.print(f"[green]Wrote[/green] {OUTPUT_DIR / 'agentic_rag_results.json'}")
-    console.print(f"[green]Wrote[/green] {OUTPUT_DIR / 'agentic_rag_summary.csv'}")
-    console.print(f"[green]Wrote[/green] {REPORT_DIR / 'agentic_rag_experiment_report.md'}")
+    for path in output_paths:
+        console.print(f"[green]Wrote[/green] {path}")
 
 
 def summarize(records: list[RunRecord]) -> list[Summary]:
@@ -180,10 +179,18 @@ def mean(values: list[float]) -> float:
     return statistics.fmean(values) if values else 0.0
 
 
-def write_outputs(records: list[RunRecord], summaries: list[Summary]) -> None:
+def output_suffix(limit: int) -> str:
+    return f"_limit{limit}" if limit else ""
+
+
+def write_outputs(records: list[RunRecord], summaries: list[Summary], suffix: str = "") -> list[Path]:
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
     REPORT_DIR.mkdir(parents=True, exist_ok=True)
-    (OUTPUT_DIR / "agentic_rag_results.json").write_text(
+    results_path = OUTPUT_DIR / f"agentic_rag_results{suffix}.json"
+    summary_path = OUTPUT_DIR / f"agentic_rag_summary{suffix}.csv"
+    report_path = REPORT_DIR / f"agentic_rag_experiment_report{suffix}.md"
+
+    results_path.write_text(
         json.dumps(
             {
                 "summaries": [asdict(summary) for summary in summaries],
@@ -194,15 +201,16 @@ def write_outputs(records: list[RunRecord], summaries: list[Summary]) -> None:
         ),
         encoding="utf-8",
     )
-    with (OUTPUT_DIR / "agentic_rag_summary.csv").open("w", encoding="utf-8", newline="") as fh:
+    with summary_path.open("w", encoding="utf-8", newline="") as fh:
         writer = csv.DictWriter(fh, fieldnames=list(asdict(summaries[0]).keys()))
         writer.writeheader()
         for summary in summaries:
             writer.writerow(asdict(summary))
-    (REPORT_DIR / "agentic_rag_experiment_report.md").write_text(
+    report_path.write_text(
         build_report(records, summaries),
         encoding="utf-8",
     )
+    return [results_path, summary_path, report_path]
 
 
 def build_report(records: list[RunRecord], summaries: list[Summary]) -> str:
@@ -292,4 +300,3 @@ def print_summary(summaries: list[Summary]) -> None:
 
 if __name__ == "__main__":
     main()
-

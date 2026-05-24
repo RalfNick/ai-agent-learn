@@ -1,0 +1,114 @@
+{
+  "summaries": [
+    {
+      "mode": "linear_hybrid_rerank",
+      "precision_at_3": 0.5,
+      "recall_at_3": 0.41666666666666663,
+      "mrr": 1.0,
+      "ndcg_at_3": 0.5412129593941074,
+      "faithfulness": 1.0,
+      "avg_latency_ms": 3057.0744585129432,
+      "total_cost_usd": 0.00217591,
+      "llm_calls": 4,
+      "avg_retries": 0.0,
+      "avg_repairs": 0.0,
+      "abstain_count": 0
+    },
+    {
+      "mode": "agentic_rag_langgraph",
+      "precision_at_3": 0.5,
+      "recall_at_3": 0.41666666666666663,
+      "mrr": 1.0,
+      "ndcg_at_3": 0.5412129593941074,
+      "faithfulness": 1.0,
+      "avg_latency_ms": 4856.128228537273,
+      "total_cost_usd": 0.00312377,
+      "llm_calls": 6,
+      "avg_retries": 0.0,
+      "avg_repairs": 0.0,
+      "abstain_count": 0
+    }
+  ],
+  "records": [
+    {
+      "mode": "linear_hybrid_rerank",
+      "question": "ReAct Agent 和普通 LLM 对话的核心区别是什么？",
+      "precision_at_3": 0.5,
+      "recall_at_3": 0.5,
+      "mrr": 1.0,
+      "ndcg_at_3": 0.6131471927654584,
+      "faithfulness": 1.0,
+      "latency_ms": 3125.872000004165,
+      "cost_usd": 0.00107273,
+      "llm_calls": 2,
+      "retry_count": 0,
+      "repair_count": 0,
+      "abstained": false,
+      "route_trace": null,
+      "answer": "根据参考资料，ReAct Agent 和普通 LLM 对话的核心区别在于：**LLM 本质上只做一件事——输入文本，输出文本；而 Agent 是一个能思考、能动手、能从结果中学习的完整系统** [来源 1]。\n\n具体区别如下表所示 [来源 1]：\n\n| 维度 | LLM | Agent |\n|------|-----|-------|\n| 能力 | 生成文本 | 生成文本 + 调用工具 + 观察结果 |\n| 状态 | 无状态（每次对话独立） | 有记忆（记住之前做了什么） |\n| 决策 | 一次性回答 | 多步推理，自主决定下一步 |\n| 边界 | 训练数据截止日期内的知识 | 可以访问实时数据和外部系统 |\n\n此外，ReAct 框架让 LLM 交替进行“思考”和“行动”，通过 Thought（分析状态）、Action（调用工具）、Observation（观察结果）的循环持续进行，直到任务完成 [来源 2]。"
+    },
+    {
+      "mode": "agentic_rag_langgraph",
+      "question": "ReAct Agent 和普通 LLM 对话的核心区别是什么？",
+      "precision_at_3": 0.5,
+      "recall_at_3": 0.5,
+      "mrr": 1.0,
+      "ndcg_at_3": 0.6131471927654584,
+      "faithfulness": 1.0,
+      "latency_ms": 5677.62475006748,
+      "cost_usd": 0.0015529900000000002,
+      "llm_calls": 3,
+      "retry_count": 0,
+      "repair_count": 0,
+      "abstained": false,
+      "route_trace": [
+        "query_analysis:use_original_query",
+        "retrieve:p1_react_article,rag_loading",
+        "context_grade:1.00",
+        "generate",
+        "faithfulness_check:1.00"
+      ],
+      "answer": "基于参考资料，ReAct Agent 和普通 LLM 对话的核心区别在于：\n\n1. **能力范围不同**：普通 LLM 只能“生成文本”，而 Agent 能“生成文本 + 调用工具 + 观察结果”[来源 1]。\n\n2. **状态管理不同**：普通 LLM 是“无状态（每次对话独立）”，Agent 则“有记忆（记住之前做了什么）”[来源 1]。\n\n3. **决策方式不同**：普通 LLM 是“一次性回答”，Agent 则进行“多步推理，自主决定下一步”[来源 1]。\n\n4. **知识边界不同**：普通 LLM 受限于“训练数据截止日期内的知识”，Agent 则“可以访问实时数据和外部系统”[来源 1]。\n\n5. **核心能力差异**：Agent 具备工具调用、规划能力、记忆系统和自我反思等核心能力，这些是传统 LLM 对话所不具备的[来源 2]。\n\n6. **运行机制不同**：Agent 基于 ReAct 框架，交替进行“思考”（Thought）和“行动”（Action），并通过观察（Observation）工具返回的结果来持续循环，直到任务完成[来源 2]。"
+    },
+    {
+      "mode": "linear_hybrid_rerank",
+      "question": "一个 Agent 框架通常可以拆成哪几层架构？",
+      "precision_at_3": 0.5,
+      "recall_at_3": 0.3333333333333333,
+      "mrr": 1.0,
+      "ndcg_at_3": 0.46927872602275644,
+      "faithfulness": 1.0,
+      "latency_ms": 2988.2769170217216,
+      "cost_usd": 0.00110318,
+      "llm_calls": 2,
+      "retry_count": 0,
+      "repair_count": 0,
+      "abstained": false,
+      "route_trace": null,
+      "answer": "根据参考资料，一个 Agent 框架通常可以拆解为以下六层架构（来源 1）：\n\n1. **执行引擎**：while 循环 + 步骤抽象 + 终止判断 + 错误恢复\n2. **工具系统**：Schema-Driven + 装饰器/类继承注册 + Code/JSON 两种调用路径\n3. **Prompt 引擎**：模板系统 + 动态变量注入 + 消息历史管理\n4. **多 Agent 编排**：Supervisor/Worker + Pipeline + Agent 作为 Tool\n5. **状态与记忆**：执行状态（单次任务）+ 持久记忆（跨任务）\n6. **LLM 适配**：Provider-Agnostic 设计\n\n这些是 Agent 框架的**通用架构模式**，并非某个框架的特有设计（来源 1）。"
+    },
+    {
+      "mode": "agentic_rag_langgraph",
+      "question": "一个 Agent 框架通常可以拆成哪几层架构？",
+      "precision_at_3": 0.5,
+      "recall_at_3": 0.3333333333333333,
+      "mrr": 1.0,
+      "ndcg_at_3": 0.46927872602275644,
+      "faithfulness": 1.0,
+      "latency_ms": 4034.6317070070654,
+      "cost_usd": 0.00157078,
+      "llm_calls": 3,
+      "retry_count": 0,
+      "repair_count": 0,
+      "abstained": false,
+      "route_trace": [
+        "query_analysis:use_original_query",
+        "retrieve:p1_arch_article,p3_framework_article",
+        "context_grade:1.00",
+        "generate",
+        "faithfulness_check:1.00"
+      ],
+      "answer": "根据参考资料，一个 Agent 框架通常可以拆成以下六层架构：\n\n1. **执行引擎**：while 循环 + 步骤抽象 + 终止判断 + 错误恢复 [来源 1]\n2. **工具系统**：Schema-Driven + 装饰器/类继承注册 + Code/JSON 两种调用路径 [来源 1]\n3. **Prompt 引擎**：模板系统 + 动态变量注入 + 消息历史管理 [来源 1]\n4. **多 Agent 编排**：Supervisor/Worker + Pipeline + Agent 作为 Tool [来源 1]\n5. **状态与记忆**：执行状态（单次任务）+ 持久记忆（跨任务） [来源 1]\n6. **LLM 适配**：Provider-Agnostic 设计 [来源 1]\n\n这些是 Agent 框架的通用架构模式，并非某个框架的特有设计 [来源 1]。"
+    }
+  ]
+}

@@ -19,9 +19,10 @@ python3 benchmark_agentic_rag.py --limit 2
 python3 benchmark_agentic_rag.py
 ```
 
+`--limit` 用于 smoke test，会写入带 `_limitN` 后缀的结果文件，避免覆盖全量 benchmark 报告。
+
 ## 输出
 
 - `outputs/agentic_rag_results.json`
 - `outputs/agentic_rag_summary.csv`
 - `reports/agentic_rag_experiment_report.md`
-

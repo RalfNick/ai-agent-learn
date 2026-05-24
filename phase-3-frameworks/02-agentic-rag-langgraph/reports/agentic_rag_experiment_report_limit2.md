@@ -13,8 +13,8 @@
 
 | 系统 | P@3 | R@3 | MRR | NDCG@3 | Faithfulness | 平均延迟(ms) | 成本 | LLM调用 | 平均重试 | 平均修复 | 拒答 |
 |------|-----|-----|-----|--------|--------------|--------------|------|---------|----------|----------|------|
-| `linear_hybrid_rerank` | 0.578 | 0.436 | 0.756 | 0.511 | 0.907 | 3269 | $0.0296 | 60 | 0.00 | 0.00 | 0 |
-| `agentic_rag_langgraph` | 0.572 | 0.425 | 0.756 | 0.503 | 0.980 | 5108 | $0.0443 | 94 | 0.20 | 0.07 | 6 |
+| `linear_hybrid_rerank` | 0.500 | 0.417 | 1.000 | 0.541 | 1.000 | 3057 | $0.0022 | 4 | 0.00 | 0.00 | 0 |
+| `agentic_rag_langgraph` | 0.500 | 0.417 | 1.000 | 0.541 | 1.000 | 4856 | $0.0031 | 6 | 0.00 | 0.00 | 0 |
 
 ## 3. 关键观察
 
@@ -24,29 +24,7 @@
 
 ## 4. 自适应 Trace 样例
 
-### Trace 1: Prompt 引擎在 Agent 中主要解决什么问题？
-
-- Retry: 1
-- Repair: 0
-- Abstained: True
-- Faithfulness: 1.000
-- Route: `query_analysis:use_original_query -> retrieve:p1_arch_article -> context_grade:0.40 -> query_rewrite:1 -> retrieve:p1_arch_article -> context_grade:0.40 -> abstain`
-
-### Trace 2: 文档加载和清洗为什么是 RAG 的上限因素？
-
-- Retry: 1
-- Repair: 0
-- Abstained: True
-- Faithfulness: 1.000
-- Route: `query_analysis:use_original_query -> retrieve:p2_rag_overview,rag_loading,pdf_learning_assistant -> context_grade:0.40 -> query_rewrite:1 -> retrieve:p2_rag_overview,rag_loading,pdf_learning_assistant -> context_grade:0.40 -> abstain`
-
-### Trace 3: Chroma 向量库在基础 RAG 中承担什么职责？
-
-- Retry: 0
-- Repair: 1
-- Abstained: False
-- Faithfulness: 0.700
-- Route: `query_analysis:use_original_query -> retrieve:pdf_learning_assistant,rag_optimization_lab,rag_eval_pipeline -> context_grade:0.70 -> generate -> faithfulness_check:0.70 -> repair:1 -> faithfulness_check:0.70`
+本次运行没有触发 rewrite、repair 或 abstain。需要降低阈值或补充更难的问题集。
 
 ## 5. 阶段结论
 

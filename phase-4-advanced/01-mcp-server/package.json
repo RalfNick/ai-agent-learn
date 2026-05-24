@@ -1,0 +1,25 @@
+{
+  "name": "ai-agent-learn-mcp-server",
+  "version": "0.1.0",
+  "description": "Read-only MCP server for the ai-agent-learn workspace.",
+  "type": "module",
+  "bin": {
+    "ai-agent-learn-mcp": "dist/server.js"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "start": "node dist/server.js",
+    "test": "npm run build && node --test dist/__tests__/*.test.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "zod": "^4.1.12"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.3",
+    "typescript": "^5.8.3"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
