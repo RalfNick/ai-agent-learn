@@ -1,12 +1,3 @@
----
-title: MCP 实战：让 Agent 真正调用工具，而不是只会聊天
-author: AI Agent 学习笔记
-date: 2026-05-27
-slug: mcp-server-practical-guide
-summary: MCP 的价值不是再包装一个函数，而是让 Agent 使用真实工具这件事变得标准、可发现、可测试、可治理。
-description: 这篇文章从 MCP 的 Host、Client、Server、Tools、Resources、Prompts 等基础概念讲起，再结合 ai-agent-learn MCP Server 和 Amap Maps MCP，拆解模型如何真正通过 tool calling 调用外部工具。
----
-
 # MCP 实战：让 Agent 真正调用工具，而不是只会聊天
 
 > Phase4 第一篇主文。前面我们已经用 LangGraph 做了 Agentic RAG，掌握了状态、路由、重试、拒答和 benchmark。现在进入下一层：Agent 怎么安全连接真实工具。
@@ -81,35 +72,19 @@ MCP 是让模型用工具这件事变得标准、可发现、可测试、可治�
 
 先把几个基本概念摆正，后面看代码会轻松很多。
 
-| 概念 | 在系统里负责什么 | 这次工程里的对应物 |
-|------|------------------|--------------------|
-| Host | 承载用户交互、模型调用、权限决策和上下文聚合 | 这次的 demo client，真实产品里可以是 IDE、聊天应用、Agent 平台 |
-| Client | Host 为每个 MCP Server 创建的协议连接，负责初始化、能力协商、转发请求 | `@modelcontextprotocol/sdk/client` + `StdioClientTransport` |
-| Server | 暴露某一类工具、资源或提示词的独立服务 | `ai-agent-learn-mcp-server`、Amap Maps MCP |
-| Transport | Client 和 Server 之间传 JSON-RPC 消息的通道 | 本文使用 `stdio`，公开服务也常见 Streamable HTTP |
-| Capability | 初始化时声明“我支持什么能力” | tools、resources、prompts、sampling、roots 等 |
+**MCP 里的几个核心角色：**
+
+- **Host**：承载用户交互、模型调用、权限决策和上下文聚合。本文里的 demo client 就扮演了这个角色，真实产品里可能是 IDE、聊天应用或 Agent 平台。
+- **Client**：Host 为每个 MCP Server 创建的协议连接，负责初始化、能力协商和请求转发。代码里对应 `@modelcontextprotocol/sdk/client` 与 `StdioClientTransport`。
+- **Server**：暴露某一类工具、资源或提示词的独立服务。本文里有本地 `ai-agent-learn-mcp-server`，也有公开 Amap Maps MCP。
+- **Transport**：Client 和 Server 之间传 JSON-RPC 消息的通道。本文主要用 `stdio`，公开服务里也常见 Streamable HTTP。
+- **Capability**：初始化时声明“我支持什么能力”，比如 tools、resources、prompts、sampling、roots。
 
 用一张图压缩一下：
 
-```mermaid
-flowchart LR
-    User["用户"]
-    Host["Host\n应用 / Agent Runtime"]
-    Model["LLM"]
-    ClientA["MCP Client A"]
-    ClientB["MCP Client B"]
-    ServerA["本地 MCP Server\n文档 / 代码 / benchmark"]
-    ServerB["公开 MCP Server\n地图 / 数据库 / SaaS"]
+![MCP 的 Host / Client / Server 关系](./diagram/markdown-weixin/flow-01.png)
 
-    User --> Host
-    Host --> Model
-    Host --> ClientA
-    Host --> ClientB
-    ClientA <-->|"JSON-RPC over stdio"| ServerA
-    ClientB <-->|"JSON-RPC over HTTP / stdio"| ServerB
-    ServerA -->|"tools / resources / prompts"| ClientA
-    ServerB -->|"tools / resources / prompts"| ClientB
-```
+<center>MCP 的 Host / Client / Server 关系</center>
 
 这里有一个很容易忽略的点：模型不是直接连到 MCP Server。模型通常由 Host 管，MCP Client 也由 Host 管。Server 只暴露能力，能不能调用、调用前要不要确认、结果怎么进入上下文，最终还是 Host 的责任。
 
@@ -117,20 +92,20 @@ flowchart LR
 
 MCP 里最常用的 Server 能力是三类：
 
-| 能力 | 适合表达什么 |
-|------|--------------|
-| Tools | 可执行动作，比如搜索、查询、路线规划 |
-| Resources | 可读取资源，比如文档索引、benchmark 文件 |
-| Prompts | 可复用任务模板，比如阶段 Review、文章大纲 |
+**MCP Server 最常用的三类能力：**
+
+- **Tools**：表达可执行动作，比如搜索、查询、路线规划。
+- **Resources**：表达可读取资源，比如文档索引、benchmark 文件。
+- **Prompts**：表达可复用任务模板，比如阶段 Review、文章大纲。
 
 官方 TypeScript SDK 也正是围绕这些能力组织：Server 端注册 tools/resources/prompts，Client 端通过 `listTools`、`callTool`、`readResource`、`getPrompt` 等方法访问。
 
 除此之外，还需要知道两个概念：
 
-| 概念 | 解决的问题 | 这次是否深入实现 |
-|------|------------|------------------|
-| Roots | 让 Client 告诉 Server：你能访问哪些文件系统边界 | 本文用自己的 `path_guard` 做了类似 allowlist，后续安全章节再深入 |
-| Sampling | Server 反过来请求 Client 调模型，且模型 key 留在 Host/Client 侧 | 本文暂不实现，先保持 Server 简单只读 |
+**另外两个概念先有印象就够：**
+
+- **Roots**：让 Client 告诉 Server 可以访问哪些文件系统边界。本文用自己的 `path_guard` 做了类似 allowlist，后续安全章节再深入。
+- **Sampling**：Server 反过来请求 Client 调模型，并且模型 key 留在 Host / Client 侧。本文暂不实现，先保持 Server 简单只读。
 
 为什么暂时不做 Sampling？因为第一版 MCP Server 的目标不是让 Server 自己变成 Agent，而是把工具边界打稳。等工具权限、审计和用户确认机制更清楚之后，再让 Server 触发模型调用会更稳。
 
@@ -182,11 +157,11 @@ ai-agent-learn MCP Server
 
 第一版只做只读工具：
 
-| Tool | 作用 |
-|------|------|
-| `search_docs` | 搜索 `docs/` 下的学习文章 |
-| `find_code_examples` | 搜索各 phase 的代码示例 |
-| `read_benchmark_summary` | 读取 Phase2 / Phase3 benchmark 汇总 |
+**第一版只做三个只读工具：**
+
+- `search_docs`：搜索 `docs/` 下的学习文章。
+- `find_code_examples`：搜索各 phase 的代码示例。
+- `read_benchmark_summary`：读取 Phase2 / Phase3 benchmark 汇总。
 
 这三个工具刚好对应学习工程里最重要的三类证据：
 
@@ -231,31 +206,9 @@ phase-4-advanced/01-mcp-server/src/demos/amap_route_demo.ts
 
 放在一起看，架构是这样：
 
-```mermaid
-flowchart LR
-    User["用户问题"]
-    LLM["LLM / Agent Loop"]
+![内部 MCP、公开 MCP 与模型工具循环](./diagram/markdown-weixin/flow-02.png)
 
-    subgraph Local["本地 ai-agent-learn MCP Server"]
-        Docs["search_docs"]
-        Code["find_code_examples"]
-        Bench["read_benchmark_summary"]
-    end
-
-    subgraph Public["公开 Amap Maps MCP Server"]
-        Geo["maps_geo"]
-        Transit["maps_direction_transit_integrated"]
-        Weather["maps_weather"]
-        Search["maps_text_search"]
-    end
-
-    User --> LLM
-    LLM -->|"listTools / callTool"| Local
-    LLM -->|"listTools / callTool"| Public
-    Local -->|"文档 / 代码 / benchmark"| LLM
-    Public -->|"地图 / 路线 / POI"| LLM
-    LLM --> Answer["结构化回答"]
-```
+<center>内部 MCP、公开 MCP 与模型工具循环</center>
 
 这张图里最值得注意的是：工具不是硬编码在模型回答里的。
 
@@ -365,11 +318,11 @@ phase 只能是 phase-1 到 phase-4
 
 这三个东西最好不要混着用。
 
-| MCP 能力 | 谁来决定使用 | 工程直觉 | 常见误用 |
-|----------|--------------|----------|----------|
-| Tool | 模型可以决定调用 | 像函数/API，有输入参数，可能有计算或副作用 | 把所有读取类信息都做成 tool，导致模型每次都要“执行”一次 |
-| Resource | Host / 应用决定读取 | 像文件、索引、数据库 schema、报告快照 | 把需要参数化检索的动作硬塞成静态资源 |
-| Prompt | 用户显式选择或应用触发 | 像可复用任务模板、slash command | 把 Prompt 当成一段更长的 system prompt |
+**Tools、Resources、Prompts 不要混着用：**
+
+- **Tool**：模型可以决定调用，像函数或 API，有输入参数，可能有计算或副作用。常见误用是把所有读取类信息都做成 tool，导致模型每次都要“执行”一次。
+- **Resource**：通常由 Host 或应用决定读取，像文件、索引、数据库 schema、报告快照。常见误用是把需要参数化检索的动作硬塞成静态资源。
+- **Prompt**：通常由用户显式选择或应用触发，像可复用任务模板或 slash command。常见误用是把 Prompt 当成一段更长的 system prompt。
 
 本项目注册了资源：
 
@@ -383,10 +336,10 @@ benchmark://phase-3
 
 还注册了两个 Prompt：
 
-| Prompt | 用途 |
-|--------|------|
-| `phase_review_prompt` | Review 某个学习阶段 |
-| `article_outline_prompt` | 基于工程资料生成技术文章大纲 |
+**本项目注册了两个 Prompt：**
+
+- `phase_review_prompt`：Review 某个学习阶段。
+- `article_outline_prompt`：基于工程资料生成技术文章大纲。
 
 我现在的理解是：
 
@@ -515,27 +468,9 @@ License 是否明确
 
 真正的工具调用应该像这样：
 
-```mermaid
-sequenceDiagram
-    participant User as User
-    participant LLM as LLM
-    participant Client as Demo Client
-    participant MCP as Amap MCP Server
+![模型驱动 Amap MCP 工具调用链路](./diagram/markdown-weixin/flow-03.png)
 
-    User->>LLM: 我从北京西二旗去深圳北站，比较高铁和飞机
-    Client->>MCP: listTools
-    MCP-->>Client: maps_geo / maps_direction_transit_integrated / ...
-    Client->>LLM: tools schema + user request
-    LLM-->>Client: tool_call: maps_geo(北京首都国际机场)
-    Client->>MCP: callTool maps_geo
-    MCP-->>Client: 机场坐标
-    Client->>LLM: tool result
-    LLM-->>Client: tool_call: maps_direction_transit_integrated(...)
-    Client->>MCP: callTool maps_direction_transit_integrated
-    MCP-->>Client: 路线结果
-    Client->>LLM: tool result
-    LLM-->>User: 最终出行方案
-```
+<center>模型驱动 Amap MCP 工具调用链路</center>
 
 所以我把 Amap demo 改成了一个最小 Agent loop：
 
@@ -760,10 +695,10 @@ maps_weather
 
 最终输出会把方案拆成两类：
 
-| 方案 | 能力来源 | 能不能完整回答 |
-|------|----------|----------------|
-| 高铁方案 | Amap MCP 的公共交通/铁路规划 | 可以给出线路、换乘、耗时 |
-| 飞机候选方案 | Amap MCP 的两端机场接驳 | 只能给接驳，航班段需要航班系统 |
+**最终输出可以拆成两类：**
+
+- **高铁方案**：来自 Amap MCP 的公共交通 / 铁路规划，可以给出线路、换乘和耗时。
+- **飞机候选方案**：来自 Amap MCP 的两端机场接驳，只能给接驳信息，航班段仍然需要航班系统。
 
 这比“模型凭常识说坐飞机更快”靠谱得多。
 

@@ -3,11 +3,20 @@
   "version": "0.1.0",
   "description": "Read-only MCP server for the ai-agent-learn workspace.",
   "type": "module",
+  "private": true,
+  "files": [
+    "dist",
+    "!dist/__tests__",
+    "README.md"
+  ],
   "bin": {
     "ai-agent-learn-mcp": "dist/server.js"
   },
   "scripts": {
     "build": "tsc -p tsconfig.json",
+    "demo:amap": "npm run build && node dist/demos/amap_route_demo.js",
+    "demo:model": "npm run build && node dist/demos/model_call_demo.js",
+    "publish:check": "npm run build && npm_config_cache=.npm-cache npm pack --dry-run",
     "start": "node dist/server.js",
     "test": "npm run build && node --test dist/__tests__/*.test.js"
   },
