@@ -13,19 +13,20 @@ Agent 如何跨会话保留状态？
 
 ## 学习顺序
 
-当前建议顺序：
+当前个人学习阶段建议顺序：
 
 ```text
 phase-4-advanced/
 ├── 01-mcp-server/          # 第一优先级：工具协议和资源暴露
-├── 02-agent-security/      # Guardrails、权限、Prompt 注入防护
 ├── 03-memory-system/       # 长期状态、实体记忆、跨会话恢复
-└── 04-multi-agent-patterns/# Supervisor、handoff、协作协议
+├── 04-multi-agent-patterns/# Supervisor、handoff、协作协议
+├── 05-agent-runtime-integration/# 收口：串联工具、记忆、协作和审查
+└── 02-agent-security/      # 后置：Guardrails、权限、Prompt 注入防护
 ```
 
-这个顺序和原计划略有调整：MCP 提前，Memory 后移。
+这个顺序和原计划略有调整：MCP 提前，安全后置。
 
-原因是 Phase2 已经做过 memory-rag，继续先做记忆容易重复检索增强；MCP 更适合作为 Phase4 入口，因为它能自然引出工具边界、安全授权和生产集成。
+原因是当前是个人学习工程，`01-mcp-server` 第一版又是只读工具，不写文件、不执行 shell，安全风险已经被压到较小范围。继续顺着学习曲线往下走，先做 Memory System 更容易把 Phase3 的 Agentic RAG 连接到“跨会话状态”和“长期上下文”。
 
 ## 第一个实战：ai-agent-learn MCP Server
 
@@ -86,16 +87,24 @@ MCP 和 LangGraph / Agentic RAG 如何衔接？
 
 ## 当前状态
 
-Phase4 尚未正式开始。
+Phase4 主线已经形成可运行闭环：
 
-进入 Phase4 前，先阅读：
+- `01-mcp-server/`：已完成本地 MCP Server、模型调用 MCP tool、公开 Amap MCP 调用和公众号文章。
+- `03-memory-system/`：已完成执行状态、长期记忆、写入策略和记忆召回的最小实现。
+- `04-multi-agent-patterns/`：已完成 Supervisor、handoff、specialist、reviewer 最小闭环。
+- `05-agent-runtime-integration/`：Phase4 收口，把 MCP-style 只读工具、Memory、Supervisor、Reviewer 和 trace 串成一个确定性 runtime。
+
+回顾 Phase3 收口，可以先阅读：
 
 ```text
 docs/phase-3/phase3-review-and-next-steps.md
 ```
 
-再进入：
+Phase4 代码入口：
 
 ```text
 phase-4-advanced/01-mcp-server/
+phase-4-advanced/03-memory-system/
+phase-4-advanced/04-multi-agent-patterns/
+phase-4-advanced/05-agent-runtime-integration/
 ```

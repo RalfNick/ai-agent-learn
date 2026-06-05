@@ -51,6 +51,20 @@ No root-level build system — navigate to the specific sub-project before runni
 - Articles go in `docs/phase-N/` as Markdown files
 - Git tags mark phase completion (e.g., `phase-1-complete`)
 
+## Technical Article / WeChat Writing Standards
+
+Phase articles are not just learning notes. Treat publishable articles as engineering write-ups grounded in this repository's real code, traces, tests, and benchmark results.
+
+- Open with a concrete question or tension, not a generic technology introduction. Good examples: "MCP 不就是把 API 包一层吗？", "Agent 记忆不就是 RAG 吗？", "Multi-Agent 不就是多几个角色聊天吗？"
+- Use a progressive reader path: first clarify concept boundaries, then show the architecture, then walk through code, then discuss trade-offs and failure cases.
+- Do not write interview-style Q&A as the final form unless explicitly requested. Interview questions can be used as hooks, but the article must still explain how the system is designed and implemented.
+- Every core concept should map back to a local implementation file. Prefer references to actual paths under `phase-*` and `docs/phase-*` over abstract descriptions.
+- Keep the engineering evidence visible: runnable demo commands, test output, benchmark numbers, graph traces, cost/latency data, and at least one limitation or failure case where applicable.
+- Add enough visual structure for WeChat reading. For substantial articles, include at least three kinds of visuals when possible: a concept boundary diagram, a code architecture diagram, and an execution flow diagram.
+- Use comparison tables for concepts that are easy to confuse, such as Chain vs Agent, Workflow vs Agent, Function Calling vs MCP vs Skills, RAG vs Memory, single-agent vs multi-agent.
+- Maintain the project's own voice: real engineering reflection, code-backed conclusions, and honest trade-offs. Avoid turning articles into broad concept checklists or copied interview notes.
+- End by connecting the topic back to the learning project: what this phase proves, what it does not prove yet, and how it prepares for the next phase or capstone.
+
 ## Skill Usage
 
 This project only needs these skills. Do NOT invoke unrelated language/framework skills:
