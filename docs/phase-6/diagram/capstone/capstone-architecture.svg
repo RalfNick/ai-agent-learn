@@ -1,0 +1,102 @@
+<svg viewBox="0 0 1180 720" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1e293b" stroke-width="0.5"/>
+    </pattern>
+    <marker id="arrow" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#64748b"/>
+    </marker>
+    <marker id="arrow-cyan" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#22d3ee"/>
+    </marker>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&amp;display=swap');
+      text { font-family: 'JetBrains Mono', 'Noto Sans SC', 'PingFang SC', sans-serif; }
+      .title { fill: #f8fafc; font-size: 18px; font-weight: 700; }
+      .subtitle { fill: #94a3b8; font-size: 10px; }
+      .label { fill: #f8fafc; font-size: 12px; font-weight: 600; }
+      .small { fill: #94a3b8; font-size: 9px; }
+      .tiny { fill: #94a3b8; font-size: 8px; }
+    </style>
+  </defs>
+
+  <rect width="1180" height="720" fill="#0f172a"/>
+  <rect width="1180" height="720" fill="url(#grid)"/>
+
+  <text x="36" y="42" class="title">Phase6 Capstone: Enterprise Knowledge Agent</text>
+  <text x="36" y="62" class="subtitle">把 Phase2-5 的 RAG、Agentic workflow、MCP-style tools、Memory、FastAPI、Docker、Observability 和 Eval 组合成完整系统</text>
+
+  <rect x="34" y="92" width="1112" height="472" rx="14" fill="none" stroke="#334155" stroke-width="1" stroke-dasharray="8,4"/>
+  <text x="54" y="116" fill="#94a3b8" font-size="10" font-weight="600">Capstone Runtime Boundary</text>
+
+  <line x1="170" y1="280" x2="250" y2="280" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="430" y1="280" x2="510" y2="280" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="690" y1="280" x2="770" y2="280" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="950" y1="280" x2="1030" y2="280" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <path d="M 600 356 L 600 438 L 344 438" fill="none" stroke="#22d3ee" stroke-width="1.5" marker-end="url(#arrow-cyan)"/>
+  <path d="M 860 356 L 860 438 L 660 438" fill="none" stroke="#22d3ee" stroke-width="1.5" marker-end="url(#arrow-cyan)"/>
+  <path d="M 1078 356 L 1078 438 L 958 438" fill="none" stroke="#22d3ee" stroke-width="1.5" marker-end="url(#arrow-cyan)"/>
+
+  <rect x="58" y="216" width="112" height="128" rx="8" fill="#0f172a"/>
+  <rect x="58" y="216" width="112" height="128" rx="8" fill="rgba(8,51,68,0.4)" stroke="#22d3ee" stroke-width="1.5"/>
+  <text x="114" y="250" class="label" text-anchor="middle">Next.js UI</text>
+  <text x="114" y="274" class="small" text-anchor="middle">chat</text>
+  <text x="114" y="292" class="small" text-anchor="middle">sources</text>
+  <text x="114" y="310" class="small" text-anchor="middle">trace view</text>
+
+  <rect x="250" y="204" width="180" height="152" rx="8" fill="#0f172a"/>
+  <rect x="250" y="204" width="180" height="152" rx="8" fill="rgba(6,78,59,0.4)" stroke="#34d399" stroke-width="1.5"/>
+  <text x="340" y="238" class="label" text-anchor="middle">FastAPI Backend</text>
+  <text x="340" y="262" class="small" text-anchor="middle">/answer</text>
+  <text x="340" y="280" class="small" text-anchor="middle">/ingest</text>
+  <text x="340" y="298" class="small" text-anchor="middle">/evaluations/run</text>
+  <text x="340" y="316" class="small" text-anchor="middle">/observability</text>
+
+  <rect x="510" y="204" width="180" height="152" rx="8" fill="#0f172a"/>
+  <rect x="510" y="204" width="180" height="152" rx="8" fill="rgba(59,130,246,0.3)" stroke="#60a5fa" stroke-width="1.5"/>
+  <text x="600" y="238" class="label" text-anchor="middle">LangGraph Agent</text>
+  <text x="600" y="262" class="small" text-anchor="middle">query analysis</text>
+  <text x="600" y="280" class="small" text-anchor="middle">retrieve + rerank</text>
+  <text x="600" y="298" class="small" text-anchor="middle">grade / repair</text>
+  <text x="600" y="316" class="small" text-anchor="middle">abstain if needed</text>
+
+  <rect x="770" y="204" width="180" height="152" rx="8" fill="#0f172a"/>
+  <rect x="770" y="204" width="180" height="152" rx="8" fill="rgba(76,29,149,0.4)" stroke="#a78bfa" stroke-width="1.5"/>
+  <text x="860" y="238" class="label" text-anchor="middle">Knowledge Layer</text>
+  <text x="860" y="262" class="small" text-anchor="middle">documents</text>
+  <text x="860" y="280" class="small" text-anchor="middle">hybrid search</text>
+  <text x="860" y="298" class="small" text-anchor="middle">rerank</text>
+  <text x="860" y="316" class="small" text-anchor="middle">Chroma → Milvus</text>
+
+  <rect x="1030" y="204" width="92" height="152" rx="8" fill="#0f172a"/>
+  <rect x="1030" y="204" width="92" height="152" rx="8" fill="rgba(120,53,15,0.3)" stroke="#fbbf24" stroke-width="1.5"/>
+  <text x="1076" y="238" class="label" text-anchor="middle">MCP</text>
+  <text x="1076" y="262" class="small" text-anchor="middle">docs</text>
+  <text x="1076" y="280" class="small" text-anchor="middle">code</text>
+  <text x="1076" y="298" class="small" text-anchor="middle">bench</text>
+
+  <rect x="226" y="436" width="236" height="84" rx="8" fill="#0f172a"/>
+  <rect x="226" y="436" width="236" height="84" rx="8" fill="rgba(30,41,59,0.5)" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="344" y="468" class="label" text-anchor="middle">Memory System</text>
+  <text x="344" y="490" class="small" text-anchor="middle">session state + preference</text>
+  <text x="344" y="506" class="tiny" text-anchor="middle">Phase4 long-term memory</text>
+
+  <rect x="552" y="436" width="216" height="84" rx="8" fill="#0f172a"/>
+  <rect x="552" y="436" width="216" height="84" rx="8" fill="rgba(251,146,60,0.3)" stroke="#fb923c" stroke-width="1.5"/>
+  <text x="660" y="468" class="label" text-anchor="middle">Observability</text>
+  <text x="660" y="490" class="small" text-anchor="middle">trace / latency / cost</text>
+  <text x="660" y="506" class="tiny" text-anchor="middle">Phase5 runtime signals</text>
+
+  <rect x="850" y="436" width="216" height="84" rx="8" fill="#0f172a"/>
+  <rect x="850" y="436" width="216" height="84" rx="8" fill="rgba(136,19,55,0.4)" stroke="#fb7185" stroke-width="1.5"/>
+  <text x="958" y="468" class="label" text-anchor="middle">Evaluation</text>
+  <text x="958" y="490" class="small" text-anchor="middle">golden set replay</text>
+  <text x="958" y="506" class="tiny" text-anchor="middle">quality gate before release</text>
+
+  <rect x="60" y="600" width="1040" height="72" rx="10" fill="#0f172a"/>
+  <rect x="60" y="600" width="1040" height="72" rx="10" fill="rgba(15,23,42,0.72)" stroke="#334155" stroke-width="1"/>
+  <text x="82" y="628" fill="#f8fafc" font-size="11" font-weight="600">Phase6 Build Order</text>
+  <text x="82" y="650" class="small">1 Backend skeleton → 2 Knowledge ingestion/retrieval → 3 LangGraph Agentic RAG → 4 Next.js UI → 5 Eval/Observability/Docker integration</text>
+  <text x="82" y="664" class="tiny">目标不是堆功能，而是把前五个阶段的能力压成一个可演示、可评估、可部署的企业知识库 Agent。</text>
+</svg>

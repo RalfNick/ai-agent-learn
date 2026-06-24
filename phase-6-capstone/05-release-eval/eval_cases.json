@@ -1,0 +1,44 @@
+[
+  {
+    "case_id": "trace-value",
+    "question": "Phase6 为什么需要 trace？",
+    "expected_terms": ["trace 展示", "调试路径"],
+    "expected_review_status": "evidence_supported",
+    "expected_source_title": "企业知识库 Agent：Phase6 总体设计",
+    "expected_trace_steps": ["retrieve", "context_grade", "answer.generate", "review.evidence_supported"]
+  },
+  {
+    "case_id": "web-ui-observability",
+    "question": "04-web-ui 的 Sources Trace review_status 展示什么？",
+    "expected_terms": ["sources", "trace"],
+    "expected_review_status": "evidence_supported",
+    "expected_source_title": "Phase6 第四块：把 Agent 能力放到可观察界面里",
+    "expected_trace_steps": ["retrieve", "context_grade", "answer.generate", "review.evidence_supported"]
+  },
+  {
+    "case_id": "unrelated-policy-abstain",
+    "question": "公司报销制度里的发票抬头是什么？",
+    "expected_terms": ["无法可靠回答"],
+    "expected_review_status": "abstained",
+    "expected_trace_steps": ["retrieve", "context_grade", "abstain"],
+    "min_context_score": 0.99
+  },
+  {
+    "case_id": "weak-retrieval-abstain",
+    "question": "ZYXW-999 这个不存在的内部系统是什么？",
+    "expected_terms": ["无法可靠回答"],
+    "expected_review_status": "abstained",
+    "expected_trace_steps": ["retrieve", "context_grade", "abstain"],
+    "min_context_score": 0.99
+  },
+  {
+    "case_id": "repair-removes-unsupported-claim",
+    "question": "Phase6 为什么需要 trace？",
+    "expected_terms": ["trace 展示"],
+    "forbidden_terms": ["发票抬头"],
+    "expected_review_status": "evidence_supported",
+    "expected_source_title": "企业知识库 Agent：Phase6 总体设计",
+    "expected_trace_steps": ["answer.generate", "review.failed", "answer.repair", "review.evidence_supported"],
+    "force_unsafe_answer": true
+  }
+]

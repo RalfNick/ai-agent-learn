@@ -1,0 +1,26 @@
+services:
+  backend:
+    image: python:3.12-slim
+    working_dir: /workspace/phase-6-capstone/05-release-eval
+    volumes:
+      - ../../:/workspace
+    command: >
+      sh -c "python -m pip install --no-cache-dir -r requirements.txt
+      && uvicorn api_server:app --host 0.0.0.0 --port 8010"
+    ports:
+      - "8010:8010"
+    environment:
+      PYTHONDONTWRITEBYTECODE: "1"
+
+  web:
+    image: node:22-alpine
+    working_dir: /workspace/phase-6-capstone/04-web-ui
+    volumes:
+      - ../../:/workspace
+    command: >
+      sh -c "npm install --no-audit --no-fund
+      && NEXT_PUBLIC_API_BASE_URL=http://127.0.0.1:8010 npm run dev -- --hostname 0.0.0.0 --port 3020"
+    ports:
+      - "3020:3020"
+    depends_on:
+      - backend

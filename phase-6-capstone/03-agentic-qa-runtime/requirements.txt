@@ -1,0 +1,3 @@
+# Reuses the local Phase6 knowledge ingestion package.
+langgraph>=0.4
+pypdf>=4.2.0
