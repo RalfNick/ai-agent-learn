@@ -1,0 +1,46 @@
+# Copy this file to the private Hermes config path on the VPS.
+# Keep secrets in the private environment file, not here.
+
+approvals:
+  mode: manual
+  timeout: 60
+  cron_mode: deny
+  mcp_reload_confirm: true
+  destructive_slash_confirm: true
+
+terminal:
+  backend: docker
+  cwd: /opt/hermes-workflows/ai-agent-learn
+  timeout: 180
+  docker_image: python:3.11-slim
+  docker_forward_env: []
+  env_passthrough: []
+  container_cpu: 1
+  container_memory: 5120
+  container_disk: 51200
+  container_persistent: true
+
+memory:
+  memory_enabled: true
+  user_profile_enabled: true
+  memory_char_limit: 2200
+  user_char_limit: 1375
+  write_approval: false
+
+display:
+  memory_notifications: on
+
+code_execution:
+  mode: project
+  timeout: 300
+  max_tool_calls: 50
+
+platforms:
+  feishu:
+    extra:
+      default_group_policy: allowlist
+      ws_reconnect_interval: 120
+      ws_ping_interval: 30
+
+# Add MCP servers only after the base Feishu workflow is stable.
+mcp_servers: {}

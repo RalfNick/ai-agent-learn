@@ -1,0 +1,19 @@
+[Unit]
+Description=Hermes Gateway for Phase7 Feishu workflow
+After=network-online.target docker.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/hermes-workflows/ai-agent-learn
+Environment=HERMES_HOME=/home/hermes-agent/.hermes
+EnvironmentFile=/home/hermes-agent/.hermes/hermes.env
+ExecStart=/home/hermes-agent/.local/bin/hermes gateway
+Restart=on-failure
+RestartSec=10
+
+# The gateway runs as the user service owner. Do not install this as root unless
+# the deployment intentionally uses a system service with explicit user mapping.
+
+[Install]
+WantedBy=default.target
