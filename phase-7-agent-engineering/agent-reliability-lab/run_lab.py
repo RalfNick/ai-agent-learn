@@ -49,7 +49,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--output",
         type=Path,
-        default=ROOT / "reports",
+        default=ROOT / "reports" / "local",
         help="Directory for baseline reports.",
     )
     return parser.parse_args()

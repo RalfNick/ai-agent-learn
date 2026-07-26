@@ -50,12 +50,14 @@ The baseline command writes:
 
 ```text
 reports/
-  baseline.json
-  baseline.md
+  local/
+    baseline.json
+    baseline.md
 ```
 
 The command exits with status `1` when any task fails. That makes the lab
-suitable for local verification and CI.
+suitable for local verification and CI. Local reports are ignored by Git so
+machine-specific latency values do not dirty the checkpoint.
 
 ## Read the evidence
 
