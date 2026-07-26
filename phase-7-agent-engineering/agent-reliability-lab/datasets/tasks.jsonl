@@ -1,0 +1,5 @@
+{"id":"qa-001","question":"工具服务持续限流时，系统应该怎样降级？","expected_status":"answered","expected_terms":["只读模式","人工处理"]}
+{"id":"qa-002","question":"Agent 版本发布前需要通过哪些门禁？","expected_status":"answered","expected_terms":["离线评测","人工批准","回滚"]}
+{"id":"qa-003","question":"系统处理敏感数据时有哪些基本要求？","expected_status":"answered","expected_terms":["最小权限","脱敏","审计"]}
+{"id":"qa-004","question":"资料不足时，知识库 Agent 应该怎么做？","expected_status":"answered","expected_terms":["拒答","补充资料"]}
+{"id":"qa-005","question":"公司差旅报销的每日额度是多少？","expected_status":"abstained","expected_terms":[]}

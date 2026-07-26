@@ -1,0 +1,45 @@
+{
+  "id": "knowledge-agent-reliability-lab",
+  "version": "0.1.0",
+  "job": {
+    "actor": "需要查询内部工程手册的开发者",
+    "task": "根据允许读取的知识库回答问题，并在证据不足时明确拒答",
+    "why_agent": "后续版本需要在检索、工具、验证和人工审批之间做受约束的动态决策"
+  },
+  "input": {
+    "required": ["question"],
+    "trusted_sources": ["fixtures/knowledge/*.md"],
+    "untrusted_sources": ["user_question"]
+  },
+  "done": {
+    "terminal_states": ["answered", "abstained", "failed", "handed_off"],
+    "validators": [
+      "回答包含任务要求的关键事实",
+      "回答只使用允许的资料",
+      "资料不足时状态必须为 abstained"
+    ]
+  },
+  "boundaries": {
+    "allowed_actions": ["read_knowledge", "return_answer", "abstain"],
+    "prohibited_actions": ["write_source", "use_external_web", "publish_result"],
+    "approval_required": ["change_policy", "publish_result"]
+  },
+  "failure": {
+    "terminal_states": ["failed", "handed_off"],
+    "handoff_when": [
+      "资料互相冲突",
+      "任务请求越过允许的数据边界",
+      "预算或重试次数耗尽"
+    ]
+  },
+  "evidence": {
+    "dataset": "datasets/tasks.jsonl",
+    "primary_metrics": ["task_pass_rate", "correct_abstention_rate"],
+    "secondary_metrics": ["retrieved_chunk_count", "latency_ms"]
+  },
+  "baseline": {
+    "strategy": "deterministic_paragraph_retrieval",
+    "command": "python run_lab.py baseline",
+    "agent_required_if": "动态工具选择或跨步骤恢复在同一任务集上带来可测量收益"
+  }
+}
