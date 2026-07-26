@@ -24,6 +24,7 @@ def _to_markdown(result: BaselineResult) -> str:
         "",
         f"- Version: `{result.version}`",
         f"- Strategy: `{result.strategy}`",
+        f"- Answer threshold: `{result.threshold:.2f}`",
         f"- Task pass rate: `{result.task_pass_rate:.0%}`",
         f"- Correct abstention rate: `{result.correct_abstention_rate:.0%}`",
         "",

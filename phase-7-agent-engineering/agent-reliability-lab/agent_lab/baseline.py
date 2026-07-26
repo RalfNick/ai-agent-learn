@@ -35,6 +35,7 @@ class CaseResult:
 class BaselineResult:
     version: str
     strategy: str
+    threshold: float
     total: int
     passed: int
     task_pass_rate: float
@@ -45,6 +46,7 @@ class BaselineResult:
         return {
             "version": self.version,
             "strategy": self.strategy,
+            "threshold": self.threshold,
             "total": self.total,
             "passed": self.passed,
             "task_pass_rate": self.task_pass_rate,
@@ -55,6 +57,7 @@ class BaselineResult:
 
 def load_tasks(path: Path) -> list[Task]:
     tasks = []
+    seen_ids: set[str] = set()
     for line_number, raw_line in enumerate(
         path.read_text(encoding="utf-8").splitlines(), start=1
     ):
@@ -64,14 +67,20 @@ def load_tasks(path: Path) -> list[Task]:
             data = json.loads(raw_line)
         except json.JSONDecodeError as exc:
             raise ValueError(f"invalid JSON on line {line_number}: {exc}") from exc
+        task_id = str(data["id"])
+        if task_id in seen_ids:
+            raise ValueError(f"duplicate task id on line {line_number}: {task_id}")
+        seen_ids.add(task_id)
         tasks.append(
             Task(
-                task_id=str(data["id"]),
+                task_id=task_id,
                 question=str(data["question"]),
                 expected_status=str(data["expected_status"]),
                 expected_terms=[str(term) for term in data.get("expected_terms", [])],
             )
         )
+    if not tasks:
+        raise ValueError("task dataset must not be empty")
     return tasks
 
 
@@ -101,6 +110,7 @@ def run_baseline(
     return BaselineResult(
         version="0.1.0",
         strategy="deterministic_paragraph_retrieval",
+        threshold=threshold,
         total=len(cases),
         passed=passed,
         task_pass_rate=round(passed / len(cases), 4) if cases else 0.0,

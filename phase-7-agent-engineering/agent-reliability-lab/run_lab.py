@@ -5,7 +5,7 @@ import json
 import sys
 from pathlib import Path
 
-from agent_lab import load_contract, run_baseline
+from agent_lab import ContractError, load_contract, run_baseline
 from agent_lab.reporting import write_reports
 
 
@@ -23,6 +23,30 @@ def parse_args() -> argparse.Namespace:
         help="Validation or baseline command to run.",
     )
     parser.add_argument(
+        "--contract",
+        type=Path,
+        default=CONTRACT_PATH,
+        help="Agent System Card to validate before running.",
+    )
+    parser.add_argument(
+        "--tasks",
+        type=Path,
+        default=TASKS_PATH,
+        help="JSONL task dataset used by the baseline.",
+    )
+    parser.add_argument(
+        "--knowledge",
+        type=Path,
+        default=KNOWLEDGE_PATH,
+        help="Markdown knowledge fixture used by the baseline.",
+    )
+    parser.add_argument(
+        "--threshold",
+        type=float,
+        default=0.28,
+        help="Minimum retrieval score required to answer (default: 0.28).",
+    )
+    parser.add_argument(
         "--output",
         type=Path,
         default=ROOT / "reports",
@@ -35,12 +59,27 @@ def main() -> None:
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(encoding="utf-8")
     args = parse_args()
-    contract = load_contract(CONTRACT_PATH)
+    try:
+        contract = load_contract(args.contract)
+    except (ContractError, OSError, json.JSONDecodeError) as exc:
+        print(
+            json.dumps(
+                {
+                    "status": "invalid",
+                    "path": str(args.contract),
+                    "error": str(exc),
+                },
+                ensure_ascii=False,
+                indent=2,
+            )
+        )
+        raise SystemExit(1) from exc
     if args.command == "check-contract":
         print(
             json.dumps(
                 {
                     "status": "valid",
+                    "path": str(args.contract),
                     "id": contract["id"],
                     "version": contract["version"],
                 },
@@ -50,7 +89,10 @@ def main() -> None:
         )
         return
 
-    result = run_baseline(TASKS_PATH, KNOWLEDGE_PATH)
+    if not 0.0 <= args.threshold <= 1.0:
+        raise SystemExit("--threshold must be between 0.0 and 1.0")
+
+    result = run_baseline(args.tasks, args.knowledge, threshold=args.threshold)
     json_path, markdown_path = write_reports(result, args.output)
     print(json.dumps(result.to_dict(), ensure_ascii=False, indent=2))
     print(f"\nReports: {json_path} | {markdown_path}")

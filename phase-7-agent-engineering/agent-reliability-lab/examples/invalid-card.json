@@ -1,6 +1,6 @@
 {
   "id": "knowledge-agent-reliability-lab",
-  "version": "0.1.0",
+  "version": "0.1.0-invalid-example",
   "job": {
     "actor": "需要查询内部工程手册的开发者",
     "task": "根据允许读取的知识库回答问题，并在证据不足时明确拒答",
@@ -21,7 +21,7 @@
   },
   "boundaries": {
     "allowed_actions": ["read_knowledge", "return_answer", "abstain"],
-    "prohibited_actions": ["write_source", "use_external_web"],
+    "prohibited_actions": ["read_knowledge", "write_source", "use_external_web"],
     "approval_required": ["change_policy", "publish_result"]
   },
   "failure": {

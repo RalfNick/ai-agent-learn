@@ -34,6 +34,18 @@ python run_lab.py baseline
 python -m unittest discover -s tests -v
 ```
 
+Two deliberate failure experiments make the boundary visible:
+
+```bash
+python run_lab.py check-contract --contract examples/invalid-card.json
+python run_lab.py baseline --threshold 0.0 --output reports/threshold-zero
+python run_lab.py baseline --threshold 1.0 --output reports/threshold-one
+```
+
+The invalid card and both threshold runs are expected to exit non-zero. A zero
+threshold over-answers the unknown expense-policy question; a threshold of one
+over-abstains on answerable questions.
+
 The baseline command writes:
 
 ```text
