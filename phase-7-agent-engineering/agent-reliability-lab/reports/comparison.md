@@ -11,8 +11,8 @@
 | Correct abstention rate | 100.0% | 100.0% |
 | False answer rate | 0.0% | 0.0% |
 | Stability rate | 100.0% | 100.0% |
-| Median latency (local ms) | 0.036 | 0.034 |
-| p95 latency (local ms) | 0.058 | 0.043 |
+| Median latency (local ms) | 0.033 | 0.032 |
+| p95 latency (local ms) | 0.052 | 0.036 |
 
 Local latency is diagnostic only and is not part of the release gate.
 
