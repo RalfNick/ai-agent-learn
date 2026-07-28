@@ -5,13 +5,15 @@ import json
 import sys
 from pathlib import Path
 
-from agent_lab import ContractError, load_contract, run_baseline
+from agent_lab import ContractError, load_contract, run_baseline, run_eval
+from agent_lab.eval_reporting import write_eval_reports
 from agent_lab.reporting import write_reports
 
 
 ROOT = Path(__file__).resolve().parent
 CONTRACT_PATH = ROOT / "contracts" / "agent-system-card.json"
 TASKS_PATH = ROOT / "datasets" / "tasks.jsonl"
+EVAL_TASKS_PATH = ROOT / "datasets" / "eval-tasks.jsonl"
 KNOWLEDGE_PATH = ROOT / "fixtures" / "knowledge" / "product-handbook.md"
 
 
@@ -19,7 +21,7 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Run the Agent Reliability Lab.")
     parser.add_argument(
         "command",
-        choices=["check-contract", "baseline"],
+        choices=["check-contract", "baseline", "eval"],
         help="Validation or baseline command to run.",
     )
     parser.add_argument(
@@ -45,6 +47,18 @@ def parse_args() -> argparse.Namespace:
         type=float,
         default=0.28,
         help="Minimum retrieval score required to answer (default: 0.28).",
+    )
+    parser.add_argument(
+        "--trials",
+        type=int,
+        default=3,
+        help="Number of attempts per task for eval runs (default: 3).",
+    )
+    parser.add_argument(
+        "--candidate",
+        choices=["candidate-v2", "flaky-simulator"],
+        default="candidate-v2",
+        help="Candidate system used by eval (default: candidate-v2).",
     )
     parser.add_argument(
         "--output",
@@ -91,6 +105,29 @@ def main() -> None:
 
     if not 0.0 <= args.threshold <= 1.0:
         raise SystemExit("--threshold must be between 0.0 and 1.0")
+
+    if args.command == "eval":
+        tasks_path = args.tasks if args.tasks != TASKS_PATH else EVAL_TASKS_PATH
+        result = run_eval(
+            tasks_path,
+            args.knowledge,
+            threshold=args.threshold,
+            trials_per_task=args.trials,
+            candidate_id=args.candidate,
+        )
+        json_path, markdown_path, failures_path, trials_path = write_eval_reports(
+            result, args.output
+        )
+        summary = result.to_dict()
+        summary.pop("trials")
+        print(json.dumps(summary, ensure_ascii=False, indent=2))
+        print(
+            "\nReports: "
+            f"{json_path} | {markdown_path} | {failures_path} | {trials_path}"
+        )
+        if not result.gate_passed:
+            raise SystemExit(1)
+        return
 
     result = run_baseline(args.tasks, args.knowledge, threshold=args.threshold)
     json_path, markdown_path = write_reports(result, args.output)

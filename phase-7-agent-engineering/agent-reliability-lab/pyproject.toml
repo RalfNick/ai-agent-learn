@@ -1,7 +1,7 @@
 [project]
 name = "agent-reliability-lab"
-version = "0.1.0"
-description = "Deterministic reliability baseline for the AI Agent engineering series."
+version = "0.2.0"
+description = "Deterministic contracts and evals for the AI Agent engineering series."
 requires-python = ">=3.10"
 
 [tool.unittest]

@@ -4,8 +4,9 @@ This lab turns the Phase 6 enterprise knowledge-base Agent into a brownfield
 reliability project. The goal is not to produce the most autonomous demo. The
 goal is to make every change measurable against a stable task contract.
 
-Version `0.1.0` contains no model calls and requires no API key. It starts with
-the control group that later Agent versions must beat.
+Version `0.2.0` contains no model calls and requires no API key. It preserves
+the `0.1.0` control group and adds a repeatable eval harness for comparing a
+baseline and one candidate change.
 
 ## Why start with a non-Agent baseline
 
@@ -31,6 +32,7 @@ Requirements:
 ```bash
 python run_lab.py check-contract
 python run_lab.py baseline
+python run_lab.py eval
 python -m unittest discover -s tests -v
 ```
 
@@ -40,11 +42,13 @@ Two deliberate failure experiments make the boundary visible:
 python run_lab.py check-contract --contract examples/invalid-card.json
 python run_lab.py baseline --threshold 0.0 --output reports/threshold-zero
 python run_lab.py baseline --threshold 1.0 --output reports/threshold-one
+python run_lab.py eval --candidate flaky-simulator --output reports/flaky-demo
 ```
 
-The invalid card and both threshold runs are expected to exit non-zero. A zero
+The invalid card, both threshold runs, and the flaky candidate are expected to exit non-zero. A zero
 threshold over-answers the unknown expense-policy question; a threshold of one
-over-abstains on answerable questions.
+over-abstains on answerable questions. The flaky simulator changes its behavior
+between repeated trials so the stability release gate rejects it.
 
 The baseline command writes:
 
@@ -53,6 +57,10 @@ reports/
   local/
     baseline.json
     baseline.md
+    comparison.json
+    comparison.md
+    failures.md
+    trials.jsonl
 ```
 
 The command exits with status `1` when any task fails. That makes the lab
@@ -67,9 +75,12 @@ Start with these files:
 | --- | --- |
 | `contracts/agent-system-card.json` | What job, boundary, failure state, and evidence define this system? |
 | `datasets/tasks.jsonl` | Which concrete tasks must remain reproducible? |
+| `datasets/eval-tasks.jsonl` | Which regression, capability, and safety cases compare two versions? |
 | `fixtures/knowledge/product-handbook.md` | What information is the system allowed to use? |
 | `agent_lab/baseline.py` | What can a deterministic control group already accomplish? |
+| `agent_lab/evals.py` | How are tasks, trials, graders, summaries, and release gates implemented? |
 | `reports/baseline.json` | Which cases passed, failed, or abstained? |
+| `reports/trials.jsonl` | What happened in every repeated attempt? |
 
 ## Planned checkpoints
 
