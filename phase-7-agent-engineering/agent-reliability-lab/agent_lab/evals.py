@@ -113,7 +113,7 @@ class EvalResult:
     gate_passed: bool
     trials: list[Trial]
 
-    def to_dict(self) -> dict[str, Any]:
+    def summary_dict(self) -> dict[str, Any]:
         return {
             "version": self.version,
             "threshold": self.threshold,
@@ -125,6 +125,11 @@ class EvalResult:
             "unstable_candidate_tasks": self.unstable_candidate_tasks,
             "gate_checks": self.gate_checks,
             "gate_passed": self.gate_passed,
+        }
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            **self.summary_dict(),
             "trials": [trial.to_dict() for trial in self.trials],
         }
 

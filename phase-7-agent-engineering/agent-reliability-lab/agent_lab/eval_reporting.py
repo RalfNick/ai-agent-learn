@@ -15,7 +15,7 @@ def write_eval_reports(
     failures_path = output_dir / "failures.md"
     trials_path = output_dir / "trials.jsonl"
     json_path.write_text(
-        json.dumps(result.to_dict(), ensure_ascii=False, indent=2) + "\n",
+        json.dumps(result.summary_dict(), ensure_ascii=False, indent=2) + "\n",
         encoding="utf-8",
     )
     markdown_path.write_text(_comparison_markdown(result), encoding="utf-8")

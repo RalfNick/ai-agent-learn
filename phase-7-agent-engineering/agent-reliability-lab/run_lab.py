@@ -118,9 +118,7 @@ def main() -> None:
         json_path, markdown_path, failures_path, trials_path = write_eval_reports(
             result, args.output
         )
-        summary = result.to_dict()
-        summary.pop("trials")
-        print(json.dumps(summary, ensure_ascii=False, indent=2))
+        print(json.dumps(result.summary_dict(), ensure_ascii=False, indent=2))
         print(
             "\nReports: "
             f"{json_path} | {markdown_path} | {failures_path} | {trials_path}"
