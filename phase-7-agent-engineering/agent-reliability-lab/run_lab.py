@@ -5,7 +5,14 @@ import json
 import sys
 from pathlib import Path
 
-from agent_lab import ContractError, load_contract, run_baseline, run_eval
+from agent_lab import (
+    ContractError,
+    load_contract,
+    run_baseline,
+    run_context_eval,
+    run_eval,
+)
+from agent_lab.context_reporting import write_context_reports
 from agent_lab.eval_reporting import write_eval_reports
 from agent_lab.reporting import write_reports
 
@@ -14,14 +21,18 @@ ROOT = Path(__file__).resolve().parent
 CONTRACT_PATH = ROOT / "contracts" / "agent-system-card.json"
 TASKS_PATH = ROOT / "datasets" / "tasks.jsonl"
 EVAL_TASKS_PATH = ROOT / "datasets" / "eval-tasks.jsonl"
+CONTEXT_CASES_PATH = ROOT / "datasets" / "context-cases.jsonl"
 KNOWLEDGE_PATH = ROOT / "fixtures" / "knowledge" / "product-handbook.md"
+CONTEXT_SOURCES_PATH = (
+    ROOT / "fixtures" / "context" / "context-sources.jsonl"
+)
 
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Run the Agent Reliability Lab.")
     parser.add_argument(
         "command",
-        choices=["check-contract", "baseline", "eval"],
+        choices=["check-contract", "baseline", "eval", "context-eval"],
         help="Validation or baseline command to run.",
     )
     parser.add_argument(
@@ -59,6 +70,24 @@ def parse_args() -> argparse.Namespace:
         choices=["candidate-v2", "flaky-simulator"],
         default="candidate-v2",
         help="Candidate system used by eval (default: candidate-v2).",
+    )
+    parser.add_argument(
+        "--context-cases",
+        type=Path,
+        default=CONTEXT_CASES_PATH,
+        help="JSONL context assembly cases.",
+    )
+    parser.add_argument(
+        "--context-sources",
+        type=Path,
+        default=CONTEXT_SOURCES_PATH,
+        help="JSONL context source catalog.",
+    )
+    parser.add_argument(
+        "--context-budget",
+        type=int,
+        default=None,
+        help="Optional estimated-token budget override for every context case.",
     )
     parser.add_argument(
         "--output",
@@ -122,6 +151,24 @@ def main() -> None:
         print(
             "\nReports: "
             f"{json_path} | {markdown_path} | {failures_path} | {trials_path}"
+        )
+        if not result.gate_passed:
+            raise SystemExit(1)
+        return
+
+    if args.command == "context-eval":
+        result = run_context_eval(
+            args.context_cases,
+            args.context_sources,
+            budget_override=args.context_budget,
+        )
+        json_path, markdown_path, failures_path, packets_path = (
+            write_context_reports(result, args.output)
+        )
+        print(json.dumps(result.summary_dict(), ensure_ascii=False, indent=2))
+        print(
+            "\nReports: "
+            f"{json_path} | {markdown_path} | {failures_path} | {packets_path}"
         )
         if not result.gate_passed:
             raise SystemExit(1)

@@ -1,0 +1,50 @@
+{
+  "version": "0.3.0",
+  "baseline": {
+    "strategy": "dump-all-v1",
+    "cases": 8,
+    "passed_cases": 3,
+    "case_pass_rate": 0.375,
+    "available_required_topics": 8,
+    "covered_required_topics": 7,
+    "required_topic_coverage": 0.875,
+    "invalid_source_cases": 3,
+    "irrelevant_source_cases": 3,
+    "budget_compliance_rate": 1.0,
+    "missing_evidence_accuracy": 0.75,
+    "average_estimated_tokens": 66.38
+  },
+  "candidate": {
+    "strategy": "context-packet-v1",
+    "cases": 8,
+    "passed_cases": 8,
+    "case_pass_rate": 1.0,
+    "available_required_topics": 8,
+    "covered_required_topics": 8,
+    "required_topic_coverage": 1.0,
+    "invalid_source_cases": 0,
+    "irrelevant_source_cases": 0,
+    "budget_compliance_rate": 1.0,
+    "missing_evidence_accuracy": 1.0,
+    "average_estimated_tokens": 50.25
+  },
+  "improvements": [
+    "ctx-001",
+    "ctx-002",
+    "ctx-005",
+    "ctx-006",
+    "ctx-008"
+  ],
+  "regressions": [],
+  "gate_checks": {
+    "candidate_not_worse_overall": true,
+    "at_least_one_measured_improvement": true,
+    "no_case_regressions": true,
+    "all_required_available_evidence_retained": true,
+    "no_forbidden_source_exposure": true,
+    "no_irrelevant_source_exposure": true,
+    "all_packets_within_budget": true,
+    "missing_evidence_is_explicit": true
+  },
+  "gate_passed": true
+}
