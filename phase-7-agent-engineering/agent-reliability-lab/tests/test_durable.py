@@ -5,7 +5,12 @@ import unittest
 from pathlib import Path
 
 from agent_lab.durable import (
+    DurableLoop,
+    FaultPlan,
+    IdempotencyConflictError,
     JsonRunStore,
+    ScriptedModelService,
+    TicketEffectStore,
     load_durable_cases,
     run_durable_eval,
 )
@@ -100,6 +105,45 @@ class DurableLoopTests(unittest.TestCase):
 
         self.assertEqual(1, run.state.attempts["model"])
         self.assertEqual("invalid_request", run.state.failure_code)
+
+    def test_same_action_id_with_new_arguments_is_rejected(self) -> None:
+        effects = TicketEffectStore(FaultPlan("none"))
+        effects.activate_fence(1)
+        effects.record_followup(
+            action_id="stable-action",
+            logical_operation="followup::T-102",
+            payload={"ticket_id": "T-102", "note": "first"},
+            fence=1,
+        )
+
+        with self.assertRaises(IdempotencyConflictError):
+            effects.record_followup(
+                action_id="stable-action",
+                logical_operation="followup::T-102",
+                payload={"ticket_id": "T-102", "note": "changed"},
+                fence=1,
+            )
+
+        self.assertEqual(1, len(effects.effects))
+
+    def test_reconciliation_state_needs_explicit_recovery_action(self) -> None:
+        case = next(
+            case
+            for case in load_durable_cases(CASES_PATH)
+            if case.case_id == "write-unknown"
+        )
+        with tempfile.TemporaryDirectory() as temporary:
+            faults = FaultPlan(case.fault)
+            loop = DurableLoop(
+                run_store=JsonRunStore(Path(temporary)),
+                model=ScriptedModelService(faults),
+                effects=TicketEffectStore(faults),
+            )
+            state = loop.start(case, worker_id="worker-a")
+
+            self.assertEqual("waiting_reconciliation", state.status)
+            with self.assertRaises(ValueError):
+                loop.resume(case, worker_id="worker-b")
 
 
 def _candidate(result, case_id: str):

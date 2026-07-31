@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import copy
+import hashlib
 import json
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
@@ -32,6 +33,10 @@ class ResultUnknownError(RuntimeError):
 
 
 class StaleWorkerError(RuntimeError):
+    pass
+
+
+class IdempotencyConflictError(RuntimeError):
     pass
 
 
@@ -273,8 +278,14 @@ class TicketEffectStore:
             raise StaleWorkerError(
                 f"fence={fence} is older than active fence={self.highest_fence}"
             )
+        request_fingerprint = _fingerprint(payload)
         if action_id in self.receipts:
-            return {**copy.deepcopy(self.receipts[action_id]), "replayed": True}
+            previous = self.receipts[action_id]
+            if previous["request_fingerprint"] != request_fingerprint:
+                raise IdempotencyConflictError(
+                    "action_id was reused with different arguments"
+                )
+            return {**copy.deepcopy(previous), "replayed": True}
         if self.faults.take("write_unknown_no_receipt"):
             raise ResultUnknownError("connection lost before a receipt existed")
 
@@ -283,6 +294,7 @@ class TicketEffectStore:
             "ticket_id": str(payload["ticket_id"]),
             "recorded": True,
             "replayed": False,
+            "request_fingerprint": request_fingerprint,
         }
         self.effects.append(
             {
@@ -338,9 +350,13 @@ class DurableLoop:
     def resume(self, case: DurableCase, *, worker_id: str) -> DurableRunState:
         run_id = f"durable::{case.case_id}"
         state = self.run_store.load(run_id)
+        if state.status in TERMINAL_STATES:
+            raise ValueError(
+                f"terminal run cannot resume without an explicit recovery action: "
+                f"{state.status}"
+            )
         self._emit(state, "run_rehydrated", previous_status=state.status)
-        if state.status not in TERMINAL_STATES or state.status == "cancelled":
-            state.status = "running"
+        state.status = "running"
         self._acquire_lease(state, worker_id)
         self._checkpoint(state, "worker_resumed")
         return self.drive(case, state)
@@ -485,6 +501,10 @@ class DurableLoop:
         except StaleWorkerError as exc:
             self._emit(state, "stale_worker_rejected", error=str(exc))
             self._fail(state, "stale_worker", str(exc))
+            return False
+        except IdempotencyConflictError as exc:
+            self._emit(state, "idempotency_conflict", error=str(exc))
+            self._fail(state, "idempotency_conflict", str(exc))
             return False
 
         state.step_outputs["write"] = receipt
@@ -879,3 +899,13 @@ def _rate(numerator: int, denominator: int) -> float:
 
 def _safe_name(value: str) -> str:
     return "".join(character if character.isalnum() else "-" for character in value)
+
+
+def _fingerprint(payload: dict[str, Any]) -> str:
+    canonical = json.dumps(
+        payload,
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode("utf-8")
+    return "sha256:" + hashlib.sha256(canonical).hexdigest()
