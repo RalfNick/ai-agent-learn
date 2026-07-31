@@ -241,7 +241,7 @@ class EventRecorder:
         )
 
 
-class SessionStore:
+class RunStateStore:
     """In-memory persistence adapter; RunState remains JSON serializable."""
 
     def __init__(self) -> None:
@@ -343,7 +343,7 @@ class MinimalHarness:
         tool_timeout_ms: int,
         model: ScriptedModelAdapter | None = None,
         tools: ToolExecutor | None = None,
-        sessions: SessionStore | None = None,
+        run_states: RunStateStore | None = None,
     ) -> None:
         if max_steps < 1:
             raise ValueError("max_steps must be at least 1")
@@ -353,7 +353,7 @@ class MinimalHarness:
         self.tool_timeout_ms = tool_timeout_ms
         self.model = model or ScriptedModelAdapter()
         self.tools = tools or ToolExecutor()
-        self.sessions = sessions or SessionStore()
+        self.run_states = run_states or RunStateStore()
 
     def start(self, case: HarnessCase) -> RunState:
         state = RunState(
@@ -612,7 +612,7 @@ class MinimalHarness:
             checkpoint=state.checkpoint_count,
         )
         state.events = copy.deepcopy(recorder.events)
-        self.sessions.save(state)
+        self.run_states.save(state)
 
     @staticmethod
     def _finalize_state(
@@ -1002,7 +1002,6 @@ def _summarize(strategy: str, runs: list[HarnessRun]) -> HarnessSummary:
 
 
 def _sensitive_action_controlled(run: HarnessRun) -> bool:
-    types = [event["type"] for event in run.state.events]
     policy_indexes = [
         index
         for index, event in enumerate(run.state.events)
