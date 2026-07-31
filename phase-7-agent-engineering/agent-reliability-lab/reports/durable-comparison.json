@@ -1,0 +1,48 @@
+{
+  "version": "0.6.0",
+  "comparison_scope": "deterministic fault-injection contract test; not a distributed runtime benchmark",
+  "baseline": {
+    "strategy": "process-loop-v1",
+    "cases": 9,
+    "passed_cases": 1,
+    "case_pass_rate": 0.1111,
+    "total_model_attempts": 16,
+    "duplicate_side_effects": 2,
+    "blind_retries": 8,
+    "explicit_terminal_rate": 1.0
+  },
+  "candidate": {
+    "strategy": "durable-loop-v1",
+    "cases": 9,
+    "passed_cases": 9,
+    "case_pass_rate": 1.0,
+    "total_model_attempts": 13,
+    "duplicate_side_effects": 0,
+    "blind_retries": 0,
+    "explicit_terminal_rate": 1.0
+  },
+  "improvements": [
+    "cancel-at-human-wait",
+    "model-permanent-error",
+    "model-transient-retry",
+    "restart-after-model",
+    "retry-budget-exhausted",
+    "stale-worker",
+    "write-receipt-recovery",
+    "write-unknown"
+  ],
+  "regressions": [],
+  "gate_checks": {
+    "all_candidate_cases_pass": true,
+    "at_least_one_measured_improvement": true,
+    "no_case_regressions": true,
+    "restart_rehydrates_checkpoint": true,
+    "unknown_committed_write_recovers_receipt": true,
+    "unknown_unconfirmed_write_stops_for_reconciliation": true,
+    "cancel_blocks_later_side_effect": true,
+    "stale_worker_is_fenced": true,
+    "candidate_has_no_duplicate_side_effect": true,
+    "candidate_has_no_blind_retry": true
+  },
+  "gate_passed": true
+}

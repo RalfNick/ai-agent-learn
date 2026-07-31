@@ -10,11 +10,13 @@ from agent_lab import (
     load_contract,
     run_baseline,
     run_context_eval,
+    run_durable_eval,
     run_eval,
     run_harness_eval,
     run_tool_eval,
 )
 from agent_lab.context_reporting import write_context_reports
+from agent_lab.durable_reporting import write_durable_reports
 from agent_lab.eval_reporting import write_eval_reports
 from agent_lab.harness_reporting import write_harness_reports
 from agent_lab.reporting import write_reports
@@ -28,6 +30,7 @@ EVAL_TASKS_PATH = ROOT / "datasets" / "eval-tasks.jsonl"
 CONTEXT_CASES_PATH = ROOT / "datasets" / "context-cases.jsonl"
 HARNESS_CASES_PATH = ROOT / "datasets" / "harness-cases.jsonl"
 TOOL_CASES_PATH = ROOT / "datasets" / "tool-cases.jsonl"
+DURABLE_CASES_PATH = ROOT / "datasets" / "durable-cases.jsonl"
 KNOWLEDGE_PATH = ROOT / "fixtures" / "knowledge" / "product-handbook.md"
 CONTEXT_SOURCES_PATH = (
     ROOT / "fixtures" / "context" / "context-sources.jsonl"
@@ -45,6 +48,7 @@ def parse_args() -> argparse.Namespace:
             "context-eval",
             "harness-eval",
             "tool-eval",
+            "fault-test",
         ],
         help="Validation or baseline command to run.",
     )
@@ -113,6 +117,12 @@ def parse_args() -> argparse.Namespace:
         type=Path,
         default=TOOL_CASES_PATH,
         help="JSONL Tool Engineering contract cases.",
+    )
+    parser.add_argument(
+        "--durable-cases",
+        type=Path,
+        default=DURABLE_CASES_PATH,
+        help="JSONL Durable Loop fault cases.",
     )
     parser.add_argument(
         "--max-steps",
@@ -233,6 +243,23 @@ def main() -> None:
         result = run_tool_eval(args.tool_cases)
         json_path, markdown_path, failures_path, runs_path = (
             write_tool_reports(result, args.output)
+        )
+        print(json.dumps(result.summary_dict(), ensure_ascii=False, indent=2))
+        print(
+            "\nReports: "
+            f"{json_path} | {markdown_path} | {failures_path} | {runs_path}"
+        )
+        if not result.gate_passed:
+            raise SystemExit(1)
+        return
+
+    if args.command == "fault-test":
+        result = run_durable_eval(
+            args.durable_cases,
+            args.output / "durable-state",
+        )
+        json_path, markdown_path, failures_path, runs_path = (
+            write_durable_reports(result, args.output)
         )
         print(json.dumps(result.summary_dict(), ensure_ascii=False, indent=2))
         print(

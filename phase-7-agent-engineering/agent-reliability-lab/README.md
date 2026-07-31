@@ -4,7 +4,7 @@ This lab turns the Phase 6 enterprise knowledge-base Agent into a brownfield
 reliability project. The goal is not to produce the most autonomous demo. The
 goal is to make every change measurable against a stable task contract.
 
-Version `0.5.0` contains no model calls and requires no API key. It preserves
+Version `0.6.0` contains no live model calls and requires no API key. It preserves
 the contract and eval checkpoints, then adds a Context Packet assembler that
 compares a naive prefix dump with explicit source, freshness, clearance,
 relevance, missing-evidence, and budget policies. The Harness checkpoint then
@@ -17,6 +17,14 @@ ticket backend. It compares one wide, loosely typed operation surface with
 separate read, preview, write, paginated-list, and slow-dependency tools. The
 registry validates input and output schemas, permission, approval, idempotency,
 timeout, retry classification, and bounded output around dispatch.
+
+The Durable Loop checkpoint moves run state from process memory into atomic JSON
+checkpoints and tests what happens around uncertain boundaries. Nine fixtures
+cover process restart, transient and permanent model failures, retry exhaustion,
+a committed write whose response is lost, an unconfirmed write, cancellation
+during a human wait, and a stale worker after lease takeover. Stable action IDs,
+receipt lookup, explicit reconciliation, persisted cancellation, and fencing
+tokens are compared with a deliberately naive process-local loop.
 
 ## Why start with a non-Agent baseline
 
@@ -46,6 +54,7 @@ python run_lab.py eval
 python run_lab.py context-eval
 python run_lab.py harness-eval
 python run_lab.py tool-eval
+python run_lab.py fault-test
 python -m unittest discover -s tests -v
 ```
 
@@ -59,6 +68,7 @@ python run_lab.py eval --candidate flaky-simulator --output reports/flaky-demo
 python run_lab.py context-eval --context-budget 10 --output reports/context-budget-ten
 python run_lab.py harness-eval --max-steps 1 --output reports/harness-step-one
 python run_lab.py tool-eval --output reports/tool-local
+python run_lab.py fault-test --output reports/durable-local
 ```
 
 The invalid card, both threshold runs, and the flaky candidate are expected to exit non-zero. A zero
@@ -72,6 +82,11 @@ Harness release gate rejects that configuration.
 The tool comparison is expected to pass because the release gate applies to the
 typed registry. The wide-tool control remains in the report so its unsafe
 writes, duplicate effect, generic timeout, and unbounded list output stay
+visible.
+
+The durable comparison is expected to pass because the release gate applies to
+`durable-loop-v1`. The process-local control remains in the report so blind
+retries, duplicate writes, lost cancellation, and stale-worker effects stay
 visible.
 
 The commands write:
@@ -97,6 +112,10 @@ reports/
     tool-comparison.md
     tool-failures.md
     tool-runs.jsonl
+    durable-comparison.json
+    durable-comparison.md
+    durable-failures.md
+    durable-runs.jsonl
 ```
 
 The command exits with status `1` when any task fails. That makes the lab
@@ -115,6 +134,7 @@ Start with these files:
 | `datasets/context-cases.jsonl` | Which source, budget, access, and missing-evidence cases compare two context strategies? |
 | `datasets/harness-cases.jsonl` | Which approval, resume, timeout, budget, and verification cases define the runtime boundary? |
 | `datasets/tool-cases.jsonl` | Which schema, permission, approval, idempotency, timeout, and pagination cases define each tool boundary? |
+| `datasets/durable-cases.jsonl` | Which restart, retry, result-unknown, cancellation, and lease cases define recovery behavior? |
 | `fixtures/knowledge/product-handbook.md` | What information is the system allowed to use? |
 | `fixtures/context/context-sources.jsonl` | Which trusted, expired, restricted, noisy, or untrusted sources can enter a packet? |
 | `agent_lab/baseline.py` | What can a deterministic control group already accomplish? |
@@ -122,11 +142,13 @@ Start with these files:
 | `agent_lab/context.py` | How are Context Packets selected, filtered, budgeted, rendered, and graded? |
 | `agent_lab/harness.py` | Which component owns the model seam, tool dispatch, policy, session, stop, resume, verification, and trace? |
 | `agent_lab/tools.py` | How are model-facing schemas separated from runtime permission, approval, idempotency, retry, and output contracts? |
+| `agent_lab/durable.py` | How are checkpoints, stable actions, retry policy, reconciliation, cancellation, leases, and fencing implemented? |
 | `reports/baseline.json` | Which cases passed, failed, or abstained? |
 | `reports/trials.jsonl` | What happened in every repeated attempt? |
 | `reports/context-packets.jsonl` | What each strategy selected, excluded, marked missing, and spent? |
 | `reports/harness-runs.jsonl` | Which state and event sequence each Harness case produced? |
 | `reports/tool-runs.jsonl` | Which fixed call proposals passed each tool-contract grader and which side effects occurred? |
+| `reports/durable-runs.jsonl` | Which persisted state and event sequence each injected fault produced? |
 
 ## Planned checkpoints
 
@@ -147,8 +169,8 @@ Tags are created only when the matching article and code are released.
 | `ae-11-ops` | Production Ops | SLO, budgets, degradation and canary | `python run_lab.py ops-game-day` |
 | `ae-12-improvement` | Continuous Improvement | failure-to-eval-to-release loop | `python run_lab.py release-gate` |
 
-Commands after `ae-01-contract` are interface targets for future checkpoints,
-not features already implemented in `0.1.0`.
+Commands after `ae-06-loop` are interface targets for future checkpoints, not
+features already implemented in `0.6.0`.
 
 ## Design rules
 
@@ -178,3 +200,12 @@ preview call is an adversarial fixture, not a measured provider failure. Run a
 separate repeated provider evaluation before claiming that names or descriptions
 improve model selection accuracy. Schema size is reported in UTF-8 bytes as a
 stable local proxy, not as provider-token billing.
+
+## Durable Loop experiment limits
+
+The fault test rebuilds runner objects and restores JSON state from disk, but it
+does not kill an operating-system process or run concurrent distributed workers.
+Fault timing, backoff time, dependency responses, and lease takeover are
+deterministic fixtures. Atomic file replacement demonstrates the persistence
+boundary, not production database durability. Use a real durable runtime and
+integration tests before making availability or exactly-once claims.
