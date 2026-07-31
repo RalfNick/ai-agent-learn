@@ -12,11 +12,13 @@ from agent_lab import (
     run_context_eval,
     run_eval,
     run_harness_eval,
+    run_tool_eval,
 )
 from agent_lab.context_reporting import write_context_reports
 from agent_lab.eval_reporting import write_eval_reports
 from agent_lab.harness_reporting import write_harness_reports
 from agent_lab.reporting import write_reports
+from agent_lab.tool_reporting import write_tool_reports
 
 
 ROOT = Path(__file__).resolve().parent
@@ -25,6 +27,7 @@ TASKS_PATH = ROOT / "datasets" / "tasks.jsonl"
 EVAL_TASKS_PATH = ROOT / "datasets" / "eval-tasks.jsonl"
 CONTEXT_CASES_PATH = ROOT / "datasets" / "context-cases.jsonl"
 HARNESS_CASES_PATH = ROOT / "datasets" / "harness-cases.jsonl"
+TOOL_CASES_PATH = ROOT / "datasets" / "tool-cases.jsonl"
 KNOWLEDGE_PATH = ROOT / "fixtures" / "knowledge" / "product-handbook.md"
 CONTEXT_SOURCES_PATH = (
     ROOT / "fixtures" / "context" / "context-sources.jsonl"
@@ -41,6 +44,7 @@ def parse_args() -> argparse.Namespace:
             "eval",
             "context-eval",
             "harness-eval",
+            "tool-eval",
         ],
         help="Validation or baseline command to run.",
     )
@@ -103,6 +107,12 @@ def parse_args() -> argparse.Namespace:
         type=Path,
         default=HARNESS_CASES_PATH,
         help="JSONL Harness boundary cases.",
+    )
+    parser.add_argument(
+        "--tool-cases",
+        type=Path,
+        default=TOOL_CASES_PATH,
+        help="JSONL Tool Engineering contract cases.",
     )
     parser.add_argument(
         "--max-steps",
@@ -209,6 +219,20 @@ def main() -> None:
         )
         json_path, markdown_path, failures_path, runs_path = (
             write_harness_reports(result, args.output)
+        )
+        print(json.dumps(result.summary_dict(), ensure_ascii=False, indent=2))
+        print(
+            "\nReports: "
+            f"{json_path} | {markdown_path} | {failures_path} | {runs_path}"
+        )
+        if not result.gate_passed:
+            raise SystemExit(1)
+        return
+
+    if args.command == "tool-eval":
+        result = run_tool_eval(args.tool_cases)
+        json_path, markdown_path, failures_path, runs_path = (
+            write_tool_reports(result, args.output)
         )
         print(json.dumps(result.summary_dict(), ensure_ascii=False, indent=2))
         print(

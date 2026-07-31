@@ -1,7 +1,7 @@
 [project]
 name = "agent-reliability-lab"
-version = "0.4.0"
-description = "Deterministic contracts, evals, context packets, and Harness boundaries for the AI Agent engineering series."
+version = "0.5.0"
+description = "Deterministic contracts, evals, Context Packets, Harness boundaries, and Tool Engineering checks for the AI Agent engineering series."
 requires-python = ">=3.10"
 
 [tool.unittest]
