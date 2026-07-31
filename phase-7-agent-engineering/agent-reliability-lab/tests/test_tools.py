@@ -20,10 +20,10 @@ CASES_PATH = ROOT / "datasets" / "tool-cases.jsonl"
 
 
 class ToolEngineeringTests(unittest.TestCase):
-    def test_dataset_covers_nine_contract_cases(self) -> None:
+    def test_dataset_covers_eleven_contract_cases(self) -> None:
         cases = load_tool_cases(CASES_PATH)
 
-        self.assertEqual(9, len(cases))
+        self.assertEqual(11, len(cases))
         self.assertEqual(
             {
                 "read-ticket",
@@ -35,6 +35,8 @@ class ToolEngineeringTests(unittest.TestCase):
                 "idempotency-conflict",
                 "transient-timeout",
                 "bounded-list",
+                "ticket-not-found",
+                "invalid-cursor",
             },
             {case.case_id for case in cases},
         )
@@ -184,6 +186,63 @@ class ToolEngineeringTests(unittest.TestCase):
         self.assertTrue(result.ok)
         self.assertEqual(3, len(result.output["items"]))
         self.assertEqual("3", result.output["next_cursor"])
+
+    def test_unknown_ticket_and_invalid_cursor_are_structured(self) -> None:
+        registry = build_candidate_registry(TicketStore())
+        permissions = frozenset({"ticket:read"})
+
+        missing = registry.invoke(
+            ProposedCall(
+                name="preview_ticket_followup",
+                arguments={"ticket_id": "T-999", "note": "No write."},
+            ),
+            actor_permissions=permissions,
+            approved=False,
+        )
+        invalid_cursor = registry.invoke(
+            ProposedCall(
+                name="list_tickets",
+                arguments={"limit": 3, "cursor": "not-a-cursor"},
+            ),
+            actor_permissions=permissions,
+            approved=False,
+        )
+
+        self.assertEqual("ticket_not_found", missing.error.code)
+        self.assertEqual("invalid_cursor", invalid_cursor.error.code)
+
+    def test_handler_exception_is_contained(self) -> None:
+        store = TicketStore()
+        registry = ToolRegistry(store)
+        registry.register(
+            ToolSpec(
+                name="raising_tool",
+                description="Raise a deterministic fixture error.",
+                input_schema={
+                    "type": "object",
+                    "properties": {},
+                    "required": [],
+                    "additionalProperties": False,
+                },
+                output_schema={
+                    "type": "object",
+                    "properties": {},
+                    "required": [],
+                    "additionalProperties": False,
+                },
+                required_permission="ticket:read",
+            ),
+            lambda _: (_ for _ in ()).throw(RuntimeError("fixture")),
+        )
+
+        result = registry.invoke(
+            ProposedCall(name="raising_tool", arguments={}),
+            actor_permissions=frozenset({"ticket:read"}),
+            approved=False,
+        )
+
+        self.assertEqual("handler_exception", result.error.code)
+        self.assertEqual("RuntimeError", result.error.details["exception_type"])
 
     def test_output_schema_is_a_runtime_boundary(self) -> None:
         store = TicketStore()

@@ -3,9 +3,9 @@
   "scope": "Deterministic tool-contract conformance over fixed proposed calls; not a model tool-selection benchmark.",
   "baseline": {
     "strategy": "wide-tool-v1",
-    "total_cases": 9,
+    "total_cases": 11,
     "passed_cases": 1,
-    "case_pass_rate": 0.1111111111111111,
+    "case_pass_rate": 0.09090909090909091,
     "unsafe_side_effects": 4,
     "duplicate_side_effects": 2,
     "structured_error_rate": 0.0,
@@ -13,8 +13,8 @@
   },
   "candidate": {
     "strategy": "typed-registry-v2",
-    "total_cases": 9,
-    "passed_cases": 9,
+    "total_cases": 11,
+    "passed_cases": 11,
     "case_pass_rate": 1.0,
     "unsafe_side_effects": 0,
     "duplicate_side_effects": 0,
@@ -29,7 +29,9 @@
     "duplicate-action",
     "idempotency-conflict",
     "transient-timeout",
-    "bounded-list"
+    "bounded-list",
+    "ticket-not-found",
+    "invalid-cursor"
   ],
   "regressions": [],
   "gate_checks": {

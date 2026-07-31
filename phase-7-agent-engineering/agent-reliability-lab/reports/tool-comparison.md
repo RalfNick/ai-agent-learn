@@ -6,7 +6,7 @@
 
 | Metric | wide-tool-v1 | typed-registry-v2 |
 | --- | ---: | ---: |
-| Case pass rate | 11.1% | 100.0% |
+| Case pass rate | 9.1% | 100.0% |
 | Unsafe side effects | 4 | 0 |
 | Duplicate side effects | 2 | 0 |
 | Actionable error rate | 0.0% | 100.0% |
@@ -16,7 +16,7 @@ The typed catalog is intentionally larger. Its safety and recovery metadata are 
 
 ## Changed cases
 
-- Improvements: preview-before-write, write-needs-approval, invalid-arguments, permission-boundary, duplicate-action, idempotency-conflict, transient-timeout, bounded-list
+- Improvements: preview-before-write, write-needs-approval, invalid-arguments, permission-boundary, duplicate-action, idempotency-conflict, transient-timeout, bounded-list, ticket-not-found, invalid-cursor
 - Regressions: none
 
 ## Release gate

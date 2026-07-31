@@ -320,7 +320,16 @@ class ToolRegistry:
                     replayed=True,
                 )
 
-        result = self.handlers[call.name](call.arguments)
+        try:
+            result = self.handlers[call.name](call.arguments)
+        except Exception as exc:  # Handler failures must not escape the tool boundary.
+            return _error(
+                "handler_exception",
+                "internal",
+                "The tool handler failed unexpectedly.",
+                retryable=False,
+                details={"exception_type": type(exc).__name__},
+            )
         if result.ok and result.output is not None:
             output_errors = validate_schema(result.output, spec.output_schema)
             if output_errors:
@@ -442,14 +451,7 @@ def build_candidate_registry(store: TicketStore) -> ToolRegistry:
             ),
             required_permission="ticket:read",
         ),
-        lambda args: ToolResult(
-            ok=True,
-            output={
-                "ticket_id": args["ticket_id"],
-                "would_append": args["note"],
-                "side_effects": 0,
-            },
-        ),
+        lambda args: _preview_followup(store, args),
     )
     registry.register(
         ToolSpec(
@@ -790,8 +792,36 @@ def _record_followup(store: TicketStore, args: JsonObject) -> ToolResult:
     )
 
 
+def _preview_followup(store: TicketStore, args: JsonObject) -> ToolResult:
+    if store.ticket(args["ticket_id"]) is None:
+        return _error(
+            "ticket_not_found",
+            "not_found",
+            f"Ticket {args['ticket_id']} does not exist.",
+            retryable=False,
+            details={"ticket_id": args["ticket_id"]},
+        )
+    return ToolResult(
+        ok=True,
+        output={
+            "ticket_id": args["ticket_id"],
+            "would_append": args["note"],
+            "side_effects": 0,
+        },
+    )
+
+
 def _list_tickets(store: TicketStore, args: JsonObject) -> ToolResult:
-    start = int(args.get("cursor", "0"))
+    try:
+        start = int(args.get("cursor", "0"))
+    except ValueError:
+        return _error(
+            "invalid_cursor",
+            "validation",
+            "The cursor was not issued by list_tickets.",
+            retryable=False,
+            details={"cursor": args.get("cursor")},
+        )
     limit = args["limit"]
     tickets = list(store.tickets.values())
     page = tickets[start : start + limit]
