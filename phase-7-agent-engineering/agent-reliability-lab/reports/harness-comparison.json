@@ -1,0 +1,45 @@
+{
+  "version": "0.4.0",
+  "comparison_scope": "deterministic boundary conformance; not model quality or SDK ranking",
+  "baseline": {
+    "strategy": "inline-loop-v1",
+    "cases": 6,
+    "passed_cases": 1,
+    "case_pass_rate": 0.1667,
+    "explicit_state_rate": 1.0,
+    "sensitive_action_control_rate": 0.0,
+    "checkpoint_before_pause_rate": 0.0,
+    "trace_completeness_rate": 0.4722,
+    "duplicate_side_effects": 0
+  },
+  "candidate": {
+    "strategy": "minimal-harness-v1",
+    "cases": 6,
+    "passed_cases": 6,
+    "case_pass_rate": 1.0,
+    "explicit_state_rate": 1.0,
+    "sensitive_action_control_rate": 1.0,
+    "checkpoint_before_pause_rate": 1.0,
+    "trace_completeness_rate": 1.0,
+    "duplicate_side_effects": 0
+  },
+  "improvements": [
+    "approval-pause",
+    "approval-resume",
+    "step-budget",
+    "tool-timeout",
+    "verification-failure"
+  ],
+  "regressions": [],
+  "gate_checks": {
+    "all_candidate_cases_pass": true,
+    "at_least_one_measured_improvement": true,
+    "no_case_regressions": true,
+    "approval_pauses_before_write": true,
+    "approved_resume_writes_once": true,
+    "timeout_is_explicit": true,
+    "step_budget_is_enforced": true,
+    "verification_failure_is_not_success": true
+  },
+  "gate_passed": true
+}

@@ -11,9 +11,11 @@ from agent_lab import (
     run_baseline,
     run_context_eval,
     run_eval,
+    run_harness_eval,
 )
 from agent_lab.context_reporting import write_context_reports
 from agent_lab.eval_reporting import write_eval_reports
+from agent_lab.harness_reporting import write_harness_reports
 from agent_lab.reporting import write_reports
 
 
@@ -22,6 +24,7 @@ CONTRACT_PATH = ROOT / "contracts" / "agent-system-card.json"
 TASKS_PATH = ROOT / "datasets" / "tasks.jsonl"
 EVAL_TASKS_PATH = ROOT / "datasets" / "eval-tasks.jsonl"
 CONTEXT_CASES_PATH = ROOT / "datasets" / "context-cases.jsonl"
+HARNESS_CASES_PATH = ROOT / "datasets" / "harness-cases.jsonl"
 KNOWLEDGE_PATH = ROOT / "fixtures" / "knowledge" / "product-handbook.md"
 CONTEXT_SOURCES_PATH = (
     ROOT / "fixtures" / "context" / "context-sources.jsonl"
@@ -32,7 +35,13 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Run the Agent Reliability Lab.")
     parser.add_argument(
         "command",
-        choices=["check-contract", "baseline", "eval", "context-eval"],
+        choices=[
+            "check-contract",
+            "baseline",
+            "eval",
+            "context-eval",
+            "harness-eval",
+        ],
         help="Validation or baseline command to run.",
     )
     parser.add_argument(
@@ -88,6 +97,24 @@ def parse_args() -> argparse.Namespace:
         type=int,
         default=None,
         help="Optional estimated-token budget override for every context case.",
+    )
+    parser.add_argument(
+        "--harness-cases",
+        type=Path,
+        default=HARNESS_CASES_PATH,
+        help="JSONL Harness boundary cases.",
+    )
+    parser.add_argument(
+        "--max-steps",
+        type=int,
+        default=3,
+        help="Maximum model decisions per Harness run (default: 3).",
+    )
+    parser.add_argument(
+        "--tool-timeout-ms",
+        type=int,
+        default=500,
+        help="Deterministic tool timeout boundary in milliseconds (default: 500).",
     )
     parser.add_argument(
         "--output",
@@ -169,6 +196,24 @@ def main() -> None:
         print(
             "\nReports: "
             f"{json_path} | {markdown_path} | {failures_path} | {packets_path}"
+        )
+        if not result.gate_passed:
+            raise SystemExit(1)
+        return
+
+    if args.command == "harness-eval":
+        result = run_harness_eval(
+            args.harness_cases,
+            max_steps=args.max_steps,
+            tool_timeout_ms=args.tool_timeout_ms,
+        )
+        json_path, markdown_path, failures_path, runs_path = (
+            write_harness_reports(result, args.output)
+        )
+        print(json.dumps(result.summary_dict(), ensure_ascii=False, indent=2))
+        print(
+            "\nReports: "
+            f"{json_path} | {markdown_path} | {failures_path} | {runs_path}"
         )
         if not result.gate_passed:
             raise SystemExit(1)

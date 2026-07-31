@@ -4,10 +4,13 @@ This lab turns the Phase 6 enterprise knowledge-base Agent into a brownfield
 reliability project. The goal is not to produce the most autonomous demo. The
 goal is to make every change measurable against a stable task contract.
 
-Version `0.3.0` contains no model calls and requires no API key. It preserves
+Version `0.4.0` contains no model calls and requires no API key. It preserves
 the contract and eval checkpoints, then adds a Context Packet assembler that
 compares a naive prefix dump with explicit source, freshness, clearance,
-relevance, missing-evidence, and budget policies.
+relevance, missing-evidence, and budget policies. The Harness checkpoint then
+compares a direct model-to-tool loop with a minimal runtime that owns policy
+checks, JSON-serializable run state, approval pause/resume, tool timeouts, step
+limits, verification, and event traces.
 
 ## Why start with a non-Agent baseline
 
@@ -35,6 +38,7 @@ python run_lab.py check-contract
 python run_lab.py baseline
 python run_lab.py eval
 python run_lab.py context-eval
+python run_lab.py harness-eval
 python -m unittest discover -s tests -v
 ```
 
@@ -46,6 +50,7 @@ python run_lab.py baseline --threshold 0.0 --output reports/threshold-zero
 python run_lab.py baseline --threshold 1.0 --output reports/threshold-one
 python run_lab.py eval --candidate flaky-simulator --output reports/flaky-demo
 python run_lab.py context-eval --context-budget 10 --output reports/context-budget-ten
+python run_lab.py harness-eval --max-steps 1 --output reports/harness-step-one
 ```
 
 The invalid card, both threshold runs, and the flaky candidate are expected to exit non-zero. A zero
@@ -53,8 +58,10 @@ threshold over-answers the unknown expense-policy question; a threshold of one
 over-abstains on answerable questions. The flaky simulator changes its behavior
 between repeated trials so the stability release gate rejects it. The tiny
 context budget cannot retain required evidence, so the context gate rejects it.
+The one-step Harness override stops valid multi-step cases too early, so the
+Harness release gate rejects that configuration.
 
-The baseline command writes:
+The commands write:
 
 ```text
 reports/
@@ -69,6 +76,10 @@ reports/
     context-comparison.md
     context-failures.md
     context-packets.jsonl
+    harness-comparison.json
+    harness-comparison.md
+    harness-failures.md
+    harness-runs.jsonl
 ```
 
 The command exits with status `1` when any task fails. That makes the lab
@@ -85,14 +96,17 @@ Start with these files:
 | `datasets/tasks.jsonl` | Which concrete tasks must remain reproducible? |
 | `datasets/eval-tasks.jsonl` | Which regression, capability, and safety cases compare two versions? |
 | `datasets/context-cases.jsonl` | Which source, budget, access, and missing-evidence cases compare two context strategies? |
+| `datasets/harness-cases.jsonl` | Which approval, resume, timeout, budget, and verification cases define the runtime boundary? |
 | `fixtures/knowledge/product-handbook.md` | What information is the system allowed to use? |
 | `fixtures/context/context-sources.jsonl` | Which trusted, expired, restricted, noisy, or untrusted sources can enter a packet? |
 | `agent_lab/baseline.py` | What can a deterministic control group already accomplish? |
 | `agent_lab/evals.py` | How are tasks, trials, graders, summaries, and release gates implemented? |
 | `agent_lab/context.py` | How are Context Packets selected, filtered, budgeted, rendered, and graded? |
+| `agent_lab/harness.py` | Which component owns the model seam, tool dispatch, policy, session, stop, resume, verification, and trace? |
 | `reports/baseline.json` | Which cases passed, failed, or abstained? |
 | `reports/trials.jsonl` | What happened in every repeated attempt? |
 | `reports/context-packets.jsonl` | What each strategy selected, excluded, marked missing, and spent? |
+| `reports/harness-runs.jsonl` | Which state and event sequence each Harness case produced? |
 
 ## Planned checkpoints
 
@@ -126,3 +140,11 @@ not features already implemented in `0.1.0`.
 - Treat a real provider as an adapter, not as the definition of the system.
 - Do not claim a topology, model, or prompt is better without an equal-budget
   comparison.
+
+## Harness experiment limits
+
+The Harness comparison measures contract conformance in a deterministic
+fixture. The `inline-loop-v1` side is a deliberately small control, not a
+production SDK. Simulated latency metadata makes timeout behavior reproducible;
+it does not test wall-clock cancellation. The in-memory session and idempotency
+ledger demonstrate interfaces and event order, not production durability.
