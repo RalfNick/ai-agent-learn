@@ -7,6 +7,7 @@ from .durable import DurableEvalResult, run_durable_eval
 from .evals import EvalResult, run_eval
 from .harness import HarnessEvalResult, run_harness_eval
 from .tools import ToolEvalResult, run_tool_eval
+from .tracing import TraceReviewResult, run_trace_review
 
 __all__ = [
     "BaselineResult",
@@ -16,6 +17,7 @@ __all__ = [
     "EvalResult",
     "HarnessEvalResult",
     "ToolEvalResult",
+    "TraceReviewResult",
     "load_contract",
     "run_baseline",
     "run_context_eval",
@@ -23,4 +25,5 @@ __all__ = [
     "run_eval",
     "run_harness_eval",
     "run_tool_eval",
+    "run_trace_review",
 ]

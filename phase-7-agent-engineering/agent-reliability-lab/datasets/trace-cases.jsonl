@@ -1,0 +1,8 @@
+{"id":"clean-run","scenario":"clean","description":"完整的检索、模型决策、审批与工具写入路径。","expected_source_ids":["handbook:refund-policy"],"expected_findings":[]}
+{"id":"wrong-context","scenario":"wrong_context","description":"检索选择了过期 FAQ，Agent 随后走向错误工具。","expected_source_ids":["handbook:refund-policy"],"expected_findings":["context_mismatch"]}
+{"id":"safe-retry","scenario":"safe_retry","description":"第一次写入超时，运行时先查回执，再使用稳定幂等键重试。","expected_source_ids":["handbook:refund-policy"],"expected_findings":[]}
+{"id":"worker-resume","scenario":"worker_resume","description":"Worker A 中断，Worker B 沿同一逻辑 Trace 从检查点恢复。","expected_source_ids":["handbook:refund-policy"],"expected_findings":[]}
+{"id":"missing-version","scenario":"missing_version","description":"模型 Span 缺少 Prompt 版本，无法复现实验条件。","expected_source_ids":["handbook:refund-policy"],"expected_findings":["missing_version_evidence"]}
+{"id":"orphan-span","scenario":"orphan_span","description":"工具 Span 指向不存在的父 Span，执行树断裂。","expected_source_ids":["handbook:refund-policy"],"expected_findings":["orphan_span"]}
+{"id":"unclosed-span","scenario":"unclosed_span","description":"模型 Span 没有终态，无法判断运行是完成、失败还是仍在执行。","expected_source_ids":["handbook:refund-policy"],"expected_findings":["missing_terminal_status"]}
+{"id":"secret-leak","scenario":"secret_leak","description":"工具属性误写入模拟 Token，脱敏检查必须在落盘前拦截。","expected_source_ids":["handbook:refund-policy"],"expected_findings":["sensitive_attribute"]}

@@ -4,7 +4,7 @@ This lab turns the Phase 6 enterprise knowledge-base Agent into a brownfield
 reliability project. The goal is not to produce the most autonomous demo. The
 goal is to make every change measurable against a stable task contract.
 
-Version `0.6.0` contains no live model calls and requires no API key. It preserves
+Version `0.7.0` contains no live model calls and requires no API key. It preserves
 the contract and eval checkpoints, then adds a Context Packet assembler that
 compares a naive prefix dump with explicit source, freshness, clearance,
 relevance, missing-evidence, and budget policies. The Harness checkpoint then
@@ -25,6 +25,14 @@ a committed write whose response is lost, an unconfirmed write, cancellation
 during a human wait, and a stale worker after lease takeover. Stable action IDs,
 receipt lookup, explicit reconciliation, persisted cancellation, and fencing
 tokens are compared with a deliberately naive process-local loop.
+
+The Agent Tracing checkpoint adds a small vendor-neutral span schema and a
+review gate around the same ticket-follow-up workflow. Eight fixtures make the
+evidence boundary visible: a clean run, wrong context, a safe retry, worker
+resume, missing versions, an orphan span, an unclosed span, and a simulated
+secret leak. The accepted JSONL output stores source IDs, hashes, lengths,
+status, usage, and version evidence instead of raw prompts, email addresses,
+ticket bodies, or tokens.
 
 ## Why start with a non-Agent baseline
 
@@ -55,6 +63,7 @@ python run_lab.py context-eval
 python run_lab.py harness-eval
 python run_lab.py tool-eval
 python run_lab.py fault-test
+python run_lab.py trace-review
 python -m unittest discover -s tests -v
 ```
 
@@ -69,6 +78,7 @@ python run_lab.py context-eval --context-budget 10 --output reports/context-budg
 python run_lab.py harness-eval --max-steps 1 --output reports/harness-step-one
 python run_lab.py tool-eval --output reports/tool-local
 python run_lab.py fault-test --output reports/durable-local
+python run_lab.py trace-review --output reports/trace-local
 ```
 
 The invalid card, both threshold runs, and the flaky candidate are expected to exit non-zero. A zero
@@ -88,6 +98,12 @@ The durable comparison is expected to pass because the release gate applies to
 `durable-loop-v1`. The process-local control remains in the report so blind
 retries, duplicate writes, lost cancellation, and stale-worker effects stay
 visible.
+
+The trace review is also expected to pass. Passing means that the review gate
+matches every fixture's declared finding, removes the simulated sensitive value
+before export, and can answer more of this lab's five debugging questions than
+the deliberately sparse one-line-log control. It is not a claim that structured
+tracing improves every system by a universal percentage.
 
 The commands write:
 
@@ -116,6 +132,10 @@ reports/
     durable-comparison.md
     durable-failures.md
     durable-runs.jsonl
+    trace-review.json
+    trace-review.md
+    trace-failures.md
+    traces.jsonl
 ```
 
 The command exits with status `1` when any task fails. That makes the lab
@@ -135,6 +155,7 @@ Start with these files:
 | `datasets/harness-cases.jsonl` | Which approval, resume, timeout, budget, and verification cases define the runtime boundary? |
 | `datasets/tool-cases.jsonl` | Which schema, permission, approval, idempotency, timeout, and pagination cases define each tool boundary? |
 | `datasets/durable-cases.jsonl` | Which restart, retry, result-unknown, cancellation, and lease cases define recovery behavior? |
+| `datasets/trace-cases.jsonl` | Which tree, context, retry, version, terminal-state, and privacy cases define trace review behavior? |
 | `fixtures/knowledge/product-handbook.md` | What information is the system allowed to use? |
 | `fixtures/context/context-sources.jsonl` | Which trusted, expired, restricted, noisy, or untrusted sources can enter a packet? |
 | `agent_lab/baseline.py` | What can a deterministic control group already accomplish? |
@@ -143,12 +164,15 @@ Start with these files:
 | `agent_lab/harness.py` | Which component owns the model seam, tool dispatch, policy, session, stop, resume, verification, and trace? |
 | `agent_lab/tools.py` | How are model-facing schemas separated from runtime permission, approval, idempotency, retry, and output contracts? |
 | `agent_lab/durable.py` | How are checkpoints, stable actions, retry policy, reconciliation, cancellation, leases, and fencing implemented? |
+| `agent_lab/tracing.py` | How are spans built, sanitized, linked, checked, and used to answer five debugging questions? |
 | `reports/baseline.json` | Which cases passed, failed, or abstained? |
 | `reports/trials.jsonl` | What happened in every repeated attempt? |
 | `reports/context-packets.jsonl` | What each strategy selected, excluded, marked missing, and spent? |
 | `reports/harness-runs.jsonl` | Which state and event sequence each Harness case produced? |
 | `reports/tool-runs.jsonl` | Which fixed call proposals passed each tool-contract grader and which side effects occurred? |
 | `reports/durable-runs.jsonl` | Which persisted state and event sequence each injected fault produced? |
+| `reports/traces.jsonl` | Which sanitized spans reconstruct each fixture's causal execution path? |
+| `reports/trace-review.md` | Which debugging questions are answerable and whether the trace review gate passed? |
 
 ## Planned checkpoints
 
@@ -169,8 +193,8 @@ Tags are created only when the matching article and code are released.
 | `ae-11-ops` | Production Ops | SLO, budgets, degradation and canary | `python run_lab.py ops-game-day` |
 | `ae-12-improvement` | Continuous Improvement | failure-to-eval-to-release loop | `python run_lab.py release-gate` |
 
-Commands after `ae-06-loop` are interface targets for future checkpoints, not
-features already implemented in `0.6.0`.
+Commands after `ae-07-trace` are interface targets for future checkpoints, not
+features already implemented in `0.7.0`.
 
 ## Design rules
 
@@ -209,3 +233,13 @@ Fault timing, backoff time, dependency responses, and lease takeover are
 deterministic fixtures. Atomic file replacement demonstrates the persistence
 boundary, not production database durability. Use a real durable runtime and
 integration tests before making availability or exactly-once claims.
+
+## Agent Tracing experiment limits
+
+The trace review uses deterministic logical sequence numbers and durations. It
+does not measure clock skew, exporter latency, sampling, Collector throughput,
+or storage cost. The five-question comparison is a teaching fixture, not a
+general benchmark. The lab records observable inputs, source IDs, calls,
+statuses, errors, and versions; it does not expose hidden model reasoning. Use
+OpenTelemetry or a dedicated observability backend when traces must cross
+processes, services, environments, or retention boundaries.

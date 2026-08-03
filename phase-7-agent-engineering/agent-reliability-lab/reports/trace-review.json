@@ -1,0 +1,1547 @@
+{
+  "version": "0.7.0",
+  "comparison_scope": "deterministic trace-contract fixtures; not a production observability benchmark",
+  "total_cases": 8,
+  "matched_cases": 8,
+  "baseline_question_answer_rate": 0.2,
+  "candidate_question_answer_rate": 0.975,
+  "gate_checks": {
+    "expected_findings_matched": true,
+    "clean_trace_has_no_findings": true,
+    "sensitive_values_removed": true,
+    "safe_retry_has_evidence": true,
+    "more_answerable_than_plain_log": true
+  },
+  "gate_passed": true,
+  "cases": [
+    {
+      "case": {
+        "id": "clean-run",
+        "scenario": "clean",
+        "description": "完整的检索、模型决策、审批与工具写入路径。",
+        "expected_findings": []
+      },
+      "spans": [
+        {
+          "trace_id": "trace::clean-run",
+          "span_id": "root",
+          "parent_span_id": null,
+          "name": "ticket_followup_agent",
+          "kind": "agent",
+          "sequence": 1,
+          "duration_ms": 10,
+          "status": "ok",
+          "attempt": 1,
+          "versions": {
+            "model": "fixture-model@1",
+            "prompt": "followup@3",
+            "tool": "ticket-tools@2",
+            "policy": "approval@4",
+            "code": "ae-07-trace"
+          },
+          "attributes": {
+            "worker_id": "worker-a"
+          },
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0
+          },
+          "error_code": null
+        },
+        {
+          "trace_id": "trace::clean-run",
+          "span_id": "retrieve",
+          "parent_span_id": "root",
+          "name": "retrieve_policy",
+          "kind": "retrieval",
+          "sequence": 2,
+          "duration_ms": 10,
+          "status": "ok",
+          "attempt": 1,
+          "versions": {
+            "model": "fixture-model@1",
+            "prompt": "followup@3",
+            "tool": "ticket-tools@2",
+            "policy": "approval@4",
+            "code": "ae-07-trace"
+          },
+          "attributes": {
+            "source_ids": [
+              "handbook:refund-policy"
+            ]
+          },
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0
+          },
+          "error_code": null
+        },
+        {
+          "trace_id": "trace::clean-run",
+          "span_id": "model",
+          "parent_span_id": "root",
+          "name": "choose_followup_action",
+          "kind": "model",
+          "sequence": 3,
+          "duration_ms": 10,
+          "status": "ok",
+          "attempt": 1,
+          "versions": {
+            "model": "fixture-model@1",
+            "prompt": "followup@3",
+            "tool": "ticket-tools@2",
+            "policy": "approval@4",
+            "code": "ae-07-trace"
+          },
+          "attributes": {
+            "route": "record_ticket_followup",
+            "prompt_hash": "sha256:prompt-v3"
+          },
+          "usage": {
+            "input_tokens": 418,
+            "output_tokens": 72
+          },
+          "error_code": null
+        },
+        {
+          "trace_id": "trace::clean-run",
+          "span_id": "approval",
+          "parent_span_id": "root",
+          "name": "approve_external_write",
+          "kind": "approval",
+          "sequence": 4,
+          "duration_ms": 10,
+          "status": "ok",
+          "attempt": 1,
+          "versions": {
+            "model": "fixture-model@1",
+            "prompt": "followup@3",
+            "tool": "ticket-tools@2",
+            "policy": "approval@4",
+            "code": "ae-07-trace"
+          },
+          "attributes": {
+            "approval_state": "approved"
+          },
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0
+          },
+          "error_code": null
+        },
+        {
+          "trace_id": "trace::clean-run",
+          "span_id": "tool",
+          "parent_span_id": "root",
+          "name": "record_ticket_followup",
+          "kind": "tool",
+          "sequence": 5,
+          "duration_ms": 10,
+          "status": "ok",
+          "attempt": 1,
+          "versions": {
+            "model": "fixture-model@1",
+            "prompt": "followup@3",
+            "tool": "ticket-tools@2",
+            "policy": "approval@4",
+            "code": "ae-07-trace"
+          },
+          "attributes": {
+            "side_effecting": true,
+            "argument_hash": "sha256:arguments-v1",
+            "idempotency_key_hash": "sha256:action-t102",
+            "receipt_status": "committed",
+            "body_length": 182
+          },
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0
+          },
+          "error_code": null
+        }
+      ],
+      "findings": [],
+      "questions": [
+        {
+          "question": "context_sources",
+          "answered": true,
+          "evidence": "handbook:refund-policy"
+        },
+        {
+          "question": "tool_path",
+          "answered": true,
+          "evidence": "record_ticket_followup"
+        },
+        {
+          "question": "first_failure",
+          "answered": true,
+          "evidence": "no error span"
+        },
+        {
+          "question": "retry_evidence",
+          "answered": true,
+          "evidence": "not applicable"
+        },
+        {
+          "question": "version_tuple",
+          "answered": true,
+          "evidence": "complete"
+        }
+      ],
+      "passed": true
+    },
+    {
+      "case": {
+        "id": "wrong-context",
+        "scenario": "wrong_context",
+        "description": "检索选择了过期 FAQ，Agent 随后走向错误工具。",
+        "expected_findings": [
+          "context_mismatch"
+        ]
+      },
+      "spans": [
+        {
+          "trace_id": "trace::wrong-context",
+          "span_id": "root",
+          "parent_span_id": null,
+          "name": "ticket_followup_agent",
+          "kind": "agent",
+          "sequence": 1,
+          "duration_ms": 10,
+          "status": "error",
+          "attempt": 1,
+          "versions": {
+            "model": "fixture-model@1",
+            "prompt": "followup@3",
+            "tool": "ticket-tools@2",
+            "policy": "approval@4",
+            "code": "ae-07-trace"
+          },
+          "attributes": {
+            "worker_id": "worker-a"
+          },
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0
+          },
+          "error_code": "CHILD_FAILED"
+        },
+        {
+          "trace_id": "trace::wrong-context",
+          "span_id": "retrieve",
+          "parent_span_id": "root",
+          "name": "retrieve_policy",
+          "kind": "retrieval",
+          "sequence": 2,
+          "duration_ms": 10,
+          "status": "ok",
+          "attempt": 1,
+          "versions": {
+            "model": "fixture-model@1",
+            "prompt": "followup@3",
+            "tool": "ticket-tools@2",
+            "policy": "approval@4",
+            "code": "ae-07-trace"
+          },
+          "attributes": {
+            "source_ids": [
+              "faq:refund-policy-2024"
+            ]
+          },
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0
+          },
+          "error_code": null
+        },
+        {
+          "trace_id": "trace::wrong-context",
+          "span_id": "model",
+          "parent_span_id": "root",
+          "name": "choose_followup_action",
+          "kind": "model",
+          "sequence": 3,
+          "duration_ms": 10,
+          "status": "ok",
+          "attempt": 1,
+          "versions": {
+            "model": "fixture-model@1",
+            "prompt": "followup@3",
+            "tool": "ticket-tools@2",
+            "policy": "approval@4",
+            "code": "ae-07-trace"
+          },
+          "attributes": {
+            "route": "close_ticket",
+            "prompt_hash": "sha256:prompt-v3"
+          },
+          "usage": {
+            "input_tokens": 418,
+            "output_tokens": 72
+          },
+          "error_code": null
+        },
+        {
+          "trace_id": "trace::wrong-context",
+          "span_id": "approval",
+          "parent_span_id": "root",
+          "name": "approve_external_write",
+          "kind": "approval",
+          "sequence": 4,
+          "duration_ms": 10,
+          "status": "ok",
+          "attempt": 1,
+          "versions": {
+            "model": "fixture-model@1",
+            "prompt": "followup@3",
+            "tool": "ticket-tools@2",
+            "policy": "approval@4",
+            "code": "ae-07-trace"
+          },
+          "attributes": {
+            "approval_state": "approved"
+          },
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0
+          },
+          "error_code": null
+        },
+        {
+          "trace_id": "trace::wrong-context",
+          "span_id": "tool",
+          "parent_span_id": "root",
+          "name": "close_ticket",
+          "kind": "tool",
+          "sequence": 5,
+          "duration_ms": 10,
+          "status": "error",
+          "attempt": 1,
+          "versions": {
+            "model": "fixture-model@1",
+            "prompt": "followup@3",
+            "tool": "ticket-tools@2",
+            "policy": "approval@4",
+            "code": "ae-07-trace"
+          },
+          "attributes": {
+            "side_effecting": true,
+            "argument_hash": "sha256:wrong-context",
+            "idempotency_key_hash": "sha256:action-t102",
+            "receipt_status": "rejected"
+          },
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0
+          },
+          "error_code": "WRONG_CONTEXT"
+        }
+      ],
+      "findings": [
+        {
+          "code": "context_mismatch",
+          "span_id": "retrieve",
+          "detail": "selected sources do not satisfy the task contract"
+        }
+      ],
+      "questions": [
+        {
+          "question": "context_sources",
+          "answered": true,
+          "evidence": "faq:refund-policy-2024"
+        },
+        {
+          "question": "tool_path",
+          "answered": true,
+          "evidence": "close_ticket"
+        },
+        {
+          "question": "first_failure",
+          "answered": true,
+          "evidence": "root:CHILD_FAILED"
+        },
+        {
+          "question": "retry_evidence",
+          "answered": true,
+          "evidence": "not applicable"
+        },
+        {
+          "question": "version_tuple",
+          "answered": true,
+          "evidence": "complete"
+        }
+      ],
+      "passed": true
+    },
+    {
+      "case": {
+        "id": "safe-retry",
+        "scenario": "safe_retry",
+        "description": "第一次写入超时，运行时先查回执，再使用稳定幂等键重试。",
+        "expected_findings": []
+      },
+      "spans": [
+        {
+          "trace_id": "trace::safe-retry",
+          "span_id": "root",
+          "parent_span_id": null,
+          "name": "ticket_followup_agent",
+          "kind": "agent",
+          "sequence": 1,
+          "duration_ms": 10,
+          "status": "ok",
+          "attempt": 1,
+          "versions": {
+            "model": "fixture-model@1",
+            "prompt": "followup@3",
+            "tool": "ticket-tools@2",
+            "policy": "approval@4",
+            "code": "ae-07-trace"
+          },
+          "attributes": {
+            "worker_id": "worker-a"
+          },
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0
+          },
+          "error_code": null
+        },
+        {
+          "trace_id": "trace::safe-retry",
+          "span_id": "retrieve",
+          "parent_span_id": "root",
+          "name": "retrieve_policy",
+          "kind": "retrieval",
+          "sequence": 2,
+          "duration_ms": 10,
+          "status": "ok",
+          "attempt": 1,
+          "versions": {
+            "model": "fixture-model@1",
+            "prompt": "followup@3",
+            "tool": "ticket-tools@2",
+            "policy": "approval@4",
+            "code": "ae-07-trace"
+          },
+          "attributes": {
+            "source_ids": [
+              "handbook:refund-policy"
+            ]
+          },
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0
+          },
+          "error_code": null
+        },
+        {
+          "trace_id": "trace::safe-retry",
+          "span_id": "model",
+          "parent_span_id": "root",
+          "name": "choose_followup_action",
+          "kind": "model",
+          "sequence": 3,
+          "duration_ms": 10,
+          "status": "ok",
+          "attempt": 1,
+          "versions": {
+            "model": "fixture-model@1",
+            "prompt": "followup@3",
+            "tool": "ticket-tools@2",
+            "policy": "approval@4",
+            "code": "ae-07-trace"
+          },
+          "attributes": {
+            "route": "record_ticket_followup",
+            "prompt_hash": "sha256:prompt-v3"
+          },
+          "usage": {
+            "input_tokens": 418,
+            "output_tokens": 72
+          },
+          "error_code": null
+        },
+        {
+          "trace_id": "trace::safe-retry",
+          "span_id": "approval",
+          "parent_span_id": "root",
+          "name": "approve_external_write",
+          "kind": "approval",
+          "sequence": 4,
+          "duration_ms": 10,
+          "status": "ok",
+          "attempt": 1,
+          "versions": {
+            "model": "fixture-model@1",
+            "prompt": "followup@3",
+            "tool": "ticket-tools@2",
+            "policy": "approval@4",
+            "code": "ae-07-trace"
+          },
+          "attributes": {
+            "approval_state": "approved"
+          },
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0
+          },
+          "error_code": null
+        },
+        {
+          "trace_id": "trace::safe-retry",
+          "span_id": "tool",
+          "parent_span_id": "root",
+          "name": "record_ticket_followup",
+          "kind": "tool",
+          "sequence": 5,
+          "duration_ms": 10,
+          "status": "error",
+          "attempt": 1,
+          "versions": {
+            "model": "fixture-model@1",
+            "prompt": "followup@3",
+            "tool": "ticket-tools@2",
+            "policy": "approval@4",
+            "code": "ae-07-trace"
+          },
+          "attributes": {
+            "side_effecting": true,
+            "argument_hash": "sha256:arguments-v1",
+            "idempotency_key_hash": "sha256:action-t102",
+            "receipt_status": "unknown"
+          },
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0
+          },
+          "error_code": "TOOL_TIMEOUT"
+        },
+        {
+          "trace_id": "trace::safe-retry",
+          "span_id": "receipt",
+          "parent_span_id": "root",
+          "name": "lookup_write_receipt",
+          "kind": "tool",
+          "sequence": 6,
+          "duration_ms": 10,
+          "status": "ok",
+          "attempt": 1,
+          "versions": {
+            "model": "fixture-model@1",
+            "prompt": "followup@3",
+            "tool": "ticket-tools@2",
+            "policy": "approval@4",
+            "code": "ae-07-trace"
+          },
+          "attributes": {
+            "side_effecting": false,
+            "receipt_status": "not_found"
+          },
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0
+          },
+          "error_code": null
+        },
+        {
+          "trace_id": "trace::safe-retry",
+          "span_id": "tool-retry",
+          "parent_span_id": "root",
+          "name": "record_ticket_followup",
+          "kind": "tool",
+          "sequence": 7,
+          "duration_ms": 10,
+          "status": "ok",
+          "attempt": 2,
+          "versions": {
+            "model": "fixture-model@1",
+            "prompt": "followup@3",
+            "tool": "ticket-tools@2",
+            "policy": "approval@4",
+            "code": "ae-07-trace"
+          },
+          "attributes": {
+            "side_effecting": true,
+            "argument_hash": "sha256:arguments-v1",
+            "idempotency_key_hash": "sha256:action-t102",
+            "receipt_status": "committed"
+          },
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0
+          },
+          "error_code": null
+        }
+      ],
+      "findings": [],
+      "questions": [
+        {
+          "question": "context_sources",
+          "answered": true,
+          "evidence": "handbook:refund-policy"
+        },
+        {
+          "question": "tool_path",
+          "answered": true,
+          "evidence": "record_ticket_followup -> lookup_write_receipt -> record_ticket_followup"
+        },
+        {
+          "question": "first_failure",
+          "answered": true,
+          "evidence": "tool:TOOL_TIMEOUT"
+        },
+        {
+          "question": "retry_evidence",
+          "answered": true,
+          "evidence": "verified"
+        },
+        {
+          "question": "version_tuple",
+          "answered": true,
+          "evidence": "complete"
+        }
+      ],
+      "passed": true
+    },
+    {
+      "case": {
+        "id": "worker-resume",
+        "scenario": "worker_resume",
+        "description": "Worker A 中断，Worker B 沿同一逻辑 Trace 从检查点恢复。",
+        "expected_findings": []
+      },
+      "spans": [
+        {
+          "trace_id": "trace::worker-resume",
+          "span_id": "root",
+          "parent_span_id": null,
+          "name": "ticket_followup_agent",
+          "kind": "agent",
+          "sequence": 1,
+          "duration_ms": 10,
+          "status": "ok",
+          "attempt": 1,
+          "versions": {
+            "model": "fixture-model@1",
+            "prompt": "followup@3",
+            "tool": "ticket-tools@2",
+            "policy": "approval@4",
+            "code": "ae-07-trace"
+          },
+          "attributes": {
+            "worker_id": "worker-a"
+          },
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0
+          },
+          "error_code": null
+        },
+        {
+          "trace_id": "trace::worker-resume",
+          "span_id": "retrieve",
+          "parent_span_id": "root",
+          "name": "retrieve_policy",
+          "kind": "retrieval",
+          "sequence": 2,
+          "duration_ms": 10,
+          "status": "ok",
+          "attempt": 1,
+          "versions": {
+            "model": "fixture-model@1",
+            "prompt": "followup@3",
+            "tool": "ticket-tools@2",
+            "policy": "approval@4",
+            "code": "ae-07-trace"
+          },
+          "attributes": {
+            "source_ids": [
+              "handbook:refund-policy"
+            ]
+          },
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0
+          },
+          "error_code": null
+        },
+        {
+          "trace_id": "trace::worker-resume",
+          "span_id": "model",
+          "parent_span_id": "root",
+          "name": "choose_followup_action",
+          "kind": "model",
+          "sequence": 3,
+          "duration_ms": 10,
+          "status": "ok",
+          "attempt": 1,
+          "versions": {
+            "model": "fixture-model@1",
+            "prompt": "followup@3",
+            "tool": "ticket-tools@2",
+            "policy": "approval@4",
+            "code": "ae-07-trace"
+          },
+          "attributes": {
+            "route": "record_ticket_followup",
+            "prompt_hash": "sha256:prompt-v3"
+          },
+          "usage": {
+            "input_tokens": 418,
+            "output_tokens": 72
+          },
+          "error_code": null
+        },
+        {
+          "trace_id": "trace::worker-resume",
+          "span_id": "approval",
+          "parent_span_id": "resume",
+          "name": "approve_external_write",
+          "kind": "approval",
+          "sequence": 5,
+          "duration_ms": 10,
+          "status": "ok",
+          "attempt": 1,
+          "versions": {
+            "model": "fixture-model@1",
+            "prompt": "followup@3",
+            "tool": "ticket-tools@2",
+            "policy": "approval@4",
+            "code": "ae-07-trace"
+          },
+          "attributes": {
+            "approval_state": "approved"
+          },
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0
+          },
+          "error_code": null
+        },
+        {
+          "trace_id": "trace::worker-resume",
+          "span_id": "resume",
+          "parent_span_id": "root",
+          "name": "resume_from_checkpoint",
+          "kind": "agent",
+          "sequence": 4,
+          "duration_ms": 10,
+          "status": "ok",
+          "attempt": 1,
+          "versions": {
+            "model": "fixture-model@1",
+            "prompt": "followup@3",
+            "tool": "ticket-tools@2",
+            "policy": "approval@4",
+            "code": "ae-07-trace"
+          },
+          "attributes": {
+            "worker_id": "worker-b",
+            "resume_from_span": "model"
+          },
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0
+          },
+          "error_code": null
+        },
+        {
+          "trace_id": "trace::worker-resume",
+          "span_id": "tool",
+          "parent_span_id": "resume",
+          "name": "record_ticket_followup",
+          "kind": "tool",
+          "sequence": 6,
+          "duration_ms": 10,
+          "status": "ok",
+          "attempt": 1,
+          "versions": {
+            "model": "fixture-model@1",
+            "prompt": "followup@3",
+            "tool": "ticket-tools@2",
+            "policy": "approval@4",
+            "code": "ae-07-trace"
+          },
+          "attributes": {
+            "side_effecting": true,
+            "argument_hash": "sha256:arguments-v1",
+            "idempotency_key_hash": "sha256:action-t102",
+            "receipt_status": "committed",
+            "body_length": 182,
+            "worker_id": "worker-b"
+          },
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0
+          },
+          "error_code": null
+        }
+      ],
+      "findings": [],
+      "questions": [
+        {
+          "question": "context_sources",
+          "answered": true,
+          "evidence": "handbook:refund-policy"
+        },
+        {
+          "question": "tool_path",
+          "answered": true,
+          "evidence": "record_ticket_followup"
+        },
+        {
+          "question": "first_failure",
+          "answered": true,
+          "evidence": "no error span"
+        },
+        {
+          "question": "retry_evidence",
+          "answered": true,
+          "evidence": "not applicable"
+        },
+        {
+          "question": "version_tuple",
+          "answered": true,
+          "evidence": "complete"
+        }
+      ],
+      "passed": true
+    },
+    {
+      "case": {
+        "id": "missing-version",
+        "scenario": "missing_version",
+        "description": "模型 Span 缺少 Prompt 版本，无法复现实验条件。",
+        "expected_findings": [
+          "missing_version_evidence"
+        ]
+      },
+      "spans": [
+        {
+          "trace_id": "trace::missing-version",
+          "span_id": "root",
+          "parent_span_id": null,
+          "name": "ticket_followup_agent",
+          "kind": "agent",
+          "sequence": 1,
+          "duration_ms": 10,
+          "status": "ok",
+          "attempt": 1,
+          "versions": {
+            "model": "fixture-model@1",
+            "prompt": "followup@3",
+            "tool": "ticket-tools@2",
+            "policy": "approval@4",
+            "code": "ae-07-trace"
+          },
+          "attributes": {
+            "worker_id": "worker-a"
+          },
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0
+          },
+          "error_code": null
+        },
+        {
+          "trace_id": "trace::missing-version",
+          "span_id": "retrieve",
+          "parent_span_id": "root",
+          "name": "retrieve_policy",
+          "kind": "retrieval",
+          "sequence": 2,
+          "duration_ms": 10,
+          "status": "ok",
+          "attempt": 1,
+          "versions": {
+            "model": "fixture-model@1",
+            "prompt": "followup@3",
+            "tool": "ticket-tools@2",
+            "policy": "approval@4",
+            "code": "ae-07-trace"
+          },
+          "attributes": {
+            "source_ids": [
+              "handbook:refund-policy"
+            ]
+          },
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0
+          },
+          "error_code": null
+        },
+        {
+          "trace_id": "trace::missing-version",
+          "span_id": "model",
+          "parent_span_id": "root",
+          "name": "choose_followup_action",
+          "kind": "model",
+          "sequence": 3,
+          "duration_ms": 10,
+          "status": "ok",
+          "attempt": 1,
+          "versions": {
+            "model": "fixture-model@1",
+            "tool": "ticket-tools@2",
+            "policy": "approval@4",
+            "code": "ae-07-trace"
+          },
+          "attributes": {
+            "route": "record_ticket_followup",
+            "prompt_hash": "sha256:prompt-v3"
+          },
+          "usage": {
+            "input_tokens": 418,
+            "output_tokens": 72
+          },
+          "error_code": null
+        },
+        {
+          "trace_id": "trace::missing-version",
+          "span_id": "approval",
+          "parent_span_id": "root",
+          "name": "approve_external_write",
+          "kind": "approval",
+          "sequence": 4,
+          "duration_ms": 10,
+          "status": "ok",
+          "attempt": 1,
+          "versions": {
+            "model": "fixture-model@1",
+            "prompt": "followup@3",
+            "tool": "ticket-tools@2",
+            "policy": "approval@4",
+            "code": "ae-07-trace"
+          },
+          "attributes": {
+            "approval_state": "approved"
+          },
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0
+          },
+          "error_code": null
+        },
+        {
+          "trace_id": "trace::missing-version",
+          "span_id": "tool",
+          "parent_span_id": "root",
+          "name": "record_ticket_followup",
+          "kind": "tool",
+          "sequence": 5,
+          "duration_ms": 10,
+          "status": "ok",
+          "attempt": 1,
+          "versions": {
+            "model": "fixture-model@1",
+            "prompt": "followup@3",
+            "tool": "ticket-tools@2",
+            "policy": "approval@4",
+            "code": "ae-07-trace"
+          },
+          "attributes": {
+            "side_effecting": true,
+            "argument_hash": "sha256:arguments-v1",
+            "idempotency_key_hash": "sha256:action-t102",
+            "receipt_status": "committed",
+            "body_length": 182
+          },
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0
+          },
+          "error_code": null
+        }
+      ],
+      "findings": [
+        {
+          "code": "missing_version_evidence",
+          "span_id": "model",
+          "detail": "missing prompt"
+        }
+      ],
+      "questions": [
+        {
+          "question": "context_sources",
+          "answered": true,
+          "evidence": "handbook:refund-policy"
+        },
+        {
+          "question": "tool_path",
+          "answered": true,
+          "evidence": "record_ticket_followup"
+        },
+        {
+          "question": "first_failure",
+          "answered": true,
+          "evidence": "no error span"
+        },
+        {
+          "question": "retry_evidence",
+          "answered": true,
+          "evidence": "not applicable"
+        },
+        {
+          "question": "version_tuple",
+          "answered": false,
+          "evidence": "missing"
+        }
+      ],
+      "passed": true
+    },
+    {
+      "case": {
+        "id": "orphan-span",
+        "scenario": "orphan_span",
+        "description": "工具 Span 指向不存在的父 Span，执行树断裂。",
+        "expected_findings": [
+          "orphan_span"
+        ]
+      },
+      "spans": [
+        {
+          "trace_id": "trace::orphan-span",
+          "span_id": "root",
+          "parent_span_id": null,
+          "name": "ticket_followup_agent",
+          "kind": "agent",
+          "sequence": 1,
+          "duration_ms": 10,
+          "status": "ok",
+          "attempt": 1,
+          "versions": {
+            "model": "fixture-model@1",
+            "prompt": "followup@3",
+            "tool": "ticket-tools@2",
+            "policy": "approval@4",
+            "code": "ae-07-trace"
+          },
+          "attributes": {
+            "worker_id": "worker-a"
+          },
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0
+          },
+          "error_code": null
+        },
+        {
+          "trace_id": "trace::orphan-span",
+          "span_id": "retrieve",
+          "parent_span_id": "root",
+          "name": "retrieve_policy",
+          "kind": "retrieval",
+          "sequence": 2,
+          "duration_ms": 10,
+          "status": "ok",
+          "attempt": 1,
+          "versions": {
+            "model": "fixture-model@1",
+            "prompt": "followup@3",
+            "tool": "ticket-tools@2",
+            "policy": "approval@4",
+            "code": "ae-07-trace"
+          },
+          "attributes": {
+            "source_ids": [
+              "handbook:refund-policy"
+            ]
+          },
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0
+          },
+          "error_code": null
+        },
+        {
+          "trace_id": "trace::orphan-span",
+          "span_id": "model",
+          "parent_span_id": "root",
+          "name": "choose_followup_action",
+          "kind": "model",
+          "sequence": 3,
+          "duration_ms": 10,
+          "status": "ok",
+          "attempt": 1,
+          "versions": {
+            "model": "fixture-model@1",
+            "prompt": "followup@3",
+            "tool": "ticket-tools@2",
+            "policy": "approval@4",
+            "code": "ae-07-trace"
+          },
+          "attributes": {
+            "route": "record_ticket_followup",
+            "prompt_hash": "sha256:prompt-v3"
+          },
+          "usage": {
+            "input_tokens": 418,
+            "output_tokens": 72
+          },
+          "error_code": null
+        },
+        {
+          "trace_id": "trace::orphan-span",
+          "span_id": "approval",
+          "parent_span_id": "root",
+          "name": "approve_external_write",
+          "kind": "approval",
+          "sequence": 4,
+          "duration_ms": 10,
+          "status": "ok",
+          "attempt": 1,
+          "versions": {
+            "model": "fixture-model@1",
+            "prompt": "followup@3",
+            "tool": "ticket-tools@2",
+            "policy": "approval@4",
+            "code": "ae-07-trace"
+          },
+          "attributes": {
+            "approval_state": "approved"
+          },
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0
+          },
+          "error_code": null
+        },
+        {
+          "trace_id": "trace::orphan-span",
+          "span_id": "tool",
+          "parent_span_id": "missing-parent",
+          "name": "record_ticket_followup",
+          "kind": "tool",
+          "sequence": 5,
+          "duration_ms": 10,
+          "status": "ok",
+          "attempt": 1,
+          "versions": {
+            "model": "fixture-model@1",
+            "prompt": "followup@3",
+            "tool": "ticket-tools@2",
+            "policy": "approval@4",
+            "code": "ae-07-trace"
+          },
+          "attributes": {
+            "side_effecting": true,
+            "argument_hash": "sha256:arguments-v1",
+            "idempotency_key_hash": "sha256:action-t102",
+            "receipt_status": "committed",
+            "body_length": 182
+          },
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0
+          },
+          "error_code": null
+        }
+      ],
+      "findings": [
+        {
+          "code": "orphan_span",
+          "span_id": "tool",
+          "detail": "parent missing-parent does not exist"
+        }
+      ],
+      "questions": [
+        {
+          "question": "context_sources",
+          "answered": true,
+          "evidence": "handbook:refund-policy"
+        },
+        {
+          "question": "tool_path",
+          "answered": true,
+          "evidence": "record_ticket_followup"
+        },
+        {
+          "question": "first_failure",
+          "answered": true,
+          "evidence": "no error span"
+        },
+        {
+          "question": "retry_evidence",
+          "answered": true,
+          "evidence": "not applicable"
+        },
+        {
+          "question": "version_tuple",
+          "answered": true,
+          "evidence": "complete"
+        }
+      ],
+      "passed": true
+    },
+    {
+      "case": {
+        "id": "unclosed-span",
+        "scenario": "unclosed_span",
+        "description": "模型 Span 没有终态，无法判断运行是完成、失败还是仍在执行。",
+        "expected_findings": [
+          "missing_terminal_status"
+        ]
+      },
+      "spans": [
+        {
+          "trace_id": "trace::unclosed-span",
+          "span_id": "root",
+          "parent_span_id": null,
+          "name": "ticket_followup_agent",
+          "kind": "agent",
+          "sequence": 1,
+          "duration_ms": 10,
+          "status": "ok",
+          "attempt": 1,
+          "versions": {
+            "model": "fixture-model@1",
+            "prompt": "followup@3",
+            "tool": "ticket-tools@2",
+            "policy": "approval@4",
+            "code": "ae-07-trace"
+          },
+          "attributes": {
+            "worker_id": "worker-a"
+          },
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0
+          },
+          "error_code": null
+        },
+        {
+          "trace_id": "trace::unclosed-span",
+          "span_id": "retrieve",
+          "parent_span_id": "root",
+          "name": "retrieve_policy",
+          "kind": "retrieval",
+          "sequence": 2,
+          "duration_ms": 10,
+          "status": "ok",
+          "attempt": 1,
+          "versions": {
+            "model": "fixture-model@1",
+            "prompt": "followup@3",
+            "tool": "ticket-tools@2",
+            "policy": "approval@4",
+            "code": "ae-07-trace"
+          },
+          "attributes": {
+            "source_ids": [
+              "handbook:refund-policy"
+            ]
+          },
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0
+          },
+          "error_code": null
+        },
+        {
+          "trace_id": "trace::unclosed-span",
+          "span_id": "model",
+          "parent_span_id": "root",
+          "name": "choose_followup_action",
+          "kind": "model",
+          "sequence": 3,
+          "duration_ms": 10,
+          "status": "unset",
+          "attempt": 1,
+          "versions": {
+            "model": "fixture-model@1",
+            "prompt": "followup@3",
+            "tool": "ticket-tools@2",
+            "policy": "approval@4",
+            "code": "ae-07-trace"
+          },
+          "attributes": {
+            "route": "record_ticket_followup",
+            "prompt_hash": "sha256:prompt-v3"
+          },
+          "usage": {
+            "input_tokens": 418,
+            "output_tokens": 72
+          },
+          "error_code": null
+        },
+        {
+          "trace_id": "trace::unclosed-span",
+          "span_id": "approval",
+          "parent_span_id": "root",
+          "name": "approve_external_write",
+          "kind": "approval",
+          "sequence": 4,
+          "duration_ms": 10,
+          "status": "ok",
+          "attempt": 1,
+          "versions": {
+            "model": "fixture-model@1",
+            "prompt": "followup@3",
+            "tool": "ticket-tools@2",
+            "policy": "approval@4",
+            "code": "ae-07-trace"
+          },
+          "attributes": {
+            "approval_state": "approved"
+          },
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0
+          },
+          "error_code": null
+        },
+        {
+          "trace_id": "trace::unclosed-span",
+          "span_id": "tool",
+          "parent_span_id": "root",
+          "name": "record_ticket_followup",
+          "kind": "tool",
+          "sequence": 5,
+          "duration_ms": 10,
+          "status": "ok",
+          "attempt": 1,
+          "versions": {
+            "model": "fixture-model@1",
+            "prompt": "followup@3",
+            "tool": "ticket-tools@2",
+            "policy": "approval@4",
+            "code": "ae-07-trace"
+          },
+          "attributes": {
+            "side_effecting": true,
+            "argument_hash": "sha256:arguments-v1",
+            "idempotency_key_hash": "sha256:action-t102",
+            "receipt_status": "committed",
+            "body_length": 182
+          },
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0
+          },
+          "error_code": null
+        }
+      ],
+      "findings": [
+        {
+          "code": "missing_terminal_status",
+          "span_id": "model",
+          "detail": "status 'unset' is not terminal"
+        }
+      ],
+      "questions": [
+        {
+          "question": "context_sources",
+          "answered": true,
+          "evidence": "handbook:refund-policy"
+        },
+        {
+          "question": "tool_path",
+          "answered": true,
+          "evidence": "record_ticket_followup"
+        },
+        {
+          "question": "first_failure",
+          "answered": true,
+          "evidence": "no error span"
+        },
+        {
+          "question": "retry_evidence",
+          "answered": true,
+          "evidence": "not applicable"
+        },
+        {
+          "question": "version_tuple",
+          "answered": true,
+          "evidence": "complete"
+        }
+      ],
+      "passed": true
+    },
+    {
+      "case": {
+        "id": "secret-leak",
+        "scenario": "secret_leak",
+        "description": "工具属性误写入模拟 Token，脱敏检查必须在落盘前拦截。",
+        "expected_findings": [
+          "sensitive_attribute"
+        ]
+      },
+      "spans": [
+        {
+          "trace_id": "trace::secret-leak",
+          "span_id": "root",
+          "parent_span_id": null,
+          "name": "ticket_followup_agent",
+          "kind": "agent",
+          "sequence": 1,
+          "duration_ms": 10,
+          "status": "ok",
+          "attempt": 1,
+          "versions": {
+            "model": "fixture-model@1",
+            "prompt": "followup@3",
+            "tool": "ticket-tools@2",
+            "policy": "approval@4",
+            "code": "ae-07-trace"
+          },
+          "attributes": {
+            "worker_id": "worker-a"
+          },
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0
+          },
+          "error_code": null
+        },
+        {
+          "trace_id": "trace::secret-leak",
+          "span_id": "retrieve",
+          "parent_span_id": "root",
+          "name": "retrieve_policy",
+          "kind": "retrieval",
+          "sequence": 2,
+          "duration_ms": 10,
+          "status": "ok",
+          "attempt": 1,
+          "versions": {
+            "model": "fixture-model@1",
+            "prompt": "followup@3",
+            "tool": "ticket-tools@2",
+            "policy": "approval@4",
+            "code": "ae-07-trace"
+          },
+          "attributes": {
+            "source_ids": [
+              "handbook:refund-policy"
+            ]
+          },
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0
+          },
+          "error_code": null
+        },
+        {
+          "trace_id": "trace::secret-leak",
+          "span_id": "model",
+          "parent_span_id": "root",
+          "name": "choose_followup_action",
+          "kind": "model",
+          "sequence": 3,
+          "duration_ms": 10,
+          "status": "ok",
+          "attempt": 1,
+          "versions": {
+            "model": "fixture-model@1",
+            "prompt": "followup@3",
+            "tool": "ticket-tools@2",
+            "policy": "approval@4",
+            "code": "ae-07-trace"
+          },
+          "attributes": {
+            "route": "record_ticket_followup",
+            "prompt_hash": "sha256:prompt-v3"
+          },
+          "usage": {
+            "input_tokens": 418,
+            "output_tokens": 72
+          },
+          "error_code": null
+        },
+        {
+          "trace_id": "trace::secret-leak",
+          "span_id": "approval",
+          "parent_span_id": "root",
+          "name": "approve_external_write",
+          "kind": "approval",
+          "sequence": 4,
+          "duration_ms": 10,
+          "status": "ok",
+          "attempt": 1,
+          "versions": {
+            "model": "fixture-model@1",
+            "prompt": "followup@3",
+            "tool": "ticket-tools@2",
+            "policy": "approval@4",
+            "code": "ae-07-trace"
+          },
+          "attributes": {
+            "approval_state": "approved"
+          },
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0
+          },
+          "error_code": null
+        },
+        {
+          "trace_id": "trace::secret-leak",
+          "span_id": "tool",
+          "parent_span_id": "root",
+          "name": "record_ticket_followup",
+          "kind": "tool",
+          "sequence": 5,
+          "duration_ms": 10,
+          "status": "ok",
+          "attempt": 1,
+          "versions": {
+            "model": "fixture-model@1",
+            "prompt": "followup@3",
+            "tool": "ticket-tools@2",
+            "policy": "approval@4",
+            "code": "ae-07-trace"
+          },
+          "attributes": {
+            "side_effecting": true,
+            "argument_hash": "sha256:arguments-v1",
+            "idempotency_key_hash": "sha256:action-t102",
+            "receipt_status": "committed",
+            "body_length": 182
+          },
+          "usage": {
+            "input_tokens": 0,
+            "output_tokens": 0
+          },
+          "error_code": null
+        }
+      ],
+      "findings": [
+        {
+          "code": "sensitive_attribute",
+          "span_id": "tool",
+          "detail": "sensitive_value:result_code"
+        }
+      ],
+      "questions": [
+        {
+          "question": "context_sources",
+          "answered": true,
+          "evidence": "handbook:refund-policy"
+        },
+        {
+          "question": "tool_path",
+          "answered": true,
+          "evidence": "record_ticket_followup"
+        },
+        {
+          "question": "first_failure",
+          "answered": true,
+          "evidence": "no error span"
+        },
+        {
+          "question": "retry_evidence",
+          "answered": true,
+          "evidence": "not applicable"
+        },
+        {
+          "question": "version_tuple",
+          "answered": true,
+          "evidence": "complete"
+        }
+      ],
+      "passed": true
+    }
+  ]
+}
