@@ -452,6 +452,13 @@ def run_memory_review(path: Path) -> MemoryReviewResult:
         counts[result.decision.action] = counts.get(result.decision.action, 0) + 1
 
     final_records = store.records
+    delete_result = next(
+        result for result in results if result.case_id == "forget-preference"
+    )
+    deleted_ids = set(delete_result.decision.affected_ids)
+    deleted_records = [
+        record for record in final_records if record.memory_id in deleted_ids
+    ]
     gate_checks = {
         "expected_decisions_matched": all(result.matched for result in results),
         "required_fields_present": all(
@@ -471,10 +478,13 @@ def run_memory_review(path: Path) -> MemoryReviewResult:
             if result.case_id == "cross-tenant-recall"
         ).decision.recalled_ids,
         "one_active_version_per_key": _one_active_version_per_key(final_records),
-        "deleted_content_purged": all(
-            record.statement is None
-            for record in final_records
-            if record.status == "deleted"
+        "deleted_content_purged": bool(deleted_ids)
+        and len(deleted_records) == len(deleted_ids)
+        and all(
+            record.status == "deleted"
+            and record.statement is None
+            and record.content_hash == "purged"
+            for record in deleted_records
         ),
     }
     return MemoryReviewResult(

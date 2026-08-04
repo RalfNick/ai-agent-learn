@@ -210,6 +210,25 @@ class MemoryReviewTests(unittest.TestCase):
         self.assertNotIn("demo-secret-token", combined)
         self.assertNotIn("Put the conclusion before the evidence.", combined)
 
+    def test_delete_gate_fails_when_selector_does_not_purge_any_record(self) -> None:
+        cases = [
+            json.loads(line)
+            for line in CASES_PATH.read_text(encoding="utf-8").splitlines()
+            if line.strip()
+        ]
+        delete_case = next(item for item in cases if item["id"] == "forget-preference")
+        delete_case["key"] = "unknown_preference"
+        with tempfile.TemporaryDirectory() as temporary:
+            path = Path(temporary) / "wrong-delete.jsonl"
+            path.write_text(
+                "\n".join(json.dumps(item) for item in cases) + "\n",
+                encoding="utf-8",
+            )
+            result = run_memory_review(path)
+
+        self.assertFalse(result.gate_passed)
+        self.assertFalse(result.gate_checks["deleted_content_purged"])
+
     def test_memory_review_cli_exits_zero_and_prints_report_paths(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             completed = subprocess.run(
