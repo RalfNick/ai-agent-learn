@@ -1,7 +1,7 @@
 [project]
 name = "agent-reliability-lab"
-version = "0.7.0"
-description = "Deterministic contracts, evals, runtime boundaries, recovery, and vendor-neutral Agent Trace reviews for the AI Agent engineering series."
+version = "0.8.0"
+description = "Deterministic contracts, evals, runtime boundaries, recovery, tracing, and memory policy reviews for the AI Agent engineering series."
 requires-python = ">=3.10"
 
 [tool.unittest]

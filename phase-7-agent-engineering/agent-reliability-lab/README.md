@@ -4,7 +4,7 @@ This lab turns the Phase 6 enterprise knowledge-base Agent into a brownfield
 reliability project. The goal is not to produce the most autonomous demo. The
 goal is to make every change measurable against a stable task contract.
 
-Version `0.7.0` contains no live model calls and requires no API key. It preserves
+Version `0.8.0` contains no live model calls and requires no API key. It preserves
 the contract and eval checkpoints, then adds a Context Packet assembler that
 compares a naive prefix dump with explicit source, freshness, clearance,
 relevance, missing-evidence, and budget policies. The Harness checkpoint then
@@ -33,6 +33,14 @@ resume, missing versions, an orphan span, an unclosed span, and a simulated
 secret leak. The accepted JSONL output stores source IDs, hashes, lengths,
 status, usage, and version evidence instead of raw prompts, email addresses,
 ticket bodies, or tokens.
+
+The Memory Engineering checkpoint adds a policy boundary around information
+that may outlive one run. Eight fixtures separate current context, resumable
+run state, session history, long-term memory, and the business source of truth.
+The store accepts explicit preferences and reviewer-verified lessons, routes
+ticket facts back to their owning system, rejects inference and sensitive
+values, isolates recall by namespace, supersedes corrections, and purges
+statements on deletion while retaining content-free audit evidence.
 
 ## Why start with a non-Agent baseline
 
@@ -64,6 +72,7 @@ python run_lab.py harness-eval
 python run_lab.py tool-eval
 python run_lab.py fault-test
 python run_lab.py trace-review
+python run_lab.py memory-review
 python -m unittest discover -s tests -v
 ```
 
@@ -79,6 +88,7 @@ python run_lab.py harness-eval --max-steps 1 --output reports/harness-step-one
 python run_lab.py tool-eval --output reports/tool-local
 python run_lab.py fault-test --output reports/durable-local
 python run_lab.py trace-review --output reports/trace-local
+python run_lab.py memory-review --output reports/memory-local
 ```
 
 The invalid card, both threshold runs, and the flaky candidate are expected to exit non-zero. A zero
@@ -104,6 +114,11 @@ matches every fixture's declared finding, removes the simulated sensitive value
 before export, and can answer more of this lab's five debugging questions than
 the deliberately sparse one-line-log control. It is not a claim that structured
 tracing improves every system by a universal percentage.
+
+The memory review is expected to pass when all eight declared decisions match,
+tenant isolation happens before relevance, only one version per key remains
+active, and deleted statements are absent from every exported report. It does
+not test semantic retrieval quality or claim that memory improves a live model.
 
 The commands write:
 
@@ -136,6 +151,11 @@ reports/
     trace-review.md
     trace-failures.md
     traces.jsonl
+    memory-review.json
+    memory-review.md
+    memory-decisions.jsonl
+    memory-store.jsonl
+    memory-recall.md
 ```
 
 The command exits with status `1` when any task fails. That makes the lab
@@ -156,6 +176,7 @@ Start with these files:
 | `datasets/tool-cases.jsonl` | Which schema, permission, approval, idempotency, timeout, and pagination cases define each tool boundary? |
 | `datasets/durable-cases.jsonl` | Which restart, retry, result-unknown, cancellation, and lease cases define recovery behavior? |
 | `datasets/trace-cases.jsonl` | Which tree, context, retry, version, terminal-state, and privacy cases define trace review behavior? |
+| `datasets/memory-cases.jsonl` | Which write, source-of-truth, inference, isolation, conflict, expiry, and deletion cases define Memory behavior? |
 | `fixtures/knowledge/product-handbook.md` | What information is the system allowed to use? |
 | `fixtures/context/context-sources.jsonl` | Which trusted, expired, restricted, noisy, or untrusted sources can enter a packet? |
 | `agent_lab/baseline.py` | What can a deterministic control group already accomplish? |
@@ -165,6 +186,7 @@ Start with these files:
 | `agent_lab/tools.py` | How are model-facing schemas separated from runtime permission, approval, idempotency, retry, and output contracts? |
 | `agent_lab/durable.py` | How are checkpoints, stable actions, retry policy, reconciliation, cancellation, leases, and fencing implemented? |
 | `agent_lab/tracing.py` | How are spans built, sanitized, linked, checked, and used to answer five debugging questions? |
+| `agent_lab/memory.py` | How are candidates evaluated, namespaced, recalled, superseded, expired, and deleted? |
 | `reports/baseline.json` | Which cases passed, failed, or abstained? |
 | `reports/trials.jsonl` | What happened in every repeated attempt? |
 | `reports/context-packets.jsonl` | What each strategy selected, excluded, marked missing, and spent? |
@@ -173,6 +195,8 @@ Start with these files:
 | `reports/durable-runs.jsonl` | Which persisted state and event sequence each injected fault produced? |
 | `reports/traces.jsonl` | Which sanitized spans reconstruct each fixture's causal execution path? |
 | `reports/trace-review.md` | Which debugging questions are answerable and whether the trace review gate passed? |
+| `reports/memory-review.md` | Which Memory decisions matched and whether the lifecycle review gate passed? |
+| `reports/memory-recall.md` | Did namespace-first recall prevent the cross-tenant fixture from leaking a preference? |
 
 ## Planned checkpoints
 
@@ -187,14 +211,14 @@ Tags are created only when the matching article and code are released.
 | `ae-05-tools` | Tool Engineering | tool registry, dry-run, structured errors | `python run_lab.py tool-eval` |
 | `ae-06-loop` | Durable Loop | checkpoints, retries, resume, cancellation | `python run_lab.py fault-test` |
 | `ae-07-trace` | Agent Tracing | vendor-neutral spans and redaction | `python run_lab.py trace-review` |
-| `ae-08-memory` | Memory Engineering | provenance, TTL, conflict and delete rules | `python run_lab.py memory-eval` |
+| `ae-08-memory` | Memory Engineering | provenance, TTL, conflict and delete rules | `python run_lab.py memory-review` |
 | `ae-09-graph` | Graph Engineering | dependency graph and independent verifier | `python run_lab.py graph-eval` |
 | `ae-10-security` | Human Control | approval policy, sandbox and audit | `python run_lab.py policy-test` |
 | `ae-11-ops` | Production Ops | SLO, budgets, degradation and canary | `python run_lab.py ops-game-day` |
 | `ae-12-improvement` | Continuous Improvement | failure-to-eval-to-release loop | `python run_lab.py release-gate` |
 
-Commands after `ae-07-trace` are interface targets for future checkpoints, not
-features already implemented in `0.7.0`.
+Commands after `ae-08-memory` are interface targets for future checkpoints, not
+features already implemented in `0.8.0`.
 
 ## Design rules
 
@@ -243,3 +267,13 @@ general benchmark. The lab records observable inputs, source IDs, calls,
 statuses, errors, and versions; it does not expose hidden model reasoning. Use
 OpenTelemetry or a dedicated observability backend when traces must cross
 processes, services, environments, or retention boundaries.
+
+## Memory Engineering experiment limits
+
+The memory review is a deterministic policy exercise over an in-memory store.
+Token overlap is used only to make recall order inspectable; it is not a stand-in
+for a production semantic index. The lab does not test database encryption,
+retention jobs, concurrent writers, regional residency, provider-side session
+storage, or legal erasure guarantees. A passing gate proves the eight fixtures
+obey the declared policy, not that the model learned, changed its weights, or
+will answer better because persistent state exists.

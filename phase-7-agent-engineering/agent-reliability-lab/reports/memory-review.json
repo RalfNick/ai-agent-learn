@@ -1,0 +1,266 @@
+{
+  "version": "0.8.0",
+  "comparison_scope": "deterministic memory-policy fixtures; not a model-quality or retrieval benchmark",
+  "total_cases": 8,
+  "matched_cases": 8,
+  "decision_counts": {
+    "store": 2,
+    "route_to_source": 1,
+    "reject": 3,
+    "supersede": 1,
+    "delete": 1
+  },
+  "gate_checks": {
+    "expected_decisions_matched": true,
+    "required_fields_present": true,
+    "sensitive_values_absent": true,
+    "namespace_isolation_enforced": true,
+    "one_active_version_per_key": true,
+    "deleted_content_purged": true
+  },
+  "gate_passed": true,
+  "cases": [
+    {
+      "case_id": "explicit-preference",
+      "operation": "candidate",
+      "expected_action": "store",
+      "decision": {
+        "case_id": "explicit-preference",
+        "action": "store",
+        "reason": "policy_accepted",
+        "record": {
+          "memory_id": "mem_ac3d1a3fb0bf26b5",
+          "namespace": [
+            "tenant_acme",
+            "user_u17"
+          ],
+          "kind": "preference",
+          "key": "response_order",
+          "statement": null,
+          "provenance": {
+            "source": "explicit_user",
+            "source_run_id": "run_104",
+            "source_ref": "message_7"
+          },
+          "valid_until": null,
+          "status": "active",
+          "version": 1,
+          "content_hash": "sha256:dbae96c3514d7bbdbb44b9af9a335eeaeaecd4d664de1e52254a7abb5a00a8e8",
+          "created_at": "2026-08-04",
+          "created_by_case": "explicit-preference"
+        },
+        "affected_ids": [],
+        "recalled_ids": []
+      },
+      "matched": true
+    },
+    {
+      "case_id": "business-fact",
+      "operation": "candidate",
+      "expected_action": "route_to_source",
+      "decision": {
+        "case_id": "business-fact",
+        "action": "route_to_source",
+        "reason": "business_source_of_truth",
+        "record": null,
+        "affected_ids": [],
+        "recalled_ids": []
+      },
+      "matched": true
+    },
+    {
+      "case_id": "inferred-preference",
+      "operation": "candidate",
+      "expected_action": "reject",
+      "decision": {
+        "case_id": "inferred-preference",
+        "action": "reject",
+        "reason": "inference_requires_confirmation",
+        "record": null,
+        "affected_ids": [],
+        "recalled_ids": []
+      },
+      "matched": true
+    },
+    {
+      "case_id": "verified-workflow-lesson",
+      "operation": "candidate",
+      "expected_action": "store",
+      "decision": {
+        "case_id": "verified-workflow-lesson",
+        "action": "store",
+        "reason": "policy_accepted",
+        "record": {
+          "memory_id": "mem_caa716974fa79563",
+          "namespace": [
+            "tenant_acme",
+            "agent_support"
+          ],
+          "kind": "procedure",
+          "key": "refund_receipt_check",
+          "statement": "Check the payment receipt before confirming a refund.",
+          "provenance": {
+            "source": "verified_reviewer",
+            "source_run_id": "run_106",
+            "source_ref": "review_22"
+          },
+          "valid_until": "2026-12-31",
+          "status": "active",
+          "version": 1,
+          "content_hash": "sha256:7dd83b5f2e72c3241bd78b44c94a018ae056034fa8a00b9945fe9fea504b3dcb",
+          "created_at": "2026-08-04",
+          "created_by_case": "verified-workflow-lesson"
+        },
+        "affected_ids": [],
+        "recalled_ids": []
+      },
+      "matched": true
+    },
+    {
+      "case_id": "sensitive-value",
+      "operation": "candidate",
+      "expected_action": "reject",
+      "decision": {
+        "case_id": "sensitive-value",
+        "action": "reject",
+        "reason": "sensitive_or_prohibited",
+        "record": null,
+        "affected_ids": [],
+        "recalled_ids": []
+      },
+      "matched": true
+    },
+    {
+      "case_id": "preference-correction",
+      "operation": "candidate",
+      "expected_action": "supersede",
+      "decision": {
+        "case_id": "preference-correction",
+        "action": "supersede",
+        "reason": "newer_equal_or_higher_authority",
+        "record": {
+          "memory_id": "mem_a1c9b54a1ea58def",
+          "namespace": [
+            "tenant_acme",
+            "user_u17"
+          ],
+          "kind": "preference",
+          "key": "response_order",
+          "statement": null,
+          "provenance": {
+            "source": "explicit_user",
+            "source_run_id": "run_108",
+            "source_ref": "message_11"
+          },
+          "valid_until": null,
+          "status": "active",
+          "version": 2,
+          "content_hash": "sha256:be8e329142835d3df1724abf326d3b17ee54d610f661acb9e7112537984db890",
+          "created_at": "2026-08-04",
+          "created_by_case": "preference-correction"
+        },
+        "affected_ids": [
+          "mem_ac3d1a3fb0bf26b5"
+        ],
+        "recalled_ids": []
+      },
+      "matched": true
+    },
+    {
+      "case_id": "cross-tenant-recall",
+      "operation": "recall",
+      "expected_action": "reject",
+      "decision": {
+        "case_id": "cross-tenant-recall",
+        "action": "reject",
+        "reason": "namespace_first_no_match",
+        "record": null,
+        "affected_ids": [],
+        "recalled_ids": []
+      },
+      "matched": true
+    },
+    {
+      "case_id": "forget-preference",
+      "operation": "delete",
+      "expected_action": "delete",
+      "decision": {
+        "case_id": "forget-preference",
+        "action": "delete",
+        "reason": "content_purged_tombstone_kept",
+        "record": null,
+        "affected_ids": [
+          "mem_ac3d1a3fb0bf26b5",
+          "mem_a1c9b54a1ea58def"
+        ],
+        "recalled_ids": []
+      },
+      "matched": true
+    }
+  ],
+  "final_store": [
+    {
+      "memory_id": "mem_ac3d1a3fb0bf26b5",
+      "namespace": [
+        "tenant_acme",
+        "user_u17"
+      ],
+      "kind": "preference",
+      "key": "response_order",
+      "statement": null,
+      "provenance": {
+        "source": "deletion_request",
+        "source_run_id": "forget-preference",
+        "source_ref": "content_purged"
+      },
+      "valid_until": null,
+      "status": "deleted",
+      "version": 1,
+      "content_hash": "purged",
+      "created_at": "2026-08-04",
+      "created_by_case": "explicit-preference"
+    },
+    {
+      "memory_id": "mem_caa716974fa79563",
+      "namespace": [
+        "tenant_acme",
+        "agent_support"
+      ],
+      "kind": "procedure",
+      "key": "refund_receipt_check",
+      "statement": "Check the payment receipt before confirming a refund.",
+      "provenance": {
+        "source": "verified_reviewer",
+        "source_run_id": "run_106",
+        "source_ref": "review_22"
+      },
+      "valid_until": "2026-12-31",
+      "status": "active",
+      "version": 1,
+      "content_hash": "sha256:7dd83b5f2e72c3241bd78b44c94a018ae056034fa8a00b9945fe9fea504b3dcb",
+      "created_at": "2026-08-04",
+      "created_by_case": "verified-workflow-lesson"
+    },
+    {
+      "memory_id": "mem_a1c9b54a1ea58def",
+      "namespace": [
+        "tenant_acme",
+        "user_u17"
+      ],
+      "kind": "preference",
+      "key": "response_order",
+      "statement": null,
+      "provenance": {
+        "source": "deletion_request",
+        "source_run_id": "forget-preference",
+        "source_ref": "content_purged"
+      },
+      "valid_until": null,
+      "status": "deleted",
+      "version": 2,
+      "content_hash": "purged",
+      "created_at": "2026-08-04",
+      "created_by_case": "preference-correction"
+    }
+  ]
+}
