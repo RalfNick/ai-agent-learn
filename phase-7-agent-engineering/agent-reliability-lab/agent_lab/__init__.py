@@ -8,6 +8,7 @@ from .evals import EvalResult, run_eval
 from .graph import GraphEvalResult, run_graph_eval
 from .harness import HarnessEvalResult, run_harness_eval
 from .memory import MemoryReviewResult, run_memory_review
+from .security import SecurityEvalResult, run_security_eval
 from .tools import ToolEvalResult, run_tool_eval
 from .tracing import TraceReviewResult, run_trace_review
 
@@ -20,6 +21,7 @@ __all__ = [
     "GraphEvalResult",
     "HarnessEvalResult",
     "MemoryReviewResult",
+    "SecurityEvalResult",
     "ToolEvalResult",
     "TraceReviewResult",
     "load_contract",
@@ -30,6 +32,7 @@ __all__ = [
     "run_graph_eval",
     "run_harness_eval",
     "run_memory_review",
+    "run_security_eval",
     "run_tool_eval",
     "run_trace_review",
 ]

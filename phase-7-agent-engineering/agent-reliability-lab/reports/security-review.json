@@ -1,0 +1,585 @@
+{
+  "version": "human-control-v1",
+  "comparison_scope": "deterministic human-control fixtures; not a penetration test, IAM audit, or model-safety benchmark",
+  "total_cases": 8,
+  "matched_cases": 8,
+  "status_counts": {
+    "completed": 4,
+    "rejected": 1,
+    "expired": 1,
+    "blocked": 1,
+    "denied": 1
+  },
+  "gate_checks": {
+    "expected_results": true,
+    "read_only_auto": true,
+    "reversible_has_rollback": true,
+    "approval_precedes_effect": true,
+    "rejection_expiry_and_drift_have_no_effect": true,
+    "critical_role_enforced": true,
+    "duplicate_resume_is_idempotent": true,
+    "audit_is_redacted": true
+  },
+  "gate_passed": true,
+  "cases": [
+    {
+      "case_id": "read-only-auto",
+      "expected_status": "completed",
+      "expected_reason": "auto_allowed",
+      "expected_effects": 0,
+      "status": "completed",
+      "reason": "auto_allowed",
+      "risk": "read",
+      "mutation_count": 0,
+      "state": {
+        "action_id": "act-read-1",
+        "tool": "lookup_ticket",
+        "resource": "ticket:T-102",
+        "environment": "support",
+        "risk": "read",
+        "arguments_hash": "a3f00d028ebdf38ab6ddccd254de372613c1c070d1cdd392ef04bd654471a196",
+        "status": "completed",
+        "reason": "auto_allowed",
+        "approval": null,
+        "receipt": {
+          "receipt_id": "rcpt-8013d8f3c41e",
+          "replayed": false,
+          "mutating": false
+        },
+        "rollback": null,
+        "events": [
+          {
+            "sequence": 1,
+            "type": "action_classified",
+            "action_id": "act-read-1",
+            "tool": "lookup_ticket",
+            "resource": "ticket:T-102",
+            "environment": "support",
+            "risk": "read",
+            "arguments_hash": "a3f00d028ebdf38ab6ddccd254de372613c1c070d1cdd392ef04bd654471a196",
+            "argument_keys": [
+              "ticket_id"
+            ]
+          },
+          {
+            "sequence": 2,
+            "type": "read_executed",
+            "receipt_id": "rcpt-8013d8f3c41e",
+            "mutating": false
+          }
+        ]
+      },
+      "matched": true
+    },
+    {
+      "case_id": "reversible-policy-allowed",
+      "expected_status": "completed",
+      "expected_reason": "policy_allowed",
+      "expected_effects": 1,
+      "status": "completed",
+      "reason": "policy_allowed",
+      "risk": "reversible",
+      "mutation_count": 1,
+      "state": {
+        "action_id": "act-label-1",
+        "tool": "update_ticket_label",
+        "resource": "ticket:T-102",
+        "environment": "support",
+        "risk": "reversible",
+        "arguments_hash": "a4b12043fc04a2256ab03420516ee4e5cb86a4b81c4b11c0b07d4c6487a580dd",
+        "status": "completed",
+        "reason": "policy_allowed",
+        "approval": null,
+        "receipt": {
+          "receipt_id": "rcpt-2b14e4c7cf2b",
+          "replayed": false,
+          "mutating": true
+        },
+        "rollback": {
+          "tool": "restore_ticket_labels",
+          "arguments_hash": "a3f00d028ebdf38ab6ddccd254de372613c1c070d1cdd392ef04bd654471a196"
+        },
+        "events": [
+          {
+            "sequence": 1,
+            "type": "action_classified",
+            "action_id": "act-label-1",
+            "tool": "update_ticket_label",
+            "resource": "ticket:T-102",
+            "environment": "support",
+            "risk": "reversible",
+            "arguments_hash": "a4b12043fc04a2256ab03420516ee4e5cb86a4b81c4b11c0b07d4c6487a580dd",
+            "argument_keys": [
+              "label",
+              "ticket_id"
+            ]
+          },
+          {
+            "sequence": 2,
+            "type": "effect_executed",
+            "receipt_id": "rcpt-2b14e4c7cf2b",
+            "mutating": true
+          }
+        ]
+      },
+      "matched": true
+    },
+    {
+      "case_id": "external-approved-once",
+      "expected_status": "completed",
+      "expected_reason": "approved",
+      "expected_effects": 1,
+      "status": "completed",
+      "reason": "approved",
+      "risk": "external",
+      "mutation_count": 1,
+      "state": {
+        "action_id": "act-send-1",
+        "tool": "send_customer_message",
+        "resource": "ticket:T-102",
+        "environment": "support",
+        "risk": "external",
+        "arguments_hash": "06f7f09e29fcd823bfb30e9cc19a439fed2b4bfd7f2ae797d2a583a1f893850f",
+        "status": "completed",
+        "reason": "approved",
+        "approval": {
+          "approval_id": "approval-22363f9772bb",
+          "action_id": "act-send-1",
+          "tool": "send_customer_message",
+          "resource": "ticket:T-102",
+          "environment": "support",
+          "risk": "external",
+          "requester": "agent",
+          "arguments_hash": "06f7f09e29fcd823bfb30e9cc19a439fed2b4bfd7f2ae797d2a583a1f893850f",
+          "action_fingerprint": "22363f9772bb86d43a8f8524011f985dbbf9b77a048c7c6e8c841ec7841e0eb9",
+          "requested_at": 100,
+          "expires_at": 400,
+          "required_role": "reviewer"
+        },
+        "receipt": {
+          "receipt_id": "rcpt-22363f9772bb",
+          "replayed": false,
+          "mutating": true
+        },
+        "rollback": null,
+        "events": [
+          {
+            "sequence": 1,
+            "type": "action_classified",
+            "action_id": "act-send-1",
+            "tool": "send_customer_message",
+            "resource": "ticket:T-102",
+            "environment": "support",
+            "risk": "external",
+            "arguments_hash": "06f7f09e29fcd823bfb30e9cc19a439fed2b4bfd7f2ae797d2a583a1f893850f",
+            "argument_keys": [
+              "message",
+              "ticket_id"
+            ]
+          },
+          {
+            "sequence": 2,
+            "type": "approval_requested",
+            "approval_id": "approval-22363f9772bb",
+            "expires_at": 400,
+            "required_role": "reviewer"
+          },
+          {
+            "sequence": 3,
+            "type": "approval_decided",
+            "decision": "approve",
+            "reviewer_id": "user-7",
+            "reviewer_role": "reviewer",
+            "decided_at": 120
+          },
+          {
+            "sequence": 4,
+            "type": "effect_executed",
+            "receipt_id": "rcpt-22363f9772bb",
+            "mutating": true
+          }
+        ]
+      },
+      "matched": true
+    },
+    {
+      "case_id": "external-rejected",
+      "expected_status": "rejected",
+      "expected_reason": "rejected_by_reviewer",
+      "expected_effects": 0,
+      "status": "rejected",
+      "reason": "rejected_by_reviewer",
+      "risk": "external",
+      "mutation_count": 0,
+      "state": {
+        "action_id": "act-send-2",
+        "tool": "send_customer_message",
+        "resource": "ticket:T-103",
+        "environment": "support",
+        "risk": "external",
+        "arguments_hash": "5de24c73936d3440c1b71f699b82bf5f3364afbdb722374615b5c842603efcaa",
+        "status": "rejected",
+        "reason": "rejected_by_reviewer",
+        "approval": {
+          "approval_id": "approval-971693dfb8e4",
+          "action_id": "act-send-2",
+          "tool": "send_customer_message",
+          "resource": "ticket:T-103",
+          "environment": "support",
+          "risk": "external",
+          "requester": "agent",
+          "arguments_hash": "5de24c73936d3440c1b71f699b82bf5f3364afbdb722374615b5c842603efcaa",
+          "action_fingerprint": "971693dfb8e4142e439a361cd9a6d15678b8b41b8c34f156bc1e14897d9bd8b5",
+          "requested_at": 100,
+          "expires_at": 400,
+          "required_role": "reviewer"
+        },
+        "receipt": null,
+        "rollback": null,
+        "events": [
+          {
+            "sequence": 1,
+            "type": "action_classified",
+            "action_id": "act-send-2",
+            "tool": "send_customer_message",
+            "resource": "ticket:T-103",
+            "environment": "support",
+            "risk": "external",
+            "arguments_hash": "5de24c73936d3440c1b71f699b82bf5f3364afbdb722374615b5c842603efcaa",
+            "argument_keys": [
+              "message",
+              "ticket_id"
+            ]
+          },
+          {
+            "sequence": 2,
+            "type": "approval_requested",
+            "approval_id": "approval-971693dfb8e4",
+            "expires_at": 400,
+            "required_role": "reviewer"
+          },
+          {
+            "sequence": 3,
+            "type": "approval_decided",
+            "decision": "reject",
+            "reviewer_id": "user-8",
+            "reviewer_role": "reviewer",
+            "decided_at": 115
+          },
+          {
+            "sequence": 4,
+            "type": "execution_stopped",
+            "status": "rejected",
+            "reason": "rejected_by_reviewer"
+          }
+        ]
+      },
+      "matched": true
+    },
+    {
+      "case_id": "approval-expired",
+      "expected_status": "expired",
+      "expected_reason": "approval_expired",
+      "expected_effects": 0,
+      "status": "expired",
+      "reason": "approval_expired",
+      "risk": "external",
+      "mutation_count": 0,
+      "state": {
+        "action_id": "act-send-3",
+        "tool": "send_customer_message",
+        "resource": "ticket:T-104",
+        "environment": "support",
+        "risk": "external",
+        "arguments_hash": "87b9881e97dfc58c6a8f2b67598605656b97263371410e9478ed20491ba8b022",
+        "status": "expired",
+        "reason": "approval_expired",
+        "approval": {
+          "approval_id": "approval-fb68bcbf4a18",
+          "action_id": "act-send-3",
+          "tool": "send_customer_message",
+          "resource": "ticket:T-104",
+          "environment": "support",
+          "risk": "external",
+          "requester": "agent",
+          "arguments_hash": "87b9881e97dfc58c6a8f2b67598605656b97263371410e9478ed20491ba8b022",
+          "action_fingerprint": "fb68bcbf4a18ec3886d2278277a319162ba3b67f7a86bc0182ba96443b0924eb",
+          "requested_at": 100,
+          "expires_at": 120,
+          "required_role": "reviewer"
+        },
+        "receipt": null,
+        "rollback": null,
+        "events": [
+          {
+            "sequence": 1,
+            "type": "action_classified",
+            "action_id": "act-send-3",
+            "tool": "send_customer_message",
+            "resource": "ticket:T-104",
+            "environment": "support",
+            "risk": "external",
+            "arguments_hash": "87b9881e97dfc58c6a8f2b67598605656b97263371410e9478ed20491ba8b022",
+            "argument_keys": [
+              "message",
+              "ticket_id"
+            ]
+          },
+          {
+            "sequence": 2,
+            "type": "approval_requested",
+            "approval_id": "approval-fb68bcbf4a18",
+            "expires_at": 120,
+            "required_role": "reviewer"
+          },
+          {
+            "sequence": 3,
+            "type": "approval_decided",
+            "decision": "approve",
+            "reviewer_id": "user-9",
+            "reviewer_role": "reviewer",
+            "decided_at": 121
+          },
+          {
+            "sequence": 4,
+            "type": "execution_stopped",
+            "status": "expired",
+            "reason": "approval_expired"
+          }
+        ]
+      },
+      "matched": true
+    },
+    {
+      "case_id": "arguments-changed-after-approval",
+      "expected_status": "blocked",
+      "expected_reason": "action_changed",
+      "expected_effects": 0,
+      "status": "blocked",
+      "reason": "action_changed",
+      "risk": "external",
+      "mutation_count": 0,
+      "state": {
+        "action_id": "act-send-4",
+        "tool": "send_customer_message",
+        "resource": "ticket:T-105",
+        "environment": "support",
+        "risk": "external",
+        "arguments_hash": "cbbddaa6ea1d5fbe3a505c1905cb0f587b05efe2ab2bd1e63c0680338339a2af",
+        "status": "blocked",
+        "reason": "action_changed",
+        "approval": {
+          "approval_id": "approval-d63f92ec897a",
+          "action_id": "act-send-4",
+          "tool": "send_customer_message",
+          "resource": "ticket:T-105",
+          "environment": "support",
+          "risk": "external",
+          "requester": "agent",
+          "arguments_hash": "cbbddaa6ea1d5fbe3a505c1905cb0f587b05efe2ab2bd1e63c0680338339a2af",
+          "action_fingerprint": "d63f92ec897aadcd3c8c3c78b05c2cbf4f904ffffb1321d5ed02d42d9a6382a1",
+          "requested_at": 100,
+          "expires_at": 400,
+          "required_role": "reviewer"
+        },
+        "receipt": null,
+        "rollback": null,
+        "events": [
+          {
+            "sequence": 1,
+            "type": "action_classified",
+            "action_id": "act-send-4",
+            "tool": "send_customer_message",
+            "resource": "ticket:T-105",
+            "environment": "support",
+            "risk": "external",
+            "arguments_hash": "cbbddaa6ea1d5fbe3a505c1905cb0f587b05efe2ab2bd1e63c0680338339a2af",
+            "argument_keys": [
+              "message",
+              "ticket_id"
+            ]
+          },
+          {
+            "sequence": 2,
+            "type": "approval_requested",
+            "approval_id": "approval-d63f92ec897a",
+            "expires_at": 400,
+            "required_role": "reviewer"
+          },
+          {
+            "sequence": 3,
+            "type": "approval_decided",
+            "decision": "approve",
+            "reviewer_id": "user-10",
+            "reviewer_role": "reviewer",
+            "decided_at": 120
+          },
+          {
+            "sequence": 4,
+            "type": "execution_stopped",
+            "status": "blocked",
+            "reason": "action_changed"
+          }
+        ]
+      },
+      "matched": true
+    },
+    {
+      "case_id": "critical-wrong-reviewer",
+      "expected_status": "denied",
+      "expected_reason": "reviewer_not_authorized",
+      "expected_effects": 0,
+      "status": "denied",
+      "reason": "reviewer_not_authorized",
+      "risk": "critical",
+      "mutation_count": 0,
+      "state": {
+        "action_id": "act-deploy-1",
+        "tool": "deploy_production",
+        "resource": "service:billing-api",
+        "environment": "production",
+        "risk": "critical",
+        "arguments_hash": "bdda54d70b30a259f55ec22aeda38a1b0dbc71f719b899474e67ac4904198c3a",
+        "status": "denied",
+        "reason": "reviewer_not_authorized",
+        "approval": {
+          "approval_id": "approval-8c15d50efce1",
+          "action_id": "act-deploy-1",
+          "tool": "deploy_production",
+          "resource": "service:billing-api",
+          "environment": "production",
+          "risk": "critical",
+          "requester": "agent",
+          "arguments_hash": "bdda54d70b30a259f55ec22aeda38a1b0dbc71f719b899474e67ac4904198c3a",
+          "action_fingerprint": "8c15d50efce1eb010a8bcce1b58bd60d4122d03c7250cc099520bbbb00840bec",
+          "requested_at": 100,
+          "expires_at": 400,
+          "required_role": "release_manager"
+        },
+        "receipt": null,
+        "rollback": null,
+        "events": [
+          {
+            "sequence": 1,
+            "type": "action_classified",
+            "action_id": "act-deploy-1",
+            "tool": "deploy_production",
+            "resource": "service:billing-api",
+            "environment": "production",
+            "risk": "critical",
+            "arguments_hash": "bdda54d70b30a259f55ec22aeda38a1b0dbc71f719b899474e67ac4904198c3a",
+            "argument_keys": [
+              "service",
+              "version"
+            ]
+          },
+          {
+            "sequence": 2,
+            "type": "approval_requested",
+            "approval_id": "approval-8c15d50efce1",
+            "expires_at": 400,
+            "required_role": "release_manager"
+          },
+          {
+            "sequence": 3,
+            "type": "approval_decided",
+            "decision": "approve",
+            "reviewer_id": "user-11",
+            "reviewer_role": "developer",
+            "decided_at": 110
+          },
+          {
+            "sequence": 4,
+            "type": "execution_stopped",
+            "status": "denied",
+            "reason": "reviewer_not_authorized"
+          }
+        ]
+      },
+      "matched": true
+    },
+    {
+      "case_id": "duplicate-approved-resume",
+      "expected_status": "completed",
+      "expected_reason": "approved",
+      "expected_effects": 1,
+      "status": "completed",
+      "reason": "approved",
+      "risk": "external",
+      "mutation_count": 1,
+      "state": {
+        "action_id": "act-send-5",
+        "tool": "send_customer_message",
+        "resource": "ticket:T-106",
+        "environment": "support",
+        "risk": "external",
+        "arguments_hash": "ff7f6df860ca1772185dc36ad7de6156d9fc9af037c7bdb27a15bf3ad4c13658",
+        "status": "completed",
+        "reason": "approved",
+        "approval": {
+          "approval_id": "approval-2a41ac1a7685",
+          "action_id": "act-send-5",
+          "tool": "send_customer_message",
+          "resource": "ticket:T-106",
+          "environment": "support",
+          "risk": "external",
+          "requester": "agent",
+          "arguments_hash": "ff7f6df860ca1772185dc36ad7de6156d9fc9af037c7bdb27a15bf3ad4c13658",
+          "action_fingerprint": "2a41ac1a7685c85e1d223ff7a13d7b1f15f5d0032996e9bfec0251ed349d84f5",
+          "requested_at": 100,
+          "expires_at": 400,
+          "required_role": "reviewer"
+        },
+        "receipt": {
+          "receipt_id": "rcpt-2a41ac1a7685",
+          "replayed": true,
+          "mutating": true
+        },
+        "rollback": null,
+        "events": [
+          {
+            "sequence": 1,
+            "type": "action_classified",
+            "action_id": "act-send-5",
+            "tool": "send_customer_message",
+            "resource": "ticket:T-106",
+            "environment": "support",
+            "risk": "external",
+            "arguments_hash": "ff7f6df860ca1772185dc36ad7de6156d9fc9af037c7bdb27a15bf3ad4c13658",
+            "argument_keys": [
+              "message",
+              "ticket_id"
+            ]
+          },
+          {
+            "sequence": 2,
+            "type": "approval_requested",
+            "approval_id": "approval-2a41ac1a7685",
+            "expires_at": 400,
+            "required_role": "reviewer"
+          },
+          {
+            "sequence": 3,
+            "type": "approval_decided",
+            "decision": "approve",
+            "reviewer_id": "user-12",
+            "reviewer_role": "reviewer",
+            "decided_at": 120
+          },
+          {
+            "sequence": 4,
+            "type": "effect_executed",
+            "receipt_id": "rcpt-2a41ac1a7685",
+            "mutating": true
+          },
+          {
+            "sequence": 5,
+            "type": "receipt_replayed",
+            "receipt_id": "rcpt-2a41ac1a7685"
+          }
+        ]
+      },
+      "matched": true
+    }
+  ]
+}

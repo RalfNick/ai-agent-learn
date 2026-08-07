@@ -4,7 +4,7 @@ This lab turns the Phase 6 enterprise knowledge-base Agent into a brownfield
 reliability project. The goal is not to produce the most autonomous demo. The
 goal is to make every change measurable against a stable task contract.
 
-Version `0.9.0` contains no live model calls and requires no API key. It preserves
+Version `1.0.0` contains no live model calls and requires no API key. It preserves
 the contract and eval checkpoints, then adds a Context Packet assembler that
 compares a naive prefix dump with explicit source, freshness, clearance,
 relevance, missing-evidence, and budget policies. The Harness checkpoint then
@@ -49,6 +49,14 @@ when an independent verifier fails, and stops before overspending its declared
 budget. The experiment evaluates control behavior only; it does not claim that
 a graph improves live-model quality, latency, or cost.
 
+The Human Control checkpoint separates model proposals from deterministic tool
+policy, approval state, credential-bearing execution, and audit evidence. Eight
+fixtures cover read-only and bounded reversible actions, approved and rejected
+external sends, approval expiry, changed arguments, an unauthorized production
+reviewer, and duplicate resume. Approval envelopes bind the exact normalized
+action, and exported reports retain hashes and receipts instead of message bodies
+or credentials.
+
 ## Why start with a non-Agent baseline
 
 Before adding a model, tools, memory, or a graph, we need to answer two
@@ -81,6 +89,7 @@ python run_lab.py fault-test
 python run_lab.py trace-review
 python run_lab.py memory-review
 python run_lab.py graph-eval
+python run_lab.py policy-test
 python -m unittest discover -s tests -v
 ```
 
@@ -98,6 +107,7 @@ python run_lab.py fault-test --output reports/durable-local
 python run_lab.py trace-review --output reports/trace-local
 python run_lab.py memory-review --output reports/memory-local
 python run_lab.py graph-eval --output reports/graph-local
+python run_lab.py policy-test --output reports/security-local
 ```
 
 The invalid card, both threshold runs, and the flaky candidate are expected to exit non-zero. A zero
@@ -133,6 +143,12 @@ The graph evaluation is expected to pass when all six declared terminal states
 match, invalid graphs are rejected before execution, a failed verifier prevents
 merge, parallel branches own separate state keys, and the budget fixture stops
 without overspending. A passing gate is not evidence that more agents are better.
+
+The policy test is expected to pass when all eight declared outcomes match,
+mutating external actions produce no effect before approval, rejected, expired,
+changed, and unauthorized paths stay effect-free, and duplicate resume replays a
+receipt without performing the action twice. It is not a penetration test or an
+audit of a real IAM deployment.
 
 The commands write:
 
@@ -174,6 +190,10 @@ reports/
     graph-review.md
     graph-runs.jsonl
     graph-failures.md
+    security-review.json
+    security-review.md
+    security-runs.jsonl
+    security-failures.md
 ```
 
 The command exits with status `1` when any task fails. That makes the lab
@@ -196,6 +216,7 @@ Start with these files:
 | `datasets/trace-cases.jsonl` | Which tree, context, retry, version, terminal-state, and privacy cases define trace review behavior? |
 | `datasets/memory-cases.jsonl` | Which write, source-of-truth, inference, isolation, conflict, expiry, and deletion cases define Memory behavior? |
 | `datasets/graph-cases.jsonl` | Which dependency, cycle, state ownership, verifier, merge, and budget cases define Graph behavior? |
+| `datasets/security-cases.jsonl` | Which risk class, approval, expiry, reviewer, action-binding, and idempotency cases define Human Control? |
 | `fixtures/knowledge/product-handbook.md` | What information is the system allowed to use? |
 | `fixtures/context/context-sources.jsonl` | Which trusted, expired, restricted, noisy, or untrusted sources can enter a packet? |
 | `agent_lab/baseline.py` | What can a deterministic control group already accomplish? |
@@ -207,6 +228,7 @@ Start with these files:
 | `agent_lab/tracing.py` | How are spans built, sanitized, linked, checked, and used to answer five debugging questions? |
 | `agent_lab/memory.py` | How are candidates evaluated, namespaced, recalled, superseded, expired, and deleted? |
 | `agent_lab/graph.py` | How are dependencies compiled, parallel writes isolated, budgets enforced, and verified branches merged? |
+| `agent_lab/security.py` | How are tool risks classified, approvals bound, decisions resumed, credentials isolated, and effects made idempotent? |
 | `reports/baseline.json` | Which cases passed, failed, or abstained? |
 | `reports/trials.jsonl` | What happened in every repeated attempt? |
 | `reports/context-packets.jsonl` | What each strategy selected, excluded, marked missing, and spent? |
@@ -218,6 +240,7 @@ Start with these files:
 | `reports/memory-review.md` | Which Memory decisions matched and whether the lifecycle review gate passed? |
 | `reports/memory-recall.md` | Did namespace-first recall prevent the cross-tenant fixture from leaking a preference? |
 | `reports/graph-review.md` | Did all six Graph control outcomes and release checks match? |
+| `reports/security-review.md` | Did all eight Human Control outcomes and release checks match? |
 
 ## Planned checkpoints
 
@@ -238,8 +261,8 @@ Tags are created only when the matching article and code are released.
 | `ae-11-ops` | Production Ops | SLO, budgets, degradation and canary | `python run_lab.py ops-game-day` |
 | `ae-12-improvement` | Continuous Improvement | failure-to-eval-to-release loop | `python run_lab.py release-gate` |
 
-Commands after `ae-09-graph` are interface targets for future checkpoints, not
-features already implemented in `0.9.0`.
+Commands after `ae-10-security` are interface targets for future checkpoints,
+not features already implemented in `1.0.0`.
 
 ## Design rules
 
