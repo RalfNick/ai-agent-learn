@@ -1,0 +1,420 @@
+{
+  "version": "graph-control-v1",
+  "comparison_scope": "deterministic graph-control fixtures; not a model-quality, latency, or topology benchmark",
+  "total_cases": 6,
+  "matched_cases": 6,
+  "status_counts": {
+    "completed": 1,
+    "invalid": 3,
+    "blocked": 2
+  },
+  "gate_checks": {
+    "expected_results": true,
+    "invalid_graphs_rejected": true,
+    "merge_requires_verification": true,
+    "parallel_state_isolated": true,
+    "independent_verifier": true,
+    "budget_honored": true,
+    "trace_complete": true
+  },
+  "gate_passed": true,
+  "cases": [
+    {
+      "case_id": "valid-diamond",
+      "expected_status": "completed",
+      "expected_reason": "completed",
+      "status": "completed",
+      "reason": "completed",
+      "budget": 6,
+      "spent_budget": 6,
+      "layers": [
+        [
+          "plan"
+        ],
+        [
+          "research-code",
+          "research-docs",
+          "research-policy"
+        ],
+        [
+          "verify"
+        ],
+        [
+          "merge"
+        ]
+      ],
+      "completed_nodes": [
+        "plan",
+        "research-code",
+        "research-docs",
+        "research-policy",
+        "verify",
+        "merge"
+      ],
+      "merge_executed": true,
+      "final_state": {
+        "plan": "approved",
+        "code_findings": "ready",
+        "docs_findings": "ready",
+        "policy_findings": "ready",
+        "verification": "verified",
+        "article": "ready"
+      },
+      "events": [
+        {
+          "sequence": 1,
+          "node_id": "plan",
+          "phase": "started",
+          "layer": 0,
+          "detail": "deterministic"
+        },
+        {
+          "sequence": 2,
+          "node_id": "plan",
+          "phase": "completed",
+          "layer": 0,
+          "detail": "plan"
+        },
+        {
+          "sequence": 3,
+          "node_id": "research-code",
+          "phase": "started",
+          "layer": 1,
+          "detail": "worker"
+        },
+        {
+          "sequence": 4,
+          "node_id": "research-code",
+          "phase": "completed",
+          "layer": 1,
+          "detail": "code_findings"
+        },
+        {
+          "sequence": 5,
+          "node_id": "research-docs",
+          "phase": "started",
+          "layer": 1,
+          "detail": "worker"
+        },
+        {
+          "sequence": 6,
+          "node_id": "research-docs",
+          "phase": "completed",
+          "layer": 1,
+          "detail": "docs_findings"
+        },
+        {
+          "sequence": 7,
+          "node_id": "research-policy",
+          "phase": "started",
+          "layer": 1,
+          "detail": "worker"
+        },
+        {
+          "sequence": 8,
+          "node_id": "research-policy",
+          "phase": "completed",
+          "layer": 1,
+          "detail": "policy_findings"
+        },
+        {
+          "sequence": 9,
+          "node_id": "verify",
+          "phase": "started",
+          "layer": 2,
+          "detail": "verifier"
+        },
+        {
+          "sequence": 10,
+          "node_id": "verify",
+          "phase": "completed",
+          "layer": 2,
+          "detail": "verification"
+        },
+        {
+          "sequence": 11,
+          "node_id": "merge",
+          "phase": "started",
+          "layer": 3,
+          "detail": "merge"
+        },
+        {
+          "sequence": 12,
+          "node_id": "merge",
+          "phase": "completed",
+          "layer": 3,
+          "detail": "article"
+        }
+      ],
+      "matched": true
+    },
+    {
+      "case_id": "missing-dependency",
+      "expected_status": "invalid",
+      "expected_reason": "missing_dependency",
+      "status": "invalid",
+      "reason": "missing_dependency",
+      "budget": 2,
+      "spent_budget": 0,
+      "layers": [],
+      "completed_nodes": [],
+      "merge_executed": false,
+      "final_state": {},
+      "events": [
+        {
+          "sequence": 1,
+          "node_id": null,
+          "phase": "compile_rejected",
+          "layer": null,
+          "detail": "research depends on missing node: unknown-plan"
+        }
+      ],
+      "matched": true
+    },
+    {
+      "case_id": "cycle-detected",
+      "expected_status": "invalid",
+      "expected_reason": "cycle_detected",
+      "status": "invalid",
+      "reason": "cycle_detected",
+      "budget": 2,
+      "spent_budget": 0,
+      "layers": [],
+      "completed_nodes": [],
+      "merge_executed": false,
+      "final_state": {},
+      "events": [
+        {
+          "sequence": 1,
+          "node_id": null,
+          "phase": "compile_rejected",
+          "layer": null,
+          "detail": "cycle includes: a, b"
+        }
+      ],
+      "matched": true
+    },
+    {
+      "case_id": "shared-write-conflict",
+      "expected_status": "invalid",
+      "expected_reason": "shared_write_conflict",
+      "status": "invalid",
+      "reason": "shared_write_conflict",
+      "budget": 3,
+      "spent_budget": 0,
+      "layers": [],
+      "completed_nodes": [],
+      "merge_executed": false,
+      "final_state": {},
+      "events": [
+        {
+          "sequence": 1,
+          "node_id": null,
+          "phase": "compile_rejected",
+          "layer": null,
+          "detail": "worker-a and worker-b both write finding"
+        }
+      ],
+      "matched": true
+    },
+    {
+      "case_id": "verifier-blocks-merge",
+      "expected_status": "blocked",
+      "expected_reason": "verifier_failed",
+      "status": "blocked",
+      "reason": "verifier_failed",
+      "budget": 6,
+      "spent_budget": 5,
+      "layers": [
+        [
+          "plan"
+        ],
+        [
+          "research-code",
+          "research-docs",
+          "research-policy"
+        ],
+        [
+          "verify"
+        ],
+        [
+          "merge"
+        ]
+      ],
+      "completed_nodes": [
+        "plan",
+        "research-code",
+        "research-docs",
+        "research-policy"
+      ],
+      "merge_executed": false,
+      "final_state": {
+        "plan": "approved",
+        "code_findings": "ready",
+        "docs_findings": "ready",
+        "policy_findings": "ready"
+      },
+      "events": [
+        {
+          "sequence": 1,
+          "node_id": "plan",
+          "phase": "started",
+          "layer": 0,
+          "detail": "deterministic"
+        },
+        {
+          "sequence": 2,
+          "node_id": "plan",
+          "phase": "completed",
+          "layer": 0,
+          "detail": "plan"
+        },
+        {
+          "sequence": 3,
+          "node_id": "research-code",
+          "phase": "started",
+          "layer": 1,
+          "detail": "worker"
+        },
+        {
+          "sequence": 4,
+          "node_id": "research-code",
+          "phase": "completed",
+          "layer": 1,
+          "detail": "code_findings"
+        },
+        {
+          "sequence": 5,
+          "node_id": "research-docs",
+          "phase": "started",
+          "layer": 1,
+          "detail": "worker"
+        },
+        {
+          "sequence": 6,
+          "node_id": "research-docs",
+          "phase": "completed",
+          "layer": 1,
+          "detail": "docs_findings"
+        },
+        {
+          "sequence": 7,
+          "node_id": "research-policy",
+          "phase": "started",
+          "layer": 1,
+          "detail": "worker"
+        },
+        {
+          "sequence": 8,
+          "node_id": "research-policy",
+          "phase": "completed",
+          "layer": 1,
+          "detail": "policy_findings"
+        },
+        {
+          "sequence": 9,
+          "node_id": "verify",
+          "phase": "started",
+          "layer": 2,
+          "detail": "verifier"
+        },
+        {
+          "sequence": 10,
+          "node_id": "verify",
+          "phase": "failed",
+          "layer": 2,
+          "detail": "verifier_failed"
+        }
+      ],
+      "matched": true
+    },
+    {
+      "case_id": "budget-exhausted",
+      "expected_status": "blocked",
+      "expected_reason": "budget_exhausted",
+      "status": "blocked",
+      "reason": "budget_exhausted",
+      "budget": 3,
+      "spent_budget": 3,
+      "layers": [
+        [
+          "plan"
+        ],
+        [
+          "research-code",
+          "research-docs",
+          "research-policy"
+        ],
+        [
+          "verify"
+        ],
+        [
+          "merge"
+        ]
+      ],
+      "completed_nodes": [
+        "plan",
+        "research-code",
+        "research-docs"
+      ],
+      "merge_executed": false,
+      "final_state": {
+        "plan": "approved",
+        "code_findings": "ready",
+        "docs_findings": "ready"
+      },
+      "events": [
+        {
+          "sequence": 1,
+          "node_id": "plan",
+          "phase": "started",
+          "layer": 0,
+          "detail": "deterministic"
+        },
+        {
+          "sequence": 2,
+          "node_id": "plan",
+          "phase": "completed",
+          "layer": 0,
+          "detail": "plan"
+        },
+        {
+          "sequence": 3,
+          "node_id": "research-code",
+          "phase": "started",
+          "layer": 1,
+          "detail": "worker"
+        },
+        {
+          "sequence": 4,
+          "node_id": "research-code",
+          "phase": "completed",
+          "layer": 1,
+          "detail": "code_findings"
+        },
+        {
+          "sequence": 5,
+          "node_id": "research-docs",
+          "phase": "started",
+          "layer": 1,
+          "detail": "worker"
+        },
+        {
+          "sequence": 6,
+          "node_id": "research-docs",
+          "phase": "completed",
+          "layer": 1,
+          "detail": "docs_findings"
+        },
+        {
+          "sequence": 7,
+          "node_id": "research-policy",
+          "phase": "blocked",
+          "layer": 1,
+          "detail": "budget_exhausted"
+        }
+      ],
+      "matched": true
+    }
+  ]
+}

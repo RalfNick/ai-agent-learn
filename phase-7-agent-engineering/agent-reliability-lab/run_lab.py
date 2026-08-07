@@ -12,6 +12,7 @@ from agent_lab import (
     run_context_eval,
     run_durable_eval,
     run_eval,
+    run_graph_eval,
     run_harness_eval,
     run_memory_review,
     run_trace_review,
@@ -20,6 +21,7 @@ from agent_lab import (
 from agent_lab.context_reporting import write_context_reports
 from agent_lab.durable_reporting import write_durable_reports
 from agent_lab.eval_reporting import write_eval_reports
+from agent_lab.graph_reporting import write_graph_reports
 from agent_lab.harness_reporting import write_harness_reports
 from agent_lab.memory_reporting import write_memory_reports
 from agent_lab.reporting import write_reports
@@ -37,6 +39,7 @@ TOOL_CASES_PATH = ROOT / "datasets" / "tool-cases.jsonl"
 DURABLE_CASES_PATH = ROOT / "datasets" / "durable-cases.jsonl"
 TRACE_CASES_PATH = ROOT / "datasets" / "trace-cases.jsonl"
 MEMORY_CASES_PATH = ROOT / "datasets" / "memory-cases.jsonl"
+GRAPH_CASES_PATH = ROOT / "datasets" / "graph-cases.jsonl"
 KNOWLEDGE_PATH = ROOT / "fixtures" / "knowledge" / "product-handbook.md"
 CONTEXT_SOURCES_PATH = (
     ROOT / "fixtures" / "context" / "context-sources.jsonl"
@@ -57,6 +60,7 @@ def parse_args() -> argparse.Namespace:
             "fault-test",
             "trace-review",
             "memory-review",
+            "graph-eval",
         ],
         help="Validation or baseline command to run.",
     )
@@ -143,6 +147,12 @@ def parse_args() -> argparse.Namespace:
         type=Path,
         default=MEMORY_CASES_PATH,
         help="JSONL Memory policy cases.",
+    )
+    parser.add_argument(
+        "--graph-cases",
+        type=Path,
+        default=GRAPH_CASES_PATH,
+        help="JSONL Graph Engineering control cases.",
     )
     parser.add_argument(
         "--max-steps",
@@ -314,6 +324,20 @@ def main() -> None:
             "\nReports: "
             f"{json_path} | {markdown_path} | {decisions_path} | "
             f"{store_path} | {recall_path}"
+        )
+        if not result.gate_passed:
+            raise SystemExit(1)
+        return
+
+    if args.command == "graph-eval":
+        result = run_graph_eval(args.graph_cases)
+        json_path, markdown_path, runs_path, failures_path = (
+            write_graph_reports(result, args.output)
+        )
+        print(json.dumps(result.summary_dict(), ensure_ascii=False, indent=2))
+        print(
+            "\nReports: "
+            f"{json_path} | {markdown_path} | {runs_path} | {failures_path}"
         )
         if not result.gate_passed:
             raise SystemExit(1)
