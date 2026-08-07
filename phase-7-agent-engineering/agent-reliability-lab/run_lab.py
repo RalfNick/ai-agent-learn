@@ -15,6 +15,7 @@ from agent_lab import (
     run_graph_eval,
     run_harness_eval,
     run_memory_review,
+    run_operations_eval,
     run_security_eval,
     run_trace_review,
     run_tool_eval,
@@ -25,6 +26,7 @@ from agent_lab.eval_reporting import write_eval_reports
 from agent_lab.graph_reporting import write_graph_reports
 from agent_lab.harness_reporting import write_harness_reports
 from agent_lab.memory_reporting import write_memory_reports
+from agent_lab.operations_reporting import write_operations_reports
 from agent_lab.security_reporting import write_security_reports
 from agent_lab.reporting import write_reports
 from agent_lab.tool_reporting import write_tool_reports
@@ -43,6 +45,7 @@ TRACE_CASES_PATH = ROOT / "datasets" / "trace-cases.jsonl"
 MEMORY_CASES_PATH = ROOT / "datasets" / "memory-cases.jsonl"
 GRAPH_CASES_PATH = ROOT / "datasets" / "graph-cases.jsonl"
 SECURITY_CASES_PATH = ROOT / "datasets" / "security-cases.jsonl"
+OPERATIONS_CASES_PATH = ROOT / "datasets" / "operations-cases.jsonl"
 KNOWLEDGE_PATH = ROOT / "fixtures" / "knowledge" / "product-handbook.md"
 CONTEXT_SOURCES_PATH = (
     ROOT / "fixtures" / "context" / "context-sources.jsonl"
@@ -65,6 +68,7 @@ def parse_args() -> argparse.Namespace:
             "memory-review",
             "graph-eval",
             "policy-test",
+            "ops-loop",
         ],
         help="Validation or baseline command to run.",
     )
@@ -163,6 +167,12 @@ def parse_args() -> argparse.Namespace:
         type=Path,
         default=SECURITY_CASES_PATH,
         help="JSONL Human Control and Agent Security cases.",
+    )
+    parser.add_argument(
+        "--operations-cases",
+        type=Path,
+        default=OPERATIONS_CASES_PATH,
+        help="JSONL production operations and improvement-loop cases.",
     )
     parser.add_argument(
         "--max-steps",
@@ -362,6 +372,21 @@ def main() -> None:
         print(
             "\nReports: "
             f"{json_path} | {markdown_path} | {runs_path} | {failures_path}"
+        )
+        if not result.gate_passed:
+            raise SystemExit(1)
+        return
+
+    if args.command == "ops-loop":
+        result = run_operations_eval(args.operations_cases)
+        json_path, markdown_path, runs_path, evals_path, failures_path = (
+            write_operations_reports(result, args.output)
+        )
+        print(json.dumps(result.summary_dict(), ensure_ascii=False, indent=2))
+        print(
+            "\nReports: "
+            f"{json_path} | {markdown_path} | {runs_path} | {evals_path} | "
+            f"{failures_path}"
         )
         if not result.gate_passed:
             raise SystemExit(1)

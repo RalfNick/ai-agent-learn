@@ -1,0 +1,363 @@
+{
+  "version": "production-loop-v1",
+  "comparison_scope": "deterministic operations-policy fixtures; not a production SRE, capacity, security, or model-quality audit",
+  "total_cases": 8,
+  "matched_cases": 8,
+  "action_counts": {
+    "continue": 1,
+    "read_only": 1,
+    "draft_only": 1,
+    "handoff": 2,
+    "pause_writes": 1,
+    "rollback": 1,
+    "promote": 1
+  },
+  "eval_candidates": 6,
+  "gate_checks": {
+    "expected_decisions": true,
+    "stable_continues": true,
+    "tool_degrades_read_only": true,
+    "latency_degrades_draft": true,
+    "budget_and_provider_handoff": true,
+    "unknown_write_pauses": true,
+    "canary_regression_rolls_back": true,
+    "healthy_canary_promotes": true,
+    "incident_evals_redacted": true
+  },
+  "gate_passed": true,
+  "policy": {
+    "min_success_rate": 0.95,
+    "max_p95_latency_ms": 5000,
+    "max_cost_per_task": 0.3,
+    "max_queue_age_seconds": 120,
+    "max_tool_error_rate": 0.1,
+    "max_handoff_rate": 0.4,
+    "min_candidate_eval_pass_rate": 0.95,
+    "max_canary_error_rate_delta": 0.03,
+    "max_canary_cost_ratio": 1.2
+  },
+  "cases": [
+    {
+      "case_id": "stable-production",
+      "expected_action": "continue",
+      "expected_reason": "within_policy",
+      "expected_eval_candidate": false,
+      "decision": {
+        "case_id": "stable-production",
+        "version": "agent-v10",
+        "stage": "stable",
+        "action": "continue",
+        "reason": "within_policy",
+        "signals": [],
+        "incident": null
+      },
+      "eval_candidate": null,
+      "matched": true
+    },
+    {
+      "case_id": "tool-throttle-degrade",
+      "expected_action": "read_only",
+      "expected_reason": "tool_error_budget_exceeded",
+      "expected_eval_candidate": true,
+      "decision": {
+        "case_id": "tool-throttle-degrade",
+        "version": "agent-v10",
+        "stage": "stable",
+        "action": "read_only",
+        "reason": "tool_error_budget_exceeded",
+        "signals": [
+          "tool_error_budget_exceeded"
+        ],
+        "incident": {
+          "incident_id": "incident-1bfe88ace8bc",
+          "case_id": "tool-throttle-degrade",
+          "version": "agent-v10",
+          "action": "read_only",
+          "reason": "tool_error_budget_exceeded",
+          "signals": [
+            "tool_error_budget_exceeded"
+          ],
+          "trace_ref_hash": "01b323a8356092fb30c7ab7b5acb8266933bfb8cd8846e453a1a91f93c695578",
+          "confirmed": true,
+          "redacted": true
+        }
+      },
+      "eval_candidate": {
+        "task_id": "regression-6dbfd98c73e6",
+        "source_hash": "6dbfd98c73e61a706ba712f1f3e9114bbe505e1d2d223418bd3fb1544428b6ea",
+        "objective": "Reproduce control signal 'tool_error_budget_exceeded' and require the 'read_only' operational action.",
+        "expected_control_action": "read_only",
+        "source_type": "confirmed_production_incident"
+      },
+      "matched": true
+    },
+    {
+      "case_id": "latency-queue-degrade",
+      "expected_action": "draft_only",
+      "expected_reason": "latency_slo_missed",
+      "expected_eval_candidate": true,
+      "decision": {
+        "case_id": "latency-queue-degrade",
+        "version": "agent-v10",
+        "stage": "stable",
+        "action": "draft_only",
+        "reason": "latency_slo_missed",
+        "signals": [
+          "latency_slo_missed",
+          "queue_age_exceeded",
+          "success_slo_missed"
+        ],
+        "incident": {
+          "incident_id": "incident-741bfdc63514",
+          "case_id": "latency-queue-degrade",
+          "version": "agent-v10",
+          "action": "draft_only",
+          "reason": "latency_slo_missed",
+          "signals": [
+            "latency_slo_missed",
+            "queue_age_exceeded",
+            "success_slo_missed"
+          ],
+          "trace_ref_hash": "4447436664302943d2ec7192de3c249309ccdada4a014d475cb62a97edbe5193",
+          "confirmed": true,
+          "redacted": true
+        }
+      },
+      "eval_candidate": {
+        "task_id": "regression-463ab5d0aa6d",
+        "source_hash": "463ab5d0aa6dc34b87d90c449487fb681853ba6c071ef47858ad62667da87ac8",
+        "objective": "Reproduce control signal 'latency_slo_missed' and require the 'draft_only' operational action.",
+        "expected_control_action": "draft_only",
+        "source_type": "confirmed_production_incident"
+      },
+      "matched": true
+    },
+    {
+      "case_id": "task-budget-stop",
+      "expected_action": "handoff",
+      "expected_reason": "task_cost_budget_exceeded",
+      "expected_eval_candidate": true,
+      "decision": {
+        "case_id": "task-budget-stop",
+        "version": "agent-v10",
+        "stage": "stable",
+        "action": "handoff",
+        "reason": "task_cost_budget_exceeded",
+        "signals": [
+          "task_cost_budget_exceeded"
+        ],
+        "incident": {
+          "incident_id": "incident-a1363dec80cf",
+          "case_id": "task-budget-stop",
+          "version": "agent-v10",
+          "action": "handoff",
+          "reason": "task_cost_budget_exceeded",
+          "signals": [
+            "task_cost_budget_exceeded"
+          ],
+          "trace_ref_hash": "0a5a2708143337af5443d54d893487b6641017562530f0498e4d21d66610adf1",
+          "confirmed": true,
+          "redacted": true
+        }
+      },
+      "eval_candidate": {
+        "task_id": "regression-74928b75b3a3",
+        "source_hash": "74928b75b3a30d3f5f404c57e2b6c50ff72b440d4f9e590e408315f7f1d3656c",
+        "objective": "Reproduce control signal 'task_cost_budget_exceeded' and require the 'handoff' operational action.",
+        "expected_control_action": "handoff",
+        "source_type": "confirmed_production_incident"
+      },
+      "matched": true
+    },
+    {
+      "case_id": "unknown-write-pause",
+      "expected_action": "pause_writes",
+      "expected_reason": "write_outcome_unknown",
+      "expected_eval_candidate": true,
+      "decision": {
+        "case_id": "unknown-write-pause",
+        "version": "agent-v10",
+        "stage": "stable",
+        "action": "pause_writes",
+        "reason": "write_outcome_unknown",
+        "signals": [
+          "write_outcome_unknown",
+          "task_cost_budget_exceeded",
+          "latency_slo_missed",
+          "queue_age_exceeded",
+          "tool_error_budget_exceeded",
+          "success_slo_missed"
+        ],
+        "incident": {
+          "incident_id": "incident-e36d1d18b8ec",
+          "case_id": "unknown-write-pause",
+          "version": "agent-v10",
+          "action": "pause_writes",
+          "reason": "write_outcome_unknown",
+          "signals": [
+            "write_outcome_unknown",
+            "task_cost_budget_exceeded",
+            "latency_slo_missed",
+            "queue_age_exceeded",
+            "tool_error_budget_exceeded",
+            "success_slo_missed"
+          ],
+          "trace_ref_hash": "b93095f81bb6b5eea0b7f08440f21c5e8167aa9ce826275f9783fc4893204c43",
+          "confirmed": true,
+          "redacted": true
+        }
+      },
+      "eval_candidate": {
+        "task_id": "regression-db26e1e492b2",
+        "source_hash": "db26e1e492b2a521a94dd065a0237ce20e30e20d3ab5f52408fe9ae63acabb1b",
+        "objective": "Reproduce control signal 'write_outcome_unknown' and require the 'pause_writes' operational action.",
+        "expected_control_action": "pause_writes",
+        "source_type": "confirmed_production_incident"
+      },
+      "matched": true
+    },
+    {
+      "case_id": "provider-unavailable",
+      "expected_action": "handoff",
+      "expected_reason": "model_provider_unavailable",
+      "expected_eval_candidate": true,
+      "decision": {
+        "case_id": "provider-unavailable",
+        "version": "agent-v10",
+        "stage": "stable",
+        "action": "handoff",
+        "reason": "model_provider_unavailable",
+        "signals": [
+          "model_provider_unavailable",
+          "latency_slo_missed",
+          "success_slo_missed",
+          "handoff_capacity_exceeded"
+        ],
+        "incident": {
+          "incident_id": "incident-e2c9b08edeef",
+          "case_id": "provider-unavailable",
+          "version": "agent-v10",
+          "action": "handoff",
+          "reason": "model_provider_unavailable",
+          "signals": [
+            "model_provider_unavailable",
+            "latency_slo_missed",
+            "success_slo_missed",
+            "handoff_capacity_exceeded"
+          ],
+          "trace_ref_hash": "cf0245168cd86599f6689c835b1bc06d6ddf43d1120db76afac28d9021c5faa6",
+          "confirmed": true,
+          "redacted": true
+        }
+      },
+      "eval_candidate": {
+        "task_id": "regression-d7db05452e7d",
+        "source_hash": "d7db05452e7d63f514454a3315352218989e131dabf28a772895303cbc3444f9",
+        "objective": "Reproduce control signal 'model_provider_unavailable' and require the 'handoff' operational action.",
+        "expected_control_action": "handoff",
+        "source_type": "confirmed_production_incident"
+      },
+      "matched": true
+    },
+    {
+      "case_id": "canary-regression",
+      "expected_action": "rollback",
+      "expected_reason": "canary_error_regression",
+      "expected_eval_candidate": true,
+      "decision": {
+        "case_id": "canary-regression",
+        "version": "agent-v11-candidate",
+        "stage": "canary",
+        "action": "rollback",
+        "reason": "canary_error_regression",
+        "signals": [
+          "canary_error_regression",
+          "success_slo_missed"
+        ],
+        "incident": {
+          "incident_id": "incident-cc7c747ddc2e",
+          "case_id": "canary-regression",
+          "version": "agent-v11-candidate",
+          "action": "rollback",
+          "reason": "canary_error_regression",
+          "signals": [
+            "canary_error_regression",
+            "success_slo_missed"
+          ],
+          "trace_ref_hash": "e4dee2c8ce941a609736027bb5b25b8677ad6ec8ea824542faad933bc6d74ac2",
+          "confirmed": true,
+          "redacted": true
+        }
+      },
+      "eval_candidate": {
+        "task_id": "regression-f1437ebd06c4",
+        "source_hash": "f1437ebd06c47b6b7b64ccb88a09959a44565553aaa0990f2d784488510328d4",
+        "objective": "Reproduce control signal 'canary_error_regression' and require the 'rollback' operational action.",
+        "expected_control_action": "rollback",
+        "source_type": "confirmed_production_incident"
+      },
+      "matched": true
+    },
+    {
+      "case_id": "canary-promote",
+      "expected_action": "promote",
+      "expected_reason": "release_gates_passed",
+      "expected_eval_candidate": false,
+      "decision": {
+        "case_id": "canary-promote",
+        "version": "agent-v11-candidate",
+        "stage": "canary",
+        "action": "promote",
+        "reason": "release_gates_passed",
+        "signals": [],
+        "incident": null
+      },
+      "eval_candidate": null,
+      "matched": true
+    }
+  ],
+  "incident_evals": [
+    {
+      "task_id": "regression-6dbfd98c73e6",
+      "source_hash": "6dbfd98c73e61a706ba712f1f3e9114bbe505e1d2d223418bd3fb1544428b6ea",
+      "objective": "Reproduce control signal 'tool_error_budget_exceeded' and require the 'read_only' operational action.",
+      "expected_control_action": "read_only",
+      "source_type": "confirmed_production_incident"
+    },
+    {
+      "task_id": "regression-463ab5d0aa6d",
+      "source_hash": "463ab5d0aa6dc34b87d90c449487fb681853ba6c071ef47858ad62667da87ac8",
+      "objective": "Reproduce control signal 'latency_slo_missed' and require the 'draft_only' operational action.",
+      "expected_control_action": "draft_only",
+      "source_type": "confirmed_production_incident"
+    },
+    {
+      "task_id": "regression-74928b75b3a3",
+      "source_hash": "74928b75b3a30d3f5f404c57e2b6c50ff72b440d4f9e590e408315f7f1d3656c",
+      "objective": "Reproduce control signal 'task_cost_budget_exceeded' and require the 'handoff' operational action.",
+      "expected_control_action": "handoff",
+      "source_type": "confirmed_production_incident"
+    },
+    {
+      "task_id": "regression-db26e1e492b2",
+      "source_hash": "db26e1e492b2a521a94dd065a0237ce20e30e20d3ab5f52408fe9ae63acabb1b",
+      "objective": "Reproduce control signal 'write_outcome_unknown' and require the 'pause_writes' operational action.",
+      "expected_control_action": "pause_writes",
+      "source_type": "confirmed_production_incident"
+    },
+    {
+      "task_id": "regression-d7db05452e7d",
+      "source_hash": "d7db05452e7d63f514454a3315352218989e131dabf28a772895303cbc3444f9",
+      "objective": "Reproduce control signal 'model_provider_unavailable' and require the 'handoff' operational action.",
+      "expected_control_action": "handoff",
+      "source_type": "confirmed_production_incident"
+    },
+    {
+      "task_id": "regression-f1437ebd06c4",
+      "source_hash": "f1437ebd06c47b6b7b64ccb88a09959a44565553aaa0990f2d784488510328d4",
+      "objective": "Reproduce control signal 'canary_error_regression' and require the 'rollback' operational action.",
+      "expected_control_action": "rollback",
+      "source_type": "confirmed_production_incident"
+    }
+  ]
+}

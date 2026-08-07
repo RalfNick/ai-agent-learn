@@ -4,7 +4,7 @@ This lab turns the Phase 6 enterprise knowledge-base Agent into a brownfield
 reliability project. The goal is not to produce the most autonomous demo. The
 goal is to make every change measurable against a stable task contract.
 
-Version `1.0.0` contains no live model calls and requires no API key. It preserves
+Version `1.1.0` contains no live model calls and requires no API key. It preserves
 the contract and eval checkpoints, then adds a Context Packet assembler that
 compares a naive prefix dump with explicit source, freshness, clearance,
 relevance, missing-evidence, and budget policies. The Harness checkpoint then
@@ -90,6 +90,7 @@ python run_lab.py trace-review
 python run_lab.py memory-review
 python run_lab.py graph-eval
 python run_lab.py policy-test
+python run_lab.py ops-loop
 python -m unittest discover -s tests -v
 ```
 
@@ -108,6 +109,7 @@ python run_lab.py trace-review --output reports/trace-local
 python run_lab.py memory-review --output reports/memory-local
 python run_lab.py graph-eval --output reports/graph-local
 python run_lab.py policy-test --output reports/security-local
+python run_lab.py ops-loop --output reports/operations-local
 ```
 
 The invalid card, both threshold runs, and the flaky candidate are expected to exit non-zero. A zero
@@ -194,6 +196,11 @@ reports/
     security-review.md
     security-runs.jsonl
     security-failures.md
+    operations-review.json
+    operations-review.md
+    operations-runs.jsonl
+    incident-evals.jsonl
+    operations-failures.md
 ```
 
 The command exits with status `1` when any task fails. That makes the lab
@@ -217,6 +224,7 @@ Start with these files:
 | `datasets/memory-cases.jsonl` | Which write, source-of-truth, inference, isolation, conflict, expiry, and deletion cases define Memory behavior? |
 | `datasets/graph-cases.jsonl` | Which dependency, cycle, state ownership, verifier, merge, and budget cases define Graph behavior? |
 | `datasets/security-cases.jsonl` | Which risk class, approval, expiry, reviewer, action-binding, and idempotency cases define Human Control? |
+| `datasets/operations-cases.jsonl` | Which SLO, budget, degradation, canary, rollback, and incident-to-eval cases define the production loop? |
 | `fixtures/knowledge/product-handbook.md` | What information is the system allowed to use? |
 | `fixtures/context/context-sources.jsonl` | Which trusted, expired, restricted, noisy, or untrusted sources can enter a packet? |
 | `agent_lab/baseline.py` | What can a deterministic control group already accomplish? |
@@ -229,6 +237,7 @@ Start with these files:
 | `agent_lab/memory.py` | How are candidates evaluated, namespaced, recalled, superseded, expired, and deleted? |
 | `agent_lab/graph.py` | How are dependencies compiled, parallel writes isolated, budgets enforced, and verified branches merged? |
 | `agent_lab/security.py` | How are tool risks classified, approvals bound, decisions resumed, credentials isolated, and effects made idempotent? |
+| `agent_lab/operations.py` | How do production signals choose continue, degrade, pause, rollback, promote, and regression-eval actions? |
 | `reports/baseline.json` | Which cases passed, failed, or abstained? |
 | `reports/trials.jsonl` | What happened in every repeated attempt? |
 | `reports/context-packets.jsonl` | What each strategy selected, excluded, marked missing, and spent? |
@@ -241,6 +250,7 @@ Start with these files:
 | `reports/memory-recall.md` | Did namespace-first recall prevent the cross-tenant fixture from leaking a preference? |
 | `reports/graph-review.md` | Did all six Graph control outcomes and release checks match? |
 | `reports/security-review.md` | Did all eight Human Control outcomes and release checks match? |
+| `reports/operations-review.md` | Did all eight production windows and release checks match? |
 
 ## Planned checkpoints
 
@@ -258,11 +268,10 @@ Tags are created only when the matching article and code are released.
 | `ae-08-memory` | Memory Engineering | provenance, TTL, conflict and delete rules | `python run_lab.py memory-review` |
 | `ae-09-graph` | Graph Engineering | dependency graph and independent verifier | `python run_lab.py graph-eval` |
 | `ae-10-security` | Human Control | approval policy, sandbox and audit | `python run_lab.py policy-test` |
-| `ae-11-ops` | Production Ops | SLO, budgets, degradation and canary | `python run_lab.py ops-game-day` |
-| `ae-12-improvement` | Continuous Improvement | failure-to-eval-to-release loop | `python run_lab.py release-gate` |
+| `ae-11-production-loop` | Production Loop | SLO, budgets, degradation, canary and incident-to-eval loop | `python run_lab.py ops-loop` |
 
-Commands after `ae-10-security` are interface targets for future checkpoints,
-not features already implemented in `1.0.0`.
+The `ae-11-production-loop` checkpoint merges the originally planned Production
+Ops and Continuous Improvement articles into one executable loop.
 
 ## Design rules
 
