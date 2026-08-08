@@ -37,6 +37,8 @@ def _review_markdown(result: OperationsEvalResult) -> str:
         f"- Matched decisions: `{result.matched_cases}/{result.total_cases}`",
         f"- Regression candidates: `{len(result.eval_candidates)}`",
         "- Scope: deterministic policy fixtures, not a production SRE audit",
+        "- Decision boundary: emits policy decisions; does not execute rollback or compensation",
+        "- Privacy boundary: uses pre-sanitized metadata fixtures; no redaction pipeline is implemented",
         "",
         "## Release checks",
         "",
@@ -123,4 +125,3 @@ def _failures_markdown(result: OperationsEvalResult) -> str:
         )
     lines.append("")
     return "\n".join(lines)
-

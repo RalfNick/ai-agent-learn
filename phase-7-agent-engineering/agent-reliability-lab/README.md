@@ -4,7 +4,7 @@ This lab turns the Phase 6 enterprise knowledge-base Agent into a brownfield
 reliability project. The goal is not to produce the most autonomous demo. The
 goal is to make every change measurable against a stable task contract.
 
-Version `1.1.0` contains no live model calls and requires no API key. It preserves
+Version `1.1.1` contains no live model calls and requires no API key. It preserves
 the contract and eval checkpoints, then adds a Context Packet assembler that
 compares a naive prefix dump with explicit source, freshness, clearance,
 relevance, missing-evidence, and budget policies. The Harness checkpoint then
@@ -224,7 +224,7 @@ Start with these files:
 | `datasets/memory-cases.jsonl` | Which write, source-of-truth, inference, isolation, conflict, expiry, and deletion cases define Memory behavior? |
 | `datasets/graph-cases.jsonl` | Which dependency, cycle, state ownership, verifier, merge, and budget cases define Graph behavior? |
 | `datasets/security-cases.jsonl` | Which risk class, approval, expiry, reviewer, action-binding, and idempotency cases define Human Control? |
-| `datasets/operations-cases.jsonl` | Which SLO, budget, degradation, canary, rollback, and incident-to-eval cases define the production loop? |
+| `datasets/operations-cases.jsonl` | Which SLO, budget, degradation, recovery, canary, rollback, and incident-to-eval cases define the production loop? |
 | `fixtures/knowledge/product-handbook.md` | What information is the system allowed to use? |
 | `fixtures/context/context-sources.jsonl` | Which trusted, expired, restricted, noisy, or untrusted sources can enter a packet? |
 | `agent_lab/baseline.py` | What can a deterministic control group already accomplish? |
@@ -250,7 +250,7 @@ Start with these files:
 | `reports/memory-recall.md` | Did namespace-first recall prevent the cross-tenant fixture from leaking a preference? |
 | `reports/graph-review.md` | Did all six Graph control outcomes and release checks match? |
 | `reports/security-review.md` | Did all eight Human Control outcomes and release checks match? |
-| `reports/operations-review.md` | Did all eight production windows and release checks match? |
+| `reports/operations-review.md` | Did all nine production windows and release checks match? |
 
 ## Planned checkpoints
 
@@ -330,3 +330,11 @@ retention jobs, concurrent writers, regional residency, provider-side session
 storage, or legal erasure guarantees. A passing gate proves the eight fixtures
 obey the declared policy, not that the model learned, changed its weights, or
 will answer better because persistent state exists.
+
+## Production Loop experiment limits
+
+The operations review evaluates nine pre-sanitized metadata windows. It emits
+policy decisions such as `read_only`, `rollback`, and `promote`; it does not
+shift traffic, deploy versions, redact raw traces, deduplicate an eval store, or
+compensate completed side effects. A passing gate proves the declared fixtures
+match the policy, not that the thresholds or rollback path are production-ready.

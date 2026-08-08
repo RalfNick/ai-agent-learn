@@ -23,14 +23,15 @@ CASES_PATH = ROOT / "datasets" / "operations-cases.jsonl"
 
 
 class OperationsFixtureTests(unittest.TestCase):
-    def test_dataset_covers_eight_production_boundaries(self) -> None:
+    def test_dataset_covers_nine_production_boundaries(self) -> None:
         cases = load_operations_cases(CASES_PATH)
 
-        self.assertEqual(8, len(cases))
+        self.assertEqual(9, len(cases))
         self.assertEqual(
             {
                 "stable-production",
                 "tool-throttle-degrade",
+                "tool-recovered",
                 "latency-queue-degrade",
                 "task-budget-stop",
                 "unknown-write-pause",
@@ -99,6 +100,12 @@ class OperationsDecisionTests(unittest.TestCase):
                 self.assertEqual(expected, (decision.action, decision.reason))
                 self.assertIsNotNone(decision.incident)
 
+    def test_recovered_tool_window_continues_without_rewriting_failure_fixture(self) -> None:
+        decision = evaluate_window(self.cases["tool-recovered"], self.policy)
+
+        self.assertEqual(("continue", "within_policy"), (decision.action, decision.reason))
+        self.assertIsNone(decision.incident)
+
     def test_unknown_write_has_priority_over_every_lower_risk_signal(self) -> None:
         decision = evaluate_window(self.cases["unknown-write-pause"], self.policy)
 
@@ -149,10 +156,12 @@ class OperationsEvaluationTests(unittest.TestCase):
     def test_all_cases_and_release_checks_pass(self) -> None:
         result = run_operations_eval(CASES_PATH)
 
-        self.assertEqual((8, 8), (result.matched_cases, result.total_cases))
+        self.assertEqual((9, 9), (result.matched_cases, result.total_cases))
         self.assertTrue(result.gate_passed)
         self.assertTrue(all(result.gate_checks.values()))
         self.assertEqual(6, len(result.eval_candidates))
+        self.assertIn("policy output only", result.summary_dict()["decision_scope"])
+        self.assertIn("pre-sanitized", result.summary_dict()["privacy_scope"])
 
     def test_writer_creates_five_redacted_artifacts(self) -> None:
         result = run_operations_eval(CASES_PATH)

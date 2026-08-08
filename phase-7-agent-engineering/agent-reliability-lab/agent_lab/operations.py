@@ -161,6 +161,14 @@ class OperationsEvalResult:
                 "deterministic operations-policy fixtures; not a production SRE, "
                 "capacity, security, or model-quality audit"
             ),
+            "decision_scope": (
+                "policy output only; no traffic shift, deployment rollback, or "
+                "side-effect compensation is executed"
+            ),
+            "privacy_scope": (
+                "pre-sanitized metadata fixtures; confirmation, redaction, and "
+                "deduplication pipelines are not implemented"
+            ),
             "total_cases": self.total_cases,
             "matched_cases": self.matched_cases,
             "action_counts": self.action_counts,
@@ -386,6 +394,9 @@ def run_operations_eval(
         "stable_continues": by_id["stable-production"].decision.action == "continue",
         "tool_degrades_read_only": (
             by_id["tool-throttle-degrade"].decision.action == "read_only"
+        ),
+        "tool_recovery_continues": (
+            by_id["tool-recovered"].decision.action == "continue"
         ),
         "latency_degrades_draft": (
             by_id["latency-queue-degrade"].decision.action == "draft_only"

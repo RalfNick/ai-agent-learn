@@ -1,10 +1,12 @@
 {
   "version": "production-loop-v1",
   "comparison_scope": "deterministic operations-policy fixtures; not a production SRE, capacity, security, or model-quality audit",
-  "total_cases": 8,
-  "matched_cases": 8,
+  "decision_scope": "policy output only; no traffic shift, deployment rollback, or side-effect compensation is executed",
+  "privacy_scope": "pre-sanitized metadata fixtures; confirmation, redaction, and deduplication pipelines are not implemented",
+  "total_cases": 9,
+  "matched_cases": 9,
   "action_counts": {
-    "continue": 1,
+    "continue": 2,
     "read_only": 1,
     "draft_only": 1,
     "handoff": 2,
@@ -17,6 +19,7 @@
     "expected_decisions": true,
     "stable_continues": true,
     "tool_degrades_read_only": true,
+    "tool_recovery_continues": true,
     "latency_degrades_draft": true,
     "budget_and_provider_handoff": true,
     "unknown_write_pauses": true,
@@ -89,6 +92,23 @@
         "expected_control_action": "read_only",
         "source_type": "confirmed_production_incident"
       },
+      "matched": true
+    },
+    {
+      "case_id": "tool-recovered",
+      "expected_action": "continue",
+      "expected_reason": "within_policy",
+      "expected_eval_candidate": false,
+      "decision": {
+        "case_id": "tool-recovered",
+        "version": "agent-v10",
+        "stage": "stable",
+        "action": "continue",
+        "reason": "within_policy",
+        "signals": [],
+        "incident": null
+      },
+      "eval_candidate": null,
       "matched": true
     },
     {
