@@ -1,0 +1,11 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "status": { "type": "string", "const": "ok" },
+    "file_count": { "type": "integer", "minimum": 2 },
+    "notes": { "type": "string" }
+  },
+  "required": ["status", "file_count", "notes"],
+  "additionalProperties": false
+}
