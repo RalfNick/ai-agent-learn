@@ -1,0 +1,27 @@
+[
+  {
+    "id": "run-003",
+    "task": "review authentication diff",
+    "status": "needs_human",
+    "duration_ms": 12400,
+    "exit_code": 0,
+    "artifact": "reports/run-003.json"
+  },
+  {
+    "id": "run-002",
+    "task": "check markdown assets",
+    "status": "passed",
+    "duration_ms": 820,
+    "exit_code": 0,
+    "artifact": "reports/run-002.json"
+  },
+  {
+    "id": "run-001",
+    "task": "run integration tests",
+    "status": "failed",
+    "duration_ms": 30000,
+    "exit_code": 124,
+    "artifact": "reports/run-001.json"
+  }
+]
+
